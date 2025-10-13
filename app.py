@@ -25,21 +25,29 @@ def reg_review():
 
 @application.route("/submit_item")
 def reg_item_submit():
-    name=request.args.get("name")
-    seller=request.args.get("seller")
-    addr=request.args.get("addr")
-    email=request.args.get("email")
-    category=request.args.get("category")
-    card=request.args.get("card")
-    status=request.args.get("status")
-    phone=request.args.get("phone")
-    print(name,seller,addr,email,category,card,status,phone)
-    #return render_template("reg_item.html")
+    name = request.args.get("name")
+    seller = request.args.get("seller")
+    addr = request.args.get("addr")
+    email = request.args.get("email")
+    category = request.args.get("category")
+    card = request.args.get("card")
+    status = request.args.get("status")
+    phone = request.args.get("phone")
+    print(name, seller, addr, email, category, card, status, phone)
+    return render_template("reg_item.html")
 
 @application.route("/submit_item_post", methods=['POST'])
 def reg_item_submit_post():
-
     image_file = request.files["file"]
     image_file.save("static/images/{}".format(image_file.filename))
     data=request.form
+    name = request.form.get("name")
+    seller = request.form.get("seller")
+    addr = request.form.get("addr")
+    email = request.form.get("email")
+    category = request.form.get("category")
+    card = request.form.get("card")
+    status = request.form.get("status")
+    phone = request.form.get("phone")
+    print(name, seller, addr, email, category, card, status, phone)
     return render_template("submit_item_result.html", data=data, img_path="static/images/{}".format(image_file.filename))
