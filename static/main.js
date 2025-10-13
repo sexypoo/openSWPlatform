@@ -1,10 +1,5 @@
-// Navbar toggle logic with accessibility
-// - Supports both .navbar__toogleBtn (your HTML) and .navbar__toggleBtn
-// - Closes menu on link click and on Escape key
-// - Adds aria-expanded for screen readers
 
 (function () {
-  // Helper: select either typo or correct class
   const toggleBtn =
     document.querySelector('.navbar__toogleBtn') ||
     document.querySelector('.navbar__toggleBtn');
@@ -13,7 +8,6 @@
 
   if (!toggleBtn || !menu) return;
 
-  // Ensure role/ARIA for accessibility (접근성 향상)
   toggleBtn.setAttribute('role', 'button');
   toggleBtn.setAttribute('aria-controls', 'nav-menu');
   toggleBtn.setAttribute('aria-expanded', 'false');
