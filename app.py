@@ -42,4 +42,15 @@ def reg_item_submit_post():
     image_file = request.files["file"]
     image_file.save("static/images/{}".format(image_file.filename))
     data=request.form
+
+    name=request.form["name"]
+    seller=request.form["seller"]
+    addr=request.form["addr"]
+    email=request.form["email"]
+    category=request.form["category"]
+    card=request.form["card"]
+    status=request.form["status"]
+    phone=request.form["phone"]
+    print(name,seller,addr,email,category,card,status,phone)
+
     return render_template("submit_item_result.html", data=data, img_path="static/images/{}".format(image_file.filename))
