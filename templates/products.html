@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ewha Market - Products</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif;
+    color: #222;
+  }
+  .page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 28px 56px;
+  }
+
+  /* header (이전 페이지와 동일) */
+  header { display: flex; align-items: center; gap: 16px; }
+  h1 { margin: 0; font-size: 28px; letter-spacing: 2px; color: #2a7a2a; }
+  nav { margin-left: auto; }
+  nav ul { list-style: none; display: flex; gap: 20px; margin: 0; padding: 0; }
+  nav a { display: block; color: #222; text-decoration: none; padding: 8px 6px; }
+  nav a.active { text-decoration: underline; }
+
+  .title { text-align: center; font-size: 26px; margin: 28px 0 8px; font-weight: 600; }
+  hr { border: 0; border-top: 1px solid #e5e5e5; margin: 12px 0 28px; }
+
+  /* product grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);/*한 줄에 3개씩*/
+    gap: 28px;
+  }
+  @media (max-width: 1000px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .thumb {
+    background: #e9e9e9;
+    border-radius: 6px;
+    width: 100%;
+    aspect-ratio: 1 / 1;/*박스 비율 설정*/
+  }
+  .meta { display: flex; justify-content: space-between/*양쪽 끝 정렬*/; align-items: baseline/*텍스트 기준 선에 맞춰 정렬*/; }
+  .name { font-size: 15px; }
+  .price { font-size: 14px; color: #555; }
+  .card a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>EWHA MARKET</h1>
+      <nav>
+        <ul>
+          <li><a href="front.html">Home</a></li>
+          <li><a class="active" href="product.html">Products</a></li>
+          <li><a href="#review">Reviews</a></li>
+          <li><a href="#login">로그인/회원가입</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="title">Products</div>
+    <hr>
+
+    <!-- 스크롤로 계속 내려보는 리스트. 필요 수량만큼 .card 반복 -->
+    <section class="grid">
+      <div class="card">
+        <a href="detail.html">
+          <div class="thumb" aria-label="상품 이미지"></div>
+          <div class="meta">
+            <div class="name">Product 1</div>
+            <div class="price">₩29,000</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="detail.html">
+          <div class="thumb"></div>
+          <div class="meta">
+            <div class="name">Product 2</div>
+            <div class="price">₩18,000</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="detail.html">
+          <div class="thumb"></div>
+          <div class="meta">
+            <div class="name">Product 3</div>
+            <div class="price">₩45,000</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="detail.html">
+          <div class="thumb"></div>
+          <div class="meta">
+            <div class="name">Product 4</div>
+            <div class="price">₩12,000</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="detail.html">
+          <div class="thumb"></div>
+          <div class="meta">
+            <div class="name">Product 5</div>
+            <div class="price">₩63,000</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="detail.html">
+          <div class="thumb"></div>
+          <div class="meta">
+            <div class="name">Product 6</div>
+            <div class="price">₩22,000</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="detail.html">
+          <div class="thumb"></div>
+          <div class="meta">
+            <div class="name">Product 7</div>
+            <div class="price">₩39,000</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="detail.html">
+          <div class="thumb"></div>
+          <div class="meta">
+            <div class="name">Product 8</div>
+            <div class="price">₩49,000</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="detail.html">
+          <div class="thumb"></div>
+          <div class="meta">
+            <div class="name">Product 9</div>
+            <div class="price">₩15,000</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- 필요하면 아래로 계속 card 추가 -->
+    </section>
+  </div>
+</body>
+</html>
