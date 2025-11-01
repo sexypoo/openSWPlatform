@@ -1,4 +1,7 @@
+{% extends "index.html" %}
+{% block section %}
 <p>
+    <br>
     Seller {{data.seller}} sells {{data.name}} and its c
     ategory is {{data.category}}.
     The item is
@@ -14,6 +17,7 @@
 </p>
 <img src="{{img_path}}">
 <p>
+    <br>
     Contact via {{data.email}} or {{data.phone}}
     if you are interested!
     The address is {{data.addr}}
@@ -27,3 +31,4 @@
     NOT accepted!
     {% endif %}
 </p>
+{% endblock section %}
