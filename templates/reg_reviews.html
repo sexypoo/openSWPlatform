@@ -1,4 +1,149 @@
-{% extends "index.html" %}
-{% block section %}
-리뷰 등록 화면 입니다.
-{% endblock section %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 외부 CSS 파일 연결 -->
+    <link rel="stylesheet" type="text/css" href="reg_reviews.css">
+    <title>리뷰 작성 - EWHA MARKET</title>
+</head>
+
+<body>
+    <!-- 헤더: 로고 + 내비게이션 + 로그인 버튼 -->
+    <header>
+        <!-- 사이트 로고 -->
+        <div class="logo">EWHA<br>MARKET</div>
+
+        <!-- 네비게이션 메뉴 -->
+        <nav>
+            <!-- 홈으로 이동 -->
+            <div class="nav-item">
+                <span><a href="index.html" style="text-decoration: none; color: inherit;">Home</a></span>
+            </div>
+
+            <!-- Products 메뉴 (드롭다운 포함) -->
+            <div class="nav-item">
+                <span>Products</span>
+                <div class="dropdown">
+                    <a href="list" class="dropdown-item">상품 목록</a>
+                    <a href="reg_items" class="dropdown-item">상품 등록 페이지</a>
+                </div>
+            </div>
+
+            <!-- Reviews 메뉴 (드롭다운 포함) -->
+            <div class="nav-item">
+                <span>Reviews</span>
+                <div class="dropdown">
+                    <a href="reg_reviews.html" class="dropdown-item">리뷰 작성</a>
+                    <a href="review.html" class="dropdown-item">모든 리뷰 보기</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 오른쪽 상단 아이콘 (하트, 사용자) + 로그인/회원가입 버튼 -->
+        <div class="header-icons">
+            <!-- 하트 아이콘 (위시리스트 화면 연결) -->
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682
+                       a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318
+                       a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+
+            <!-- 사용자 아이콘 (마이페이지 연결) -->
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0z
+                       M12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+
+            <!-- 로그인/회원가입 버튼 -->
+            <button class="login-btn">로그인/회원가입</button>
+        </div>
+    </header>
+
+    <!-- 본문 전체 컨테이너 -->
+    <div class="container">
+        <h1>리뷰 작성</h1>
+
+        <!-- 왼쪽(리뷰 입력) + 오른쪽(별점) 섹션을 나누는 래퍼 -->
+        <div class="content-wrapper">
+
+            <!-- 왼쪽 섹션: 상품 정보 + 리뷰 작성 폼 -->
+            <div class="left-section">
+
+                <!-- 상품 정보 입력 영역 -->
+                <div class="section">
+                    <h2 class="section-title">상품 정보</h2>
+                    <div class="product-info">
+                        
+                        <!-- 상품명, 상세정보 입력칸 -->
+                        <div class="product-details">
+                            <div class="form-group">
+                                <label class="form-label">상품명</label>
+                                <input type="text" class="product-input" placeholder="상품명을 입력해주세요">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">상세 정보</label>
+                                <input type="text" class="product-input" placeholder="상세정보(옵션)를 입력해주세요">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 리뷰 내용 입력 영역 -->
+                <div class="section">
+                    <h2 class="section-title">리뷰 내용</h2>
+
+                    <!-- 제목 입력 -->
+                    <div class="form-group">
+                        <label class="form-label">제목</label>
+                        <input type="text" class="form-input" placeholder="리뷰 제목을 입력해주세요">
+                    </div>
+
+                    <!-- 작성자 입력 -->
+                    <div class="form-group">
+                        <label class="form-label">작성자</label>
+                        <input type="text" class="form-input" placeholder="작성자 아이디를 입력해주세요">
+                    </div>
+
+                    <!-- 본문 내용 -->
+                    <div class="form-group">
+                        <label class="form-label">내용</label>
+                        <textarea class="form-textarea" placeholder="상품에 대한 솔직한 리뷰를 작성해주세요"></textarea>
+                    </div>
+
+                    <!-- 이미지 첨부 -->
+                    <div class="form-group">
+                        <label class="form-label">사진 첨부</label>
+                        <div class="image-upload">
+                            <input type="file" id="file-input" accept="image/*" multiple>
+                            <label for="file-input">
+                                클릭하여 사진을 첨부해주세요
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽 섹션: 별점 평가 -->
+            <div class="right-section">
+                <div class="section">
+                    <h2 class="section-title">별점 평가</h2>
+
+                    <!-- 별 다섯 개를 클릭해서 평점 선택 -->
+                    <div class="rating-container">
+                        <div class="rating" id="rating">
+                            <span class="star" data-rating="1">★</span>
+                            <span class="star" data-rating="2">★</span>
+                            <span class="star" data-rating="3">★</span>
+                            <span class="star" data-rating="4">★</span>
+                            <span class="star" data-rating="5">★</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div> 
+</body>
+</html>
