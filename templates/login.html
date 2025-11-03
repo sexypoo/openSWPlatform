@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+{% block section %}
+{% with mesg = get_flashed_messages() %}
+{% if mesg !=[] %}
+<script>alert("{{ mesg[0] }}")</script>
+{% endif %}
+{% endwith %}
+<form action=“#” method="post">
+    <p>ID : <input type="text" name="id"></p>
+    <p>password : <input type="password" name="pw"></p>
+    <p>아이디와 비밀번호를 입력하고 로그인버튼을 누르세요.<br><input type="submit" value
+            ="로그인"/></p>
+</form>
+<a href="/signup">
+    <button onclick="/signup">
+        회원가입
+    </button>
+</a>
+{% endblock section %}
