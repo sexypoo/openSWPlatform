@@ -221,5 +221,217 @@ body {
 
 
 
-/*회원가입 페이지*/
+
+/* ==============================
+   회원가입 페이지
+============================== */
+
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  background-color: #fff;
+}
+
+.signup-box {
+  width: 460px;
+  padding: 40px 50px;
+  text-align: left;
+}
+
+/* 제목 */
+.signup-box h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* label 공통 */
+.signup-box label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 입력 필드 */
+.signup-box input[type="text"],
+.signup-box input[type="email"],
+.signup-box input[type="password"],
+.signup-box input[type="tel"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 18px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* focus 효과 */
+.signup-box input:focus {
+  outline: none;
+  border-color: #2e6b56;
+  box-shadow: 0 0 4px rgba(46, 107, 86, 0.3);
+}
+
+/* 인증 관련 섹션 */
+
+.phone-section,
+.verify-section {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start; /* 위 기준 맞추기 유지 */
+}
+
+/* 휴대폰 번호 줄 아래 간격 줄이기 */
+.phone-section {
+  margin-bottom: 8px; /* 12px → 8px로 줄임 */
+}
+
+/* 인증번호 줄 위로 살짝 당기기 */
+.verify-section {
+  margin-top: -4px; /* 위쪽 여백만 살짝 줄임 (겹치지 않게 최소한만) */
+  margin-bottom: 18px; /* 나머지 폼 아래 간격 그대로 */
+}
+
+
+
+.phone-section input,
+.verify-section input {
+  flex: 1;
+  height: 42px; /* 고정 높이, 밑에도 다 새로 추가2 */
+  padding: 0 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.phone-section button,
+.verify-section button {
+  /*flex-shrink: 0;*/
+  display: flex;
+  align-items: center;
+  justify-content: center; /*위의 세 개 또 추가..*/
+  padding: 0 15px; /*원래는 10px 15px*/
+  height: 42px; /*위치 안 맞아서 추가*/
+  background-color: #b7b7b7;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: normal; /*이것도 새로 추가, 1->normal로 수정*/
+  cursor: pointer;
+  box-sizing: border-box; /*이것도 새로 추가2*/
+  transition: background-color 0.2s;
+}
+
+.phone-section button:hover,
+.verify-section button:hover {
+  background-color: #9e9e9e;
+}
+
+/* 오류 메시지 */
+.error-text {
+  color: red;
+  font-size: 13px;
+  margin-top: -12px;
+  margin-bottom: 10px;
+}
+
+/* 약관 동의 */
+.agreement {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #444;
+}
+
+.agreement h3 {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* 체크박스와 텍스트를 한 줄로 안 맞춰진 이슈가 있었음..*/
+.agreement label {
+  display: flex; 
+  align-items: flex-start; 
+  gap: 8px; /* 체크박스와 텍스트 간격 */
+  margin-bottom: 8px; 
+  cursor: pointer; /* 클릭 범위 확장 */
+  line-height: 1.3; /*이거 넣으니까 해결됨*/
+}
+
+/* 체크박스 스타일 */
+.agreement input[type="checkbox"] {
+  accent-color: #2e6b56; 
+  width: 16px;
+  height: 16px;
+  margin-top: 2px; /* 미세 보정 */
+}
+
+/* 회원가입 버튼 */
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #b7b7b7;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #9e9e9e;
+  transform: translateY(-2px);
+}
+
+/* 로그인 링크 */
+.login-link {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 18px;
+}
+
+.login-link a {
+  color: #2e6b56;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .signup-box {
+    width: 90%;
+    padding: 30px;
+  }
+
+  .phone-section,
+  .verify-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .phone-section button,
+  .verify-section button {
+    width: 100%;
+  }
+}
+
+
 /*마이페이지*/
