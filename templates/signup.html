@@ -2,7 +2,7 @@
 <html lang="ko"> <!--문서언어 한국어-->
 <head>
     <meta charset="UTF-8">
-    <title>로그인 | EWHA MARKET</title> <!--브라우저 탭에 표시될 제목-->
+    <title>회원가입| EWHA MARKET</title> <!--브라우저 탭에 표시될 제목-->
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -44,19 +44,19 @@
 
     <!--회원가입 폼--> 
     <main class="signup-container">
-        <form class="signup-box">
+        <form class="signup-box" method="post" action="/signup_post">
             <h2>회원가입</h2>
             <label for="email">이메일</label>
             <input type="email" id="email" placeholder="예) ewha@ewhamarket.com" required>
 
             <label for="userid">아이디</label>
-            <input type="text" id="userid" placeholder="예) ewhamarket" required>
-            <p class="error-text" id="id-error" style="display:none; color:red;">중복된 아이디입니다.</p>
+            <input type="text" id="userid" name="id" placeholder="예) ewhamarket" required>
+            <!--p class="error-text" id="id-error" style="display:none; color:red;">중복된 아이디입니다.</p-->
 
             <label for="password">비밀번호</label>
-            <input type="password" id="password" placeholder="8~20자 이내의 영문과 숫자 조합" required>
+            <input type="password" id="password" name="pw" placeholder="8~20자 이내의 영문과 숫자 조합" required>
 
-            <label for="password-check">비밀번호 확인</label>
+            <!--label for="password-check">비밀번호 확인</label>
             <input type="password" id="password-check" placeholder="8~20자 이내의 영문과 숫자 조합" required>
 
             <label for="phone">휴대폰 번호</label>
@@ -69,7 +69,7 @@
             <div class="verify-section">
                 <input type="text" id="verify" placeholder="인증번호 6자리 입력" required>
                 <button type="button" id="check-code">확인</button>
-            </div>
+            </div-->
 
             <div class="agreement">
                 <h3>전체 동의하기</h3>
@@ -79,7 +79,7 @@
                 <label><input type="checkbox"> 혜택/이벤트 정보 수신에 동의합니다. (선택)</label>
             </div>
 
-            <button type="submit" class="submit-btn">회원가입</button>
+            <input type="submit" class="submit-btn" value="생성">
 
             <p class="login-link">이미 계정이 있으신가요? <a href="login.html">Login</a></p>
         </form>
