@@ -11,8 +11,6 @@ DB = DBhandler()
 @application.route("/")
 def hello():
     return render_template("index.html")
-if __name__ == "__main__":
-    application.run(host='0.0.0.0', debug=True)
 
 @application.route("/login")
 def login():
@@ -99,3 +97,6 @@ def reg_item_submit_post():
     # phone = request.form.get("phone")
     # print(name, seller, addr, email, category, card, status, phone)
     return render_template("submit_item_result.html", data=data, img_path="static/images/{}".format(image_file.filename))
+
+if __name__ == "__main__":
+    application.run(host='0.0.0.0', debug=True)
