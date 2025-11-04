@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>마이페이지 | EWHA MARKET</title>
+
+  <!-- Google Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- 공통 CSS -->
+  <link rel="stylesheet" href="../static/css/style.css" />
+
+  <style>
+    
+    /* 마이페이지 전용 스타일 */
+    .mypage-container {
+      display: flex;/**/
+      padding: 60px 100px;/**/
+      gap: 60px;/**/
+      flex: 1;/**/
+      background-color: #fff;/**/
+    }
+
+
+    .sidebar {
+      width: 180px;
+    }
+
+    .sidebar ul { list-style: none; }
+    .sidebar li {
+      padding: 10px 0;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .sidebar li:hover, .sidebar li.active {
+      color: #2e6b56;
+      font-weight: 600;
+    }
+    .sidebar li.disabled {
+      color: #333;
+      cursor: pointer;
+    }
+
+    .content-area {
+      flex: 1;
+      padding-top: 10px;
+    }
+
+    .profile-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 600px;
+      margin-left: 60px; /*추가*/
+    }
+
+    .profile-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .profile-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #e8e8e8;
+    }
+
+    .profile-text strong { font-size: 18px; }
+    .profile-text span { color: #777; font-size: 14px; }
+    
+  </style>
+</head>
+
+<body>
+  <!-- =============================
+       공통 HEADER
+  ============================== -->
+  <header class="header">
+    <div class="logo">
+      <a href="../index.html" class="logo-link">
+        <span class="ewha">EWHA</span><br>
+        <span class="market">MARKET</span>
+      </a>
+    </div>
+
+    <nav class="nav">
+      <a href="../index.html">Home</a>
+      <a href="../products.html">Products</a>
+      <a href="../review.html">Reviews</a>
+    </nav>
+
+    <div class="icons">
+      <a href="../templates/mypage.html#wishlist"><i class="fas fa-star"></i></a>
+      <a href="../templates/mypage.html#info"><i class="fas fa-user"></i></a>
+      <button id="authBtn" class="auth-btn">로그인 / 회원가입</button>
+    </div>
+  </header>
+
+  <!-- =============================
+       MYPAGE MAIN
+  ============================== -->
+  <main class="mypage-container">
+    <aside class="sidebar">
+      <ul>
+        <li class="active" data-section="profile">회원정보</li>
+        <li data-section="wishlist">관심 상품</li>
+        <li data-section="review">내 리뷰</li>
+        <li class="disabled">구매 내역</li>
+        <li class="disabled">판매 내역</li>
+      </ul>
+    </aside>
+
+    <section class="content-area" id="content-area">
+      <!-- 서현님 파트: 기본 프로필 카드 -->
+      <div class="profile-card">
+        <div class="profile-info">
+          <div class="profile-img"></div>
+          <div class="profile-text">
+            <strong>ewhamarket</strong>
+            <span>ewh@ewhamarket.com</span>
+          </div>
+        </div>
+        <button class="edit-btn">회원정보 수정</button>
+      </div>
+    </section>
+  </main>
+
+  <footer style="border-top:1px solid #eee;padding:30px 100px;font-size:13px;color:#555;">
+    © EWHA MARKET ALL RIGHTS RESERVED
+  </footer>
+
+  <script src="../static/js/mypage_profile.js"></script>
+  <script src="../static/js/mypage_wishlist.js"></script>
+  <script src="../static/js/mypage_review.js"></script>
+  <script src="../static/js/mypage_common.js"></script>
+</body>
+</html>
