@@ -1,163 +1,294 @@
+@import url('https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap');
 
-:root {
-  --bg: #ffffff;
-  --bg-blur: rgba(255, 255, 255, 0.75);
-  --text: #111827;         /* gray-900 */
-  --muted: #6b7280;        /* gray-500 */
-  --brand: #2563eb;        /* blue-600 */
-  --brand-hover: #1d4ed8;  /* blue-700 */
-  --border: #e5e7eb;       /* gray-200 */
-  --shadow: 0 6px 24px rgba(0,0,0,0.06);
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Reset bits */
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
 body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, "Apple SD Gothic Neo", sans-serif;
-  color: var(--text);
-  background: var(--bg);
-  line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
 }
 
-/* --- Navbar shell --- */
-.navbar {
-  position: sticky; /* 스크롤해도 상단 고정 */
-  top: 0;
-  z-index: 50;
-  background: var(--bg-blur);
-  backdrop-filter: saturate(140%) blur(8px); /* 유리 느낌 */
-  border-bottom: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-}
-
-/* Logo */
-.navbar__logo a {
-  display: inline-block;
-  text-decoration: none;
-  font-weight: 800;
-  letter-spacing: 0.2px;
-  font-size: 1.125rem;
-  color: var(--text);
-}
-.navbar__logo a:hover,
-.navbar__logo a:focus {
-  color: var(--brand);
-  outline: none;
-}
-
-/* Menu list */
-.navbar__menu {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  /* Mobile: hidden by default, slide-down on toggle */
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(100% + 1px);
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  overflow: hidden;
-  max-height: 0;               /* 접힘 상태 */
-  transition: max-height 240ms ease;
-}
-
-/* When opened by JS toggle */
-.navbar__menu.is-open {
-  max-height: 320px;           /* 충분한 높이로 펼침 */
-}
-
-.navbar__menu li {
-  border-top: 1px solid var(--border);
-}
-.navbar__menu li:first-child { border-top: none; }
-
-.navbar__menu a {
-  display: block;
-  padding: 12px 16px;
-  text-decoration: none;
-  color: var(--text);
-  font-weight: 600;
-}
-.navbar__menu a:hover,
-.navbar__menu a:focus {
-  background: #f8fafc;         /* slate-50 */
-  color: var(--brand);
-  outline: none;
-}
-
-/* Toggle button (hamburger) — 모바일에서 보임 */
-.navbar__toogleBtn,
-.navbar__toggleBtn {  /* 오타/정상 둘 다 지원 */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: #f9fafb;         /* gray-50 */
-  cursor: pointer;
-  text-decoration: none;        /* <a> 기본 스타일 제거 */
-}
-.navbar__toogleBtn:hover,
-.navbar__toggleBtn:hover,
-.navbar__toogleBtn:focus,
-.navbar__toggleBtn:focus {
-  background: #eef2ff;          /* indigo-50 */
-  outline: none;
-  border-color: #c7d2fe;        /* indigo-200 */
-}
-
-/* If Font Awesome is present, <i class="fas fa-bars"> will render.
-   폰트어썸이 없어도 접근성 텍스트가 보이도록 처리 (main.js에서 aria-label 설정) */
-
-/* --- Desktop @ >=768px --- */
-@media (min-width: 768px) {
-  .navbar {
-    padding: 12px 24px;
-  }
-
-  .navbar__menu {
-    position: static;
+/* 헤더 스타일 */
+header {
+    background-color: white;
+    padding: 20px 60px;
     display: flex;
-    gap: 4px;
-    border: 0;
-    background: transparent;
-    max-height: none;     /* 토글 애니메이션 비활성 */
-    overflow: visible;
-  }
-
-  .navbar__menu li {
-    border: 0;
-  }
-
-  .navbar__menu a {
-    padding: 10px 14px;
-    border-radius: 10px;
-  }
-  .navbar__menu a:hover,
-  .navbar__menu a:focus {
-    background: #eef2ff;
-    color: var(--brand-hover);
-  }
-
-  .navbar__toogleBtn,
-  .navbar__toggleBtn {
-    display: none; /* 데스크톱에서는 햄버거 숨김 */
-  }
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* Section spacing under sticky nav */
-section {
-  padding: 20px 16px;
+/* 로고 */
+.logo {
+    justify-self: start; /* 왼쪽 정렬 */
 }
-@media (min-width: 768px) {
-  section { padding: 30px 24px; }
+
+.logo .logo-link {
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.1;
+}
+
+.logo .ewha,
+.logo .market {
+    font-family: 'Doto', sans-serif;
+    font-size: 36px; /* 두 줄 동일 크기 */
+    letter-spacing: 4px;
+}
+
+.logo .ewha {
+    color: #2e6b56; 
+}
+
+.logo .market {
+    color: #777;
+}
+
+/* 네비게이션 */
+nav {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+}
+
+.nav-item {
+    position: relative;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.nav-item > span {
+    font-size: 16px;
+    color: #333;
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.nav-item:hover > span {
+    transform: translateY(-5px);
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    padding: 10px 0;
+    min-width: 150px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    margin-top: 5px;
+    z-index: 100;
+}
+
+.nav-item:hover .dropdown {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    color: #666;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+/* 아이콘 및 로그인/회원가입 버튼 */
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+.login-btn {
+    padding: 8px 20px;
+    border: 1px solid #333;
+    border-radius: 20px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* 메인 컨텐츠 */
+.main-content {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 50px;
+    color: #333;
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 상품 정보 섹션 */
+.product-info {
+    background: #f8f8f8;
+    padding: 30px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.product-field {
+    width: 100%;
+}
+
+.input-label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.text-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.text-input::placeholder {
+    color: #999;
+}
+
+/* 별점 평가 */
+.rating-section {
+    margin-bottom: 40px;
+}
+
+.stars {
+    display: flex;
+    gap: 10px;
+    font-size: 36px;
+}
+
+.star {
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star.filled {
+    color: #333;
+}
+
+/* 리뷰 내용 */
+.review-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.field-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.textarea-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.textarea-input.large {
+    min-height: 150px;
+}
+
+/* 사진 첨부 */
+.photo-upload {
+    border: 2px dashed #ddd;
+    border-radius: 4px;
+    padding: 60px 20px;
+    text-align: center;
+    cursor: pointer;
+    background: #fafafa;
+}
+
+.photo-upload:hover {
+    background: #f5f5f5;
+}
+
+.photo-upload-text {
+    color: #333;
+    font-size: 14px;
+}
+
+/* 푸터 */
+.footer {
+    margin-top: 80px;
+    padding: 40px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.footer-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    header {
+        padding: 15px 20px;
+    }
+
+    nav {
+        gap: 30px;
+    }
+
+    .main-content {
+        margin: 40px auto;
+    }
 }
