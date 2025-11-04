@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 외부 CSS 파일 연결 -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>리뷰 상세보기 - EWHA MARKET</title>
+</head>
+
+<body>
+    <header>
+        <!-- 사이트 로고 -->
+        <div class="logo">
+            <a href="index.html" class="logo-link">
+                <div class="ewha">EWHA</div>
+                <div class="market">MARKET</div>
+            </a>
+        </div>
+
+        <!-- 네비게이션 메뉴 -->
+        <nav>
+            <!-- 홈으로 이동 -->
+            <div class="nav-item">
+                <span><a href="index.html" style="text-decoration: none; color: inherit;">Home</a></span>
+            </div>
+
+            <!-- Products 메뉴 (드롭다운 포함) -->
+            <div class="nav-item">
+                <span>Products</span>
+                <div class="dropdown">
+                    <a href="list.html" class="dropdown-item">상품 목록</a>
+                    <a href="reg_items.html" class="dropdown-item">상품 등록 페이지</a>
+                </div>
+            </div>
+
+            <!-- Reviews 메뉴 (드롭다운 포함) -->
+            <div class="nav-item">
+                <span>Reviews</span>
+                <div class="dropdown">
+                    <a href="reg_reviews.html" class="dropdown-item">리뷰 작성</a>
+                    <a href="review.html" class="dropdown-item">모든 리뷰 보기</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 오른쪽 상단 아이콘 (하트, 사용자) + 로그인/회원가입 버튼 -->
+        <div class="header-icons">
+            <!-- 하트 아이콘 (위시리스트 화면 연결) -->
+            <a href="wishlist.html">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682
+                   a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318
+                   a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+            </a>
+
+            <!-- 사용자 아이콘 (마이페이지 연결) -->
+            <a href="mypage.html">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0z
+                   M12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+            </a>
+
+            <!-- 로그인/회원가입 버튼 -->
+            <button class="login-btn" onclick="location.href='login.html'">로그인/회원가입</button>
+        </div>
+    </header>
+
+    <main class="review-detail-page">
+        <!-- 제목 -->
+        <h2 class="review-detail-title">리뷰 상세보기</h2>
+
+        <div class="review-detail-container">
+            <!-- 왼쪽 영역: 이미지 갤러리 -->
+            <div class="review-gallery">
+                <div class="main-image" id="mainImage"></div>
+                <div class="thumbnail-container">
+                    <div class="thumbnail active" onclick="changeImage(0)"></div>
+                    <div class="thumbnail" onclick="changeImage(1)"></div>
+                    <div class="thumbnail" onclick="changeImage(2)"></div>
+                </div>
+            </div>
+
+            <!-- 오른쪽 영역: 리뷰 정보 -->
+            <div class="review-detail-info">
+                <!-- 별점 -->
+                <div class="review-rating">
+                    <div class="review-stars-large">★ ★ ★ ★ ★</div>
+                    <div class="review-score">5.0</div>
+                </div>
+
+                <!-- 리뷰 제목 -->
+                <h3 class="review-main-title">가격 대비 정말 만족스러운 제품입니다</h3>
+
+                <!-- 작성자 아이디 및 작성일자 -->
+                <div class="review-meta">
+                    <span class="review-author">happy_customer</span>
+                    <span class="review-date">2025.09.30</span>
+                </div>
+
+                <!-- 상품 정보 -->
+                <div class="product-info-box">
+                    <div class="product-name">지리 니트</div>
+                    <div class="product-detail">Color: Ivory, Size: S</div>
+                </div>
+
+                <!-- 리뷰 내용 -->
+                <div class="review-content-section">
+                    <div class="content-text">
+                        정말 만족스러운 구매였습니다!
+                        <br>
+                        사진으로 봤을 때도 예뻤지만 실물은 훨씬 더 예쁘네요. 소재도 부드럽고 착용감이 편안해서 하루 종일 입고 있어도 불편함이 없어요.
+                        <br>
+                        사이즈도 S사이즈로 주문했는데 딱 맞아요. 색상도 화면으로 본 것과 거의 동일하고, 디테일한 마감 처리도 깔끔합니다.
+                        <br>
+                        배송도 빠르게 와서 좋았고, 포장 상태도 완벽했습니다. 다른 색상도 구매하고 싶을 정도로 마음에 들어요!
+                        <br>
+                        주변 친구들에게도 추천했습니다. 가격 대비 정말 좋은 제품이에요 👍
+                    </div>
+                </div>
+
+                <!-- 목록으로 버튼 (리뷰 전체 조회 화면으로 이동) -->
+                <button class="back-button" onclick="location.href='review.html'">목록으로</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-logo logo">
+                    <a href="../index.html" class="logo-link">
+                        <span class="ewha">EWHA</span><br><span class="market">MARKET</span>
+                    </a>
+                </div>
+
+                <nav class="footer-nav">
+                    <ul>
+                        <li><a href="#main">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="#review">Reviews</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2025 EWHA MARKET. Designed for educational purposes by Ewha students.
+                    Contact: <a href="mailto:support@ewhamarket.kr"
+                        style="color:#2e6b56; text-decoration:none;">support@ewhamarket.kr</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 썸네일 배경색 저장
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const mainImage = document.getElementById('mainImage');
+        const thumbnailBackgrounds = [];
+
+        // 각 썸네일의 배경 스타일 저장
+        thumbnails.forEach(thumb => {
+            thumbnailBackgrounds.push(thumb.style.background);
+        });
+
+        function changeImage(index) {
+            // 모든 썸네일에서 active 클래스 제거
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+
+            // 클릭된 썸네일에 active 클래스 추가
+            thumbnails[index].classList.add('active');
+
+            // 메인 이미지 배경 변경
+            mainImage.style.background = thumbnailBackgrounds[index];
+
+            console.log('이미지 ' + (index + 1) + ' 선택됨');
+        }
+    </script>
+
+</body>
+
+</html>
