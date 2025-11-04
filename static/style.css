@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
 
 * {
     margin: 0;
@@ -11,6 +13,9 @@ body {
     color: #333;
     line-height: 1.6;
 }
+
+/* ------------------------------------------------ */
+/* --------------- 헤더 및 네비게이션 ------------------ */
 
 /* 헤더 스타일 */
 header {
@@ -157,6 +162,9 @@ nav {
     color: #333;
 }
 
+/* ------------------------------------------------ */
+/* --------------- 리뷰 등록 페이지 ------------------ */
+
 /* 상품 정보 섹션 */
 .product-info {
     background: #f8f8f8;
@@ -263,20 +271,192 @@ nav {
     font-size: 14px;
 }
 
-/* 푸터 */
-.footer {
-    margin-top: 80px;
-    padding: 40px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+
+/* ------------------------------------------------ */
+/* --------------- 리뷰 전체 조회 페이지 -----------------*/
+
+/* 리뷰 전체 페이지 */
+.review-page {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
     text-align: center;
 }
 
-.footer-title {
-    font-size: 20px;
+/* 제목 */
+.review-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+}
+/* 리뷰 총 개수 */
+.review-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 50px;
+}
+
+/* 리뷰 카드 그리드 */
+.review-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 40px;
+    justify-items: center;
+}
+
+/* 카드 스타일 */
+.review-card {
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+/* 리뷰 이미지 */
+.review-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #eaeaea;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* 리뷰제목 */
+.review-text {
+    font-size: 15px;
     font-weight: 600;
     color: #333;
+    margin-bottom: 8px;
 }
+
+/* 리뷰 별점 */
+.review-stars {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* 리뷰 작성 날짜 & 리뷰 아이디 */
+.review-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 13px;
+    color: #777;
+}
+
+/* 페이지네이션 */
+.pagination-section {
+    margin-top: 80px;
+    text-align: center;
+}
+
+.pagination-line {
+    width: 60px;
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 0 auto 20px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+}
+
+.page-num {
+    text-decoration: none;
+    color: #999;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: color 0.2s;
+}
+
+.page-num:hover,
+.page-num.active {
+    color: #2e6b56;
+}
+
+/* ------------------------------------------------ */
+/* --------------- footer -----------------*/
+ footer {
+    border-top: 1px solid #e5e5e5;
+    padding: 28px 0;
+    background: #fafafa;
+    color: #333;
+    font-size: 14px;
+  }
+  .footer-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .footer-logo {
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    color: #2e6b56;
+    font-weight: 600;
+  }
+  .footer-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-nav a {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.2s;
+  }
+  .footer-nav a:hover {
+    color: #2e6b56;
+  }
+  .footer-bottom {
+    text-align: center;
+    font-size: 13px;
+    color: #777;
+    line-height: 1.5;
+  }
+  /* 로고 */
+  .logo {
+    justify-self: start; /* 왼쪽 정렬 */
+  }
+  
+  .logo .logo-link {
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.1;
+  }
+  
+  .logo .ewha,
+  .logo .market {
+    font-family: 'Doto', sans-serif;
+    font-size: 36px; /* 두 줄 동일 크기 */
+    letter-spacing: 4px;
+  }
+  
+  .logo .ewha {
+    color: #2e6b56; /* 이화그린 */
+  }
+  
+  .logo .market {
+    color: #777;
+  }
+  
 
 /* 반응형 */
 @media (max-width: 768px) {
