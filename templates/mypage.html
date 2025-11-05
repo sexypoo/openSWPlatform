@@ -187,9 +187,79 @@
            서현님 파트: 회원정보 
            <div class="profile-card">...</div>
       ============================ -->
+      <div class="profile-card" id="profile-section" style="display: none;">
+        <h2 id="profile-title">회원정보</h2>
 
+        <div class="profile-content">
+          <!-- 조회 모드 -->
+          <div id="view-mode">
+            <div class="info-item">
+              <label>아이디</label>
+              <div class="info-display" id="display-username">ewha2025</div>
+            </div>
+
+            <div class="info-item">
+              <label>비밀번호</label>
+              <div class="info-display" id="display-password">********</div>
+            </div>
+
+            <div class="info-item">
+              <label>이메일</label>
+              <div class="info-display" id="display-email">example@ewha.ac.kr</div>
+            </div>
+
+            <div class="info-item">
+              <label>휴대폰 번호</label>
+              <div class="info-display" id="display-phone">010-1234-5678</div>
+            </div>
+
+            <button onclick="toggleEditMode()" class="primary-btn">
+              회원정보 수정하기
+            </button>
+          </div>
+
+          <!-- 수정 모드 -->
+          <div id="edit-mode" style="display: none;">
+            <div class="info-item">
+              <label>아이디</label>
+              <div class="readonly-field">ewha2025</div>
+            </div>
+
+            <div class="info-item">
+              <label>새 비밀번호 입력</label>
+              <input type="password" id="edit-password-new" placeholder="새 비밀번호를 입력하세요" />
+            </div>
+
+            <div class="info-item">
+              <label>비밀번호 확인</label>
+              <div class="password-check-row">
+                <input type="password" id="edit-password-confirm" placeholder="비밀번호를 다시 입력하세요" />
+                <button onclick="checkPassword()" class="check-btn">확인</button>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <label>이메일</label>
+              <input type="email" id="edit-email" value="example@ewha.ac.kr" placeholder="example@ewha.kr" />
+            </div>
+
+            <div class="info-item">
+              <label>휴대폰 번호</label>
+              <input type="tel" id="edit-phone" value="010-1234-5678" placeholder="010-0000-0000" />
+            </div>
+
+            <div class="button-group">
+              <button onclick="saveChanges()" class="save-btn">저장하기</button>
+              <button onclick="cancelEdit()" class="cancel-btn">취소</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
       <!-- ===========================
            은규님 파트: 관심 상품 
+      ============================ -->
            <div class="wishlist-container">
               <div class="card">
     <a href="detail.html">
@@ -225,7 +295,6 @@
     
     
     </div>
-      ============================ -->
 
       <!-- ===========================
            내 리뷰 파트
@@ -296,4 +365,5 @@
   </footer>
 </body>
 </html>
+
 
