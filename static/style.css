@@ -21,8 +21,8 @@ body {
 header {
     background-color: white;
     padding: 20px 60px;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -60,6 +60,7 @@ nav {
     display: flex;
     gap: 60px;
     align-items: center;
+    justify-self: center;
 }
 
 .nav-item {
@@ -119,6 +120,7 @@ nav {
     display: flex;
     align-items: center;
     gap: 20px;
+    justify-self: end;
 }
 
 .icon {
