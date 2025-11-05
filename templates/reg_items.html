@@ -1,6 +1,6 @@
 {% extends "index.html" %}
 {% block section %}
-<form method="post" enctype="multipart/form-data" action="/submit_item_post">
+<form method="post" enctype="multipart/form-data" action="{{ url_for('items.reg_item_submit_post') }}">
     <div><br><br>
         <label for="name">Item name: </label>
         <input type="text" name="name" id="name" required><br><br>

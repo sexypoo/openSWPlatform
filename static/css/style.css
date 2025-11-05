@@ -112,7 +112,20 @@ body {
   border-color: #aaa;
 }
 
+/* .header {
+  width: 100%;
+  display: grid;
+  grid-template-columns : 1fr auto 1fr;
+  align-items: center;
+  padding: 25px 80px;
+  border-bottom: 1px solid #e5e5e5;
+  background-color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}  */
 
+/* 로고 */
 
 
 /*로그인 페이지*/
@@ -613,21 +626,7 @@ body {
   min-height: 100vh;
 }
 
-/* ==============================
-   헤더 영역
-.header {
-  width: 100%;
-  display: grid;
-  grid-template-columns : 1fr auto 1fr; /*로고-중앙-아이콘*/
-  align-items: center;
-  padding: 25px 80px;
-  border-bottom: 1px solid #e5e5e5;
-  background-color: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-/* 로고 */
+
 .logo {
   justify-self: start; /* 왼쪽 정렬 */
 }
