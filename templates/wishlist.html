@@ -1,24 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko"> <!-- 언어를 한국어로 설정 -->
+<html lang="ko">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 화면 폭 디바이스에 맞추기 -->
-<title>Ewha Market - Item Registeration</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ewha Market - Wishlist</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+    
   * { box-sizing: border-box; }
   body {
     margin: 0;
+    font-family: 'Noto Sans KR', sans-serif;
     color: #333;
   }
-
-  /* page container */
-  .page {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 24px 28px 56px;
-  }
+  .page { max-width: 1100px; margin: 0 auto; padding: 24px 28px 56px; }
 
   /* header */
 header {
@@ -114,142 +110,78 @@ nav {
     font-size: 14px;
 }
 
-  /* title */
-  .title {
-    text-align: center;
-    font-size: 26px;
-    margin: 28px 0 8px;
-    font-weight: 600;/*글자 굵기*/
-  }
-  hr {
-    border: 0;
-    border-top: 1px solid #e5e5e5;
-    margin: 12px 0 28px;
-  }
-
-  /* grid */
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /*공간을 두 개의 열로 나누고 각각이 같은 비율(1:1) 로 차지하도록 설정*/
-    gap: 28px;
-  }
-  
-  /*화면이 900px 이하이면 한 열만 나오도록 설정*/
-  @media (max-width: 900px) {
-    .grid { grid-template-columns: 1fr; }
-  }
-
-  /* upload card */
-  .upload-card {
-    display: grid;
-    place-items: center;
-    background: #e9e9e9;
-    border-radius: 6px;
-    min-height: 520px;
-    position: relative;
-    text-align: center;
-    color: #9a9a9a;
-  }
-  .upload-card small { color: #2e6b56; position: absolute; top: 14px; left: 34px; }/*'사진/동영상' 텍스트*/
-  .upload-card input[type="file"] { display: none; }/*input type을 사진, 동영상으로 한정함. 실제 화면에는 보이지 않는다.*/
-  .upload-card .hint {
-    pointer-events: none;
-    user-select: none;/*힌트 글자 위를 눌러도 전체 카드가 클릭 영역으로 동작하게 하려는 의도*/
-  }
-  .upload-trigger {
-    position: absolute; inset: 0; cursor: pointer;/*inset: 업로드시 부모를 완전히 덮어라, cursor를 올리면 pointer모양으로 바뀜.*/
-  }
-  .preview{
-     position: absolute;
-     inset: 0;          /* 상하좌우 0 → 카드 전체 덮기 */
-     width: 100%;
-     height: 100%;
-     object-fit: contain; /* 프레임에 맞추되 비율 유지 */
-     border-radius: 6px;
-    }
-
-  /* form */
-  form label {
-    display: inline-block; /*inline-block : 텍스트처럼 옆으로 나란히 배치되지만, 박스처럼 크기 조절이 가능한 블록*/
-    font-size: 14px;
-    margin-bottom: 6px;
-  }
-  .req-dot::before {
-    content: "*";
-    color: #2e6b56;
-    margin-right: 6px;
-    font-weight: 700;
-    visibility: var(--show-dot, visible);
-    }/*red dot 입력시 사라지고 미입력시 표시*/
-    
-    .upload-card.req-dot::before {
-     position: absolute;
-     top: 14px;
-     left: 14px;
-     margin-right: 0; /* 줄 앞 여백 불필요 */
-     color: #2e6b56;
-    }
-  input[type="text"],
-  select,
-  textarea {
-    width: 100%;
-    padding: 12px 12px;
-    border: 1px solid #d7d7d7;
-    border-radius: 4px;
-    font-size: 14px;
-    outline: none;
-  }
-  textarea { resize: vertical; min-height: 140px; }/*사용자가 세로로만 길이 조정 가능, 최소 높이 설정*/
-
-  .field { margin-bottom: 18px; }
-
-  /* price row */
-  .price-row {
-    display: grid;
-    grid-template-columns: 1fr 70px;
-    gap: 10px;
-  }
-
-  /* checkbox group */
-  .check-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px 18px;
-    margin-top: 8px;
-  }
-  .check-grid label {
-    display: inline-flex;/*옆으로 나열됨*/
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-  }
-
-  /* submit */
-  .submit-wrap { margin-top: 18px; }
-  .btn {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 4px;
-    background: #000;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  .btn:hover { opacity: .92; }/*호버시 약간 투명해짐*/
-
-  .btn:disabled {
-  background: #999;
-  cursor: not-allowed;
-  opacity: 0.6;
+/* 메인 컨텐츠 */
+.main-content {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 20px;
 }
 
-/* footer */
+.page-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 50px;
+    color: #333;
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+  .title { text-align: center; font-size: 26px; margin: 28px 0 8px; font-weight: 600; }
+  hr { border: 0; border-top: 1px solid #e5e5e5; margin: 12px 0 28px; }
+
+  /* grid */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+  }
+  .thumb {
+    background: #e9e9e9;
+    border-radius: 6px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+  }
+
+  /* ❤️ 하트 버튼 */
+  .heart {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #2e6b56
+;
+    transition: 0.2s;
+  }
+  .heart.inactive { color: #aaa; } /* 찜 해제 시 회색 */
+
+  .meta { display: flex; justify-content: space-between; align-items: baseline; }
+  .name { font-size: 15px; }
+  .price { font-size: 14px; color: #555; }
+  .card a { display: block; color: inherit; text-decoration: none; }
+
+  /* footer */
 footer {
   border-top: 1px solid #e5e5e5;
   padding: 28px 0;
   background: #fafafa;
-  color: #555;
+  color: #333;
   font-size: 14px;
 }
 .footer-container {
@@ -292,7 +224,6 @@ footer {
   color: #777;
   line-height: 1.5;
 }
-
 /* 로고 */
 .logo {
   justify-self: start; /* 왼쪽 정렬 */
@@ -321,11 +252,12 @@ footer {
 
 
 
+
 </style>
 </head>
 <body>
   <div class="page">
-   <header>
+     <header>
         <!-- 사이트 로고 -->
         <div class="logo">
             <a href="index.html" class="logo-link">
@@ -384,73 +316,13 @@ footer {
         </div>
     </header>
 
-    <div class="title">Item Registeration</div>
+
+    <div class="title">Wishlist</div>
     <hr>
 
-    <div class="grid">
-      <!-- left: upload area -->
-      <div>
-        <label class="upload-card req-dot">
-          <small>사진</small>
-          <img id="previewImg" class="preview" alt="" hidden>
-          <div class="hint">클릭하여 파일을 선택하세요</div>
-          <input id="file" type="file" accept="image/*">
-        </label>
-      </div>
-
-      <!-- right: form -->
-      <div>
-        <form>
-          <div class="field">
-            <label for="pname" class="req-dot">상품명</label>
-            <input type="text" id="pname" name="pname" placeholder="상품명" required>
-          </div>
-
-          <div class="field">
-            <label for="cate" class="req-dot">카테고리</label>
-            <select id="cate" name="cate" required>
-              <option value="" selected disabled>카테고리</option>
-              <option value="cloth">의류</option>
-              <option value="book">서적</option>
-              <option value="etc">잡화</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="details" class="req-dot">설명</label>
-            <textarea id="details" name="details" placeholder="브랜드, 모델명, 구매 시기, 하자 유무 등 상품 설명을 최대한 자세하게 적어주세요." required></textarea>
-          </div>
-
-          <div class="field">
-            <label for="tag">태그</label>
-            <input type="text" id="tag" name="tag" placeholder="#태그">
-          </div>
-
-          <div class="field">
-            <label class="req-dot">가격</label>
-            <div class="price-row">
-              <input type="text" id="price" name="price" inputmode="numeric" placeholder="가격" required>
-              <input type="text" value="(원)" aria-label="통화 단위" disabled>
-            </div>
-          </div>
-
-          <div class="field">
-                <label class="req-dot" id="label-method">거래 방법</label>
-                 <div class="check-grid">
-                 <label><input type="checkbox" name="method" value="ftf">대면 직거래 가능</label>
-                 <label><input type="checkbox" name="method" value="nftf">비대면 직거래 가능</label>
-                 <label><input type="checkbox" name="method" value="post">택배 거래 가능</label>
-                 <label><input type="checkbox" name="method" value="personal">거래 방법 개인 문의 요함</label>
-                 </div>
-          </div>
-
-
-          <div class="submit-wrap">
-            <button type="submit" class="btn" disabled>상품 등록</button><!--처음엔 비활성화-->
-          </div>
-        </form>
-      </div>
-    </div>
+    <section class="grid" id="wishlistGrid">
+      <!-- 카드들이 JS로 자동 생성됨 -->
+    </section>
   </div>
 <footer>
   <div class="footer-container">
@@ -477,107 +349,84 @@ footer {
   </div>
 </footer>
 
+
 <script>
-//사진 파일을 넣으면 미리보기로 사진이 등록 창에 올라가도록 하기 
-document.addEventListener("DOMContentLoaded", function () {
-  const fileInput = document.getElementById("file");
-  const hint = document.querySelector(".upload-card .hint");
-  const previewImg = document.getElementById("previewImg");
-  let currentURL = null;
+    localStorage.setItem("wishlist", JSON.stringify([1, 2, 3]));
+  // 💾 임시 상품 데이터 (실제로는 DB에서 불러올 수도 있음)
+  const products = [
+    { id: 1, name: "Product 1", price: 29000 },
+    { id: 2, name: "Product 2", price: 18000 },
+    { id: 3, name: "Product 3", price: 45000 },
+    { id: 4, name: "Product 4", price: 12000 },
+    { id: 5, name: "Product 5", price: 63000 },
+    { id: 6, name: "Product 6", price: 22000 },
+    { id: 7, name: "Product 7", price: 39000 },
+    { id: 8, name: "Product 8", price: 49000 },
+    { id: 9, name: "Product 9", price: 15000 },
+  ];
 
-  fileInput.addEventListener("change", () => {//사용자가 새로 파일을 선택할 때 시행되는 함수
-    const f = fileInput.files && fileInput.files[0];//선택한 것 중 첫 번째 파일을 f에 넣음. 
+  // 💖 LocalStorage에 저장된 위시리스트 불러오기
+  let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 
-    if (!f) {//파일을 선택하지 않고 선택창을 닫았을 때, 다시 '사진', * 띄움.
-      if (currentURL) { URL.revokeObjectURL(currentURL); currentURL = null; }
-      previewImg.hidden = true;
-      previewImg.removeAttribute("src");
-      hint.style.display = "";
+  // 🖼️ 화면에 상품 카드 생성
+  const grid = document.getElementById("wishlistGrid");
+
+  function renderProducts() {
+    grid.innerHTML = ""; // 초기화
+    const visibleProducts = products.filter(p => wishlist.includes(p.id));
+
+    if (visibleProducts.length === 0) {
+      grid.innerHTML = "<p>위시리스트가 비어 있습니다.</p>";
       return;
     }
 
-    if (currentURL) { URL.revokeObjectURL(currentURL); currentURL = null; }
-
-    if (!f.type.startsWith("image/")) {//이미지가 아닌 다른 파일을 넣을 때, 경고 + 입력창 리셋
-      alert("이미지 파일을 선택하세요.");
-      fileInput.value = "";
-      previewImg.hidden = true;
-      previewImg.removeAttribute("src");
-      hint.style.display = "";
-      return;
-    }
-
-    const url = URL.createObjectURL(f);//선택한 파일을 임시로 브라우저에서 미리 볼 수 있는 URL로 바꿈. 
-    currentURL = url;
-
-    previewImg.src = url;
-    previewImg.hidden = false;//이미지가 화면에 보이도록 설정
-    hint.style.display = "none";//힌트는 숨김.
-  });
-});
-
-//필수 항목을 모두 채워야 제출 가능하게 만들기 + with red dot
-document.addEventListener("DOMContentLoaded", function() {              // DOM이 모두 그려진 뒤에 스크립트 실행
-  const form = document.querySelector("form");                          // 입력 from 전체 form에 넣기
-  const requiredFields = form.querySelectorAll(                         // required가 붙은 항목들 전부 가져오기 
-    "input[required], textarea[required], select[required]"
-  );
-  const fileInput = document.getElementById("file");                    // 사진 파일 가져오기
-  const uploadLabel = fileInput.closest(".upload-card");                // 사진파일, 부모 카드: uploadedLabe1 가져오기
-  const checkboxes = form.querySelectorAll(                             // 체크박스 4개 가져오기
-    "input[type='checkbox'][name='method']"
-  );
-  const submitButton = form.querySelector(".btn");                      // submitButton: '상품 등록' 버튼 가져오기 나중에 조건이 다 맞으면 disabled = false로 바꿔서 활성화
-  const methodLabel = document.getElementById("label-method");          // methodLabel: '거래 방법' label이 checkbox와 직접적으로 연결되어있지 않기 때문에 따로 불러와야함. 
-
-  function showDot(el, visible) {                                       // 레드닷 표시할지 설정하는 함수
-    if (!el) return;                                                    // 대상이 없으면 종료
-    el.style.setProperty("--show-dot", visible ? "visible" : "hidden"); // setProperty 해당 CSS의 visible 변수를 script의 visible 값에 따라 설정. 
-  }
-
-  function checkRequired() {                                            // 모든 필수 조건 충족하는지 검사
-    let allFilled = true;                                               // allFilled = true로 가정하고 시작
-
-    // 1) 텍스트/textarea/select 필수 필드 검사
-    requiredFields.forEach(field => {                                   // 각 필수 필드를 돌며
-      const label = field.closest(".field")?.querySelector(".req-dot"); // 같은 .field 안의 req-dot 레이블 찾기
-      if (field.value.trim() === "") {                                  // field.value.trim()값이 비었으면
-        showDot(label, true);                                           // 켜기
-        allFilled = false;                                              // 하나라도 비었으니 전체 완료=false
-      } else {
-        showDot(label, false);                                          // 끄기
-      }
+    visibleProducts.forEach(p => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <a href="detail.html">
+          <div class="thumb" aria-label="상품 이미지">
+            <span class="heart ${wishlist.includes(p.id) ? "" : "inactive"}" data-id="${p.id}">❤️</span>
+          </div>
+          <div class="meta">
+            <div class="name">${p.name}</div>
+            <div class="price">₩${p.price.toLocaleString()}</div>
+          </div>
+        </a>
+      `;
+      grid.appendChild(card);
     });
 
-    // 2) 파일(사진/동영상) 업로드 검사
-    if (fileInput.files.length === 0) {                                 // 선택된 파일이 없으면
-      showDot(uploadLabel, true);                                       // 켜기
-      allFilled = false;
-    } else {
-      showDot(uploadLabel, false);                                      // 끄기
-    }
-
-    // 3) 체크박스 그룹(거래방법) 최소 1개 검사
-    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);   // 하나라도 체크되어 있으면 true
-    if (!anyChecked) {                                                  // 아무 것도 안 고르면
-      showDot(methodLabel, true);                                       // 켜기
-      allFilled = false;
-    } else {
-      showDot(methodLabel, false);                                      // 끄기
-    }
-
-    // 4) 모든 조건 만족 여부로 제출 버튼 상태 결정
-    submitButton.disabled = !allFilled;                                 // 모두 채워짐 allFilled=true -> disabled=false  즉, 활성화
+    attachHeartEvents();
   }
 
-  // 입력 변화에 반응: 타이핑/선택/체크 변경 시마다 재검사
-  [...requiredFields, fileInput, ...checkboxes].forEach(el => {         // 스프레드로 하나의 배열처럼 묶기
-    el.addEventListener("input", checkRequired);                        // 타이핑/체크 토글 등 즉시 반응
-    el.addEventListener("change", checkRequired);                       // 셀렉트/파일 변경 등 값 확정 시 반응
-  });
+  // 💡 하트 클릭 이벤트 추가
+  function attachHeartEvents() {
+    const hearts = document.querySelectorAll(".heart");
+    hearts.forEach(heart => {
+      heart.addEventListener("click", e => {
+        e.preventDefault(); // 링크 클릭 방지
+        const id = parseInt(heart.dataset.id);
 
-  checkRequired();                                                      // 페이지 로드 직후 초기 상태 한 번 점검
-});
+        if (wishlist.includes(id)) {
+          // 이미 위시리스트에 있음 → 제거
+          wishlist = wishlist.filter(x => x !== id);
+          heart.classList.add("inactive");
+        } else {
+          // 없으면 추가
+          wishlist.push(id);
+          heart.classList.remove("inactive");
+        }
+
+        // 변경사항 저장
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        renderProducts(); // 새로고침 없이 즉시 반영
+      });
+    });
+  }
+
+  // 🚀 페이지 로드 시 위시리스트 렌더링
+  renderProducts();
 </script>
 
 
