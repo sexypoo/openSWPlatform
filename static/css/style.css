@@ -31,6 +31,22 @@ header {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+/* ==============================
+   헤더 폰트/크기 진짜 통일
+============================== */
+header {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.4;
+}
+
+.header-icons .icon {
+  width: 24px !important;
+  height: 24px !important;
+  flex-shrink: 0;
+}
+
+
 /* 로고 */
 .logo {
     justify-self: start;
@@ -228,6 +244,7 @@ footer {
   align-items: center;
   min-height: 80vh; 
   background-color: #fff;
+  margin-top: 10px;
 }
 /*로그인 폼 박스*/
 .login-box {
@@ -334,6 +351,7 @@ footer {
   align-items:center;
   min-height: 85vh;
   background-color: #fff;
+  margin-top: 10px;
 }
 
 .signup-box {
