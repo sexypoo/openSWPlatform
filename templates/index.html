@@ -1,31 +1,186 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="{{ url_for('static', filename='main.js') }}" defer></script>
+    <title>로그인 | EWHA MARKET</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-TX8t27EcRE3e/ihU7zmQf1wUjVQ5XJ8lz4I5vDJ0h5K1DqDkgWv4ho5xYl8ZkK6yK2Yk6iMYY6Wf0+8WUGYdg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- 외부 CSS -->
+    <link rel="stylesheet" href="/static/css/userhome_style.css">
 </head>
-    <body>
-        <nav class="navbar">
-        <div class="navbar__logo">
-        <a href="">EwhaMarket</a>
+
+<body>
+    <!-- 교체된 헤더 -->
+    <header>
+        <div class="logo">
+            <a href="index.html" class="logo-link">
+                <div class="ewha">EWHA</div>
+                <div class="market">MARKET</div>
+            </a>
         </div>
-        <ul class="navbar__menu">
-        <li><a href="/login">Login</a></li>
-        <li><a href="/list">List</a></li>
-        <li><a href="/review">Review</a></li>
-        <li><a href="/reg_items">Register Items</a></li>
-        <li><a href="/reg_reviews">Register Reviews</a></li>
-        </ul>
-        <a href="#" class="navbar__toogleBtn">
-        <i class="fas fa-bars"></i>
-        </a>
+
+        <nav>
+            <div class="nav-item">
+                <span><a href="index.html" style="text-decoration: none; color: inherit;">Home</a></span>
+            </div>
+            <div class="nav-item">
+                <span>Products</span>
+                <div class="dropdown">
+                    <a href="list.html" class="dropdown-item">상품 목록</a>
+                    <a href="reg_items.html" class="dropdown-item">상품 등록 페이지</a>
+                </div>
+            </div>
+            <div class="nav-item">
+                <span>Reviews</span>
+                <div class="dropdown">
+                    <a href="reg_reviews.html" class="dropdown-item">리뷰 작성</a>
+                    <a href="review.html" class="dropdown-item">모든 리뷰 보기</a>
+                </div>
+            </div>
         </nav>
-        <section>
-            {% block section %}
-            {% endblock section %}
-        </section>
-    </body>
+
+        <div class="header-icons">
+            <a href="wishlist.html">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682
+                             a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318
+                             a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+            </a>
+
+            <a href="mypage.html">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0z
+                             M12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+            </a>
+
+            <button class="login-btn" onclick="location.href='login.html'">로그인/회원가입</button>
+        </div>
+    </header>
+
+    <!-- 메인 배너(이미지) -->
+    <section class="intro">
+        <img src="/static/images/intro.png" alt="EWHA MARKET 소개 이미지" class="intro-img">
+    </section>
+
+    <!-- Latest Products -->
+    <section class="latest-section">
+        <div class="section-header">
+            <h2>Latest Products</h2>
+            <p>최신 등록 상품</p>
+        </div>
+        <div class="card-container">
+            <div class="product-card">
+                <div class="img-placeholder"></div>
+                <h3>상품명</h3>
+                <p>상세정보</p>
+                <span>가격</span>
+                <div class="like"><i class="fa-regular fa-heart"></i> 좋아요 수</div>
+            </div>
+            <div class="product-card">
+                <div class="img-placeholder"></div>
+                <h3>상품명</h3>
+                <p>상세정보</p>
+                <span>가격</span>
+                <div class="like"><i class="fa-regular fa-heart"></i> 좋아요 수</div>
+            </div>
+            <div class="product-card">
+                <div class="img-placeholder"></div>
+                <h3>상품명</h3>
+                <p>상세정보</p>
+                <span>가격</span>
+                <div class="like"><i class="fa-regular fa-heart"></i> 좋아요 수</div>
+            </div>
+            <div class="product-card">
+                <div class="img-placeholder"></div>
+                <h3>상품명</h3>
+                <p>상세정보</p>
+                <span>가격</span>
+                <div class="like"><i class="fa-regular fa-heart"></i> 좋아요 수</div>
+            </div>
+            <div class="more-icon" onclick="location.href='products.html'">
+                <i class="fa-solid fa-arrow-right"></i>
+                <p>더보기</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Reviews -->
+    <section class="latest-section">
+        <div class="section-header">
+            <h2>Latest Reviews</h2>
+            <p>최신 등록 리뷰</p>
+        </div>
+        <div class="card-container">
+            <div class="review-card">
+                <div class="img-placeholder"></div>
+                <h3>리뷰제목</h3>
+                <div class="stars">★★★★★</div>
+                <p>리뷰내용...</p>
+            </div>
+            <div class="review-card">
+                <div class="img-placeholder"></div>
+                <h3>리뷰제목</h3>
+                <div class="stars">★★★★★</div>
+                <p>리뷰내용...</p>
+            </div>
+            <div class="review-card">
+                <div class="img-placeholder"></div>
+                <h3>리뷰제목</h3>
+                <div class="stars">★★★★★</div>
+                <p>리뷰내용...</p>
+            </div>
+            <div class="review-card">
+                <div class="img-placeholder"></div>
+                <h3>리뷰제목</h3>
+                <div class="stars">★★★★★</div>
+                <p>리뷰내용...</p>
+            </div>
+            <div class="more-icon" onclick="location.href='review.html'">
+                <i class="fa-solid fa-arrow-right"></i>
+                <p>더보기</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 통일된 footer 추가 -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-logo logo">
+                    <a href="../index.html" class="logo-link">
+                        <span class="ewha">EWHA</span><br><span class="market">MARKET</span>
+                    </a>
+                </div>
+
+                <nav class="footer-nav">
+                    <ul>
+                        <li><a href="#main">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="#review">Reviews</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2025 EWHA MARKET. Designed for educational purposes by Ewha students.
+                    Contact: <a href="mailto:support@ewhamarket.kr"
+                        style="color:#2e6b56; text-decoration:none;">support@ewhamarket.kr</a></p>
+            </div>
+        </div>
+    </footer>
+</body>
+
 </html>
