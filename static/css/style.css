@@ -16,47 +16,64 @@ body {
   flex-direction: column;
   min-height: 100vh;
 }
+
 /* ==============================
    헤더 영역
 ============================== */
-.header {
-  width: 100%;
-  display: grid;
-  grid-template-columns : 1fr auto 1fr; /*로고-중앙-아이콘*/
-  align-items: center;
-  padding: 25px 80px;
-  border-bottom: 1px solid #e5e5e5;
-  background-color: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+/* 팀원 코드로 교체된 헤더 관련 스타일 */
+header {
+    background-color: white;
+    padding: 20px 60px;
+    display: /*flex;*/grid;
+    /*justify-content: space-between;*/
+    grid-template-columns: 1fr auto 1fr; /**/
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
+
+/* ==============================
+   헤더 폰트/크기 진짜 통일
+============================== */
+header {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.4;
+}
+
+.header-icons .icon {
+  width: 24px !important;
+  height: 24px !important;
+  flex-shrink: 0;
+}
+
+
 /* 로고 */
 .logo {
-  justify-self: start; /* 왼쪽 정렬 */
+    justify-self: start;
 }
 
 .logo .logo-link {
-  text-decoration: none;
-  display: inline-block;
-  line-height: 1.1;
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.1;
 }
 
 .logo .ewha,
 .logo .market {
-  font-family: 'Doto', sans-serif;
-  font-size: 36px; /* 두 줄 동일 크기 */
-  letter-spacing: 4px;
+    font-family: 'Doto', sans-serif;
+    font-size: 36px;
+    letter-spacing: 4px;
 }
 
 .logo .ewha {
-  color: #2e6b56; /* 이화그린 */
+    color: #2e6b56;
 }
 
 .logo .market {
-  color: #777;
+    color: #777;
 }
 
+<<<<<<< HEAD
 /* ==============================
    네비게이션 초기화 및 정렬
 .nav {
@@ -571,57 +588,110 @@ body {
 
   .navbar__menu {
     position: static;
+=======
+/* 네비게이션 */
+nav {
+>>>>>>> origin/seoyoon_Chae
     display: flex;
-    gap: 4px;
-    border: 0;
-    background: transparent;
-    max-height: none;     /* 토글 애니메이션 비활성 */
-    overflow: visible;
-  }
-
-  .navbar__menu li {
-    border: 0;
-  }
-
-  .navbar__menu a {
-    padding: 10px 14px;
-    border-radius: 10px;
-  }
-  .navbar__menu a:hover,
-  .navbar__menu a:focus {
-    background: #eef2ff;
-    color: var(--brand-hover);
-  }
-
-  .navbar__toogleBtn,
-  .navbar__toggleBtn {
-    display: none; /* 데스크톱에서는 햄버거 숨김 */
-  }
+    gap: 60px;
+    align-items: center;
+    justify-self: center;/**/
 }
 
-/* Section spacing under sticky nav */
-section {
-  padding: 20px 16px;
-}
-@media (min-width: 768px) {
-  section { padding: 30px 24px; }
+.nav-item {
+    position: relative;
+    padding: 10px 0;
+    cursor: pointer;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'); /* 아이콘 정상 표시용 */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.nav-item>span {
+    font-size: 16px;
+    color: #333;
+    transition: transform 0.3s ease;
+    display: inline-block;
 }
 
-body {
+.nav-item:hover>span {
+    transform: translateY(-5px);
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 10px 0;
+    min-width: 150px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    margin-top: 5px;
+    z-index: 100;
+}
+
+.nav-item:hover .dropdown {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    color: #666;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+/* 아이콘 및 로그인/회원가입 버튼 */
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-self: end;/**/
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+.login-btn {
+    padding: 8px 20px;
+    border: 1px solid #333;
+    border-radius: 20px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/*Footer*/
+footer {
+  background-color: #f9f9f9;
+  padding: 40px 80px;
+  border-top: 1px solid #e5e5e5;
+  color: #555;
   font-family: 'Noto Sans KR', sans-serif;
-  color: #333;
-  background-color: #fff;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-top {
   display: flex;
+<<<<<<< HEAD
   flex-direction: column;
   min-height: 100vh;
 }
@@ -629,87 +699,69 @@ body {
 
 .logo {
   justify-self: start; /* 왼쪽 정렬 */
+=======
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+>>>>>>> origin/seoyoon_Chae
 }
 
-.logo .logo-link {
+.footer-logo .logo-link {
   text-decoration: none;
-  display: inline-block;
-  line-height: 1.1;
+  line-height: 1.2;
 }
 
-.logo .ewha,
-.logo .market {
-  font-family: 'Doto', sans-serif;
-  font-size: 36px; /* 두 줄 동일 크기 */
-  letter-spacing: 4px;
+.footer-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  padding: 0;
 }
 
-.logo .ewha {
-  color: #2e6b56; /* 이화그린 */
+.footer-nav a {
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+  transition: color 0.2s;
 }
 
-.logo .market {
+.footer-nav a:hover {
+  color: #2e6b56;
+}
+
+.footer-bottom {
+  text-align: center;
+  font-size: 13px;
   color: #777;
 }
 
-/* ==============================
-   네비게이션 초기화 및 정렬
-.nav {
-  justify-self: center;
-  display: flex;
-  gap: 40px;
+.footer-bottom a:hover {
+  text-decoration: underline;
 }
 
-.nav a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  font-size: 17px;
-  transition: color 0.2s;
-}
+@media (max-width: 768px) {
+  footer {
+    padding: 30px 20px;
+  }
 
-.nav a:hover {
-  color: #2e6b56;
-}
+  .footer-top {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
 
-/* ==============================
-   아이콘 영역
-.icons {
-  justify-self: end;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.icons i {
-  font-size: 18px;
-  color: #444;
-  transition: color 0.2s;
-}
-
-.icons i:hover {
-  color: #2e6b56;
-}
-
-/* 로그인/회원가입 버튼 */
-.auth-btn {
-  background-color: transparent;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  padding: 6px 15px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.auth-btn:hover {
-  background-color: #f5f5f5;
-  border-color: #aaa;
+  .footer-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
 }
 
 
 
 
+/* 기존 나머지 로그인 & 회원가입 페이지 스타일 유지 */
 /*로그인 페이지*/
 
 /* 로그인 페이지 스타일 */
@@ -717,8 +769,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh; /* 화면 중앙 배치 */
+  min-height: 80vh; 
   background-color: #fff;
+  margin-top: 10px;
 }
 /*로그인 폼 박스*/
 .login-box {
@@ -728,6 +781,7 @@ body {
   background: none;       /* 기존 흰 배경 제거 */
   box-shadow: none;       /* 그림자 제거 */
   border-radius: 0;       /* 둥근 모서리 제거 */
+  margin-top: -60px;/*로그인 창을 위로 살짝 올림*/
 }
 
 /*제목 로그인*/
@@ -816,13 +870,15 @@ body {
 
 /* ==============================
    회원가입 페이지
+============================== */
 
 .signup-container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items:center;
   min-height: 85vh;
   background-color: #fff;
+  margin-top: 10px;
 }
 
 .signup-box {
@@ -834,8 +890,8 @@ body {
 /* 제목 */
 .signup-box h2 {
   text-align: center;
-  margin-bottom: 25px;
-  font-size: 24px;
+  margin-bottom: 30px;
+  font-size: 22px;
   font-weight: 600;
   color: #000;
 }
@@ -1023,7 +1079,6 @@ body {
     width: 100%;
   }
 }
-
 
 
 /*마이페이지*/
