@@ -2,24 +2,18 @@
 <html lang="ko">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ewha Market - Products</title>
+<title>Ewha Market - Product Detail</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
   * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif;
-    color: #333;
-  }
-  .page {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 24px 28px 56px;
-  }
+  body { margin: 0; color: #333; font-family: "Noto Sans KR", sans-serif; }
 
-   /* header */
+  .page { max-width: 1100px; margin: 0 auto; padding: 24px 28px 56px; }
+
+ 
+  /* header */
 header {
     background-color: white;
     padding: 20px 60px;
@@ -112,41 +106,61 @@ nav {
     cursor: pointer;
     font-size: 14px;
 }
+  /* title */
   .title { text-align: center; font-size: 26px; margin: 28px 0 8px; font-weight: 600; }
   hr { border: 0; border-top: 1px solid #e5e5e5; margin: 12px 0 28px; }
 
-  /* product grid */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);/*한 줄에 3개씩*/
-    gap: 28px;
-  }
-  @media (max-width: 1000px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 640px) {
-    .grid { grid-template-columns: 1fr; }
-  }
+  /* layout */
+  .detail { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: stretch; }
+  @media (max-width: 900px) { .detail { grid-template-columns: 1fr; } }
 
-  .card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .thumb {
-    background: #e9e9e9;
+  /* product image */
+  .thumb-lg {
+    background: #f1f1f1;
     border-radius: 6px;
     width: 100%;
-    aspect-ratio: 1 / 1;/*박스 비율 설정*/
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
   }
-  .meta { display: flex; justify-content: space-between/*양쪽 끝 정렬*/; align-items: baseline/*텍스트 기준 선에 맞춰 정렬*/; }
-  .name { font-size: 15px; }
-  .price { font-size: 14px; color: #555; }
-  .card a {
-    display: block;
-    color: inherit;
-    text-decoration: none;
+  .info {/*grid 한 칸 중 텍스트 쪽을 아래로 붙이기 위한 css*/
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* 내용 전체를 아래로 붙임 */
+  gap: 10px;                 /* 요소 간 간격 */
+}
+  .thumb-lg img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* info text 설정 */
+  .badge { font-size: 11px; color: #777; margin-bottom: 6px; display: inline-block; text-transform: uppercase; letter-spacing: .5px; }
+  .name { font-size: 22px; font-weight: 600; margin: 6px 0 8px; line-height: 1.35; }
+  .seller { font-size: 13px; color: #666; margin-bottom: 6px; }
+  .price { font-size: 28px; font-weight: 700; margin: 6px 0 16px; }
+  .subnote { font-size: 12px; color: #888; margin-bottom: 14px; }
+
+  /* actions */
+  .actions { display: flex; gap: 10px; align-items: center; margin: 10px 0; }
+  .btn {
+    border: none; border-radius: 4px; cursor: pointer; padding: 14px 18px;
+    font-size: 15px;
   }
+
+  /*버튼*/
+  .btn-cart { background: #333; color: #fff; }
+  .btn-buy { background: #333; color: #fff; }
+  .btn-chat { width: 46px; height: 46px; display: grid; place-items: center; background: #000; color: #fff; border-radius: 6px; }
+
+  /* 상품 설명창 */
+  .desc-wrap {
+    margin-top: 34px;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 18px;
+    min-height: 360px;
+  }
+  .desc-title { font-size: 14px; color: #777; margin-bottom: 10px; }
+  .desc-body { font-size: 14px; color: #333; line-height: 1.7; }
 
   /* footer */
 footer {
@@ -196,6 +210,7 @@ footer {
   color: #777;
   line-height: 1.5;
 }
+
 /* 로고 */
 .logo {
   justify-self: start; /* 왼쪽 정렬 */
@@ -224,6 +239,8 @@ footer {
 
 
 
+
+
 </style>
 </head>
 <body>
@@ -248,7 +265,7 @@ footer {
             <div class="nav-item">
                 <span>Products</span>
                 <div class="dropdown">
-                    <a href="products.html" class="dropdown-item">상품 목록</a>
+                    <a href="list.html" class="dropdown-item">상품 목록</a>
                     <a href="reg_items.html" class="dropdown-item">상품 등록 페이지</a>
                 </div>
             </div>
@@ -290,102 +307,37 @@ footer {
     <div class="title">Products</div>
     <hr>
 
-    <!-- 스크롤로 계속 내려보는 리스트. 필요 수량만큼 .card 반복 -->
-    <section class="grid">
-      <div class="card">
-        <a href="product_detail.html">
-          <div class="thumb" aria-label="상품 이미지"></div>
-          <div class="meta">
-            <div class="name">Product 1</div>
-            <div class="price">₩29,000</div>
-          </div>
-        </a>
+    <section class="detail">
+      <!-- 왼쪽: 상품 이미지 -->
+      <div class="thumb-lg">
+        <img id="product-image" src="Morden share(1).jpg" alt="상품 이미지">
       </div>
 
-      <div class="card">
-        <a href="product_detail.html">
-          <div class="thumb"></div>
-          <div class="meta">
-            <div class="name">Product 2</div>
-            <div class="price">₩18,000</div>
-          </div>
-        </a>
-      </div>
+      <!-- 오른쪽: 상품 정보 -->
+      <div class="info">
+        <div class="badge" id="product-category">product</div>
+        <div class="name" id="product-name">상품명</div>
+        <div class="seller">판매자: <span id="product-seller">이름</span></div>
+        <div class="price" id="product-price">0원</div>
+        <div class="subnote" id="product-tags">#태그</div>
+        <div class="subnote" id="product-method">거래 방법: 협의</div>
 
-      <div class="card">
-        <a href="product_detail.html">
-          <div class="thumb"></div>
-          <div class="meta">
-            <div class="name">Product 3</div>
-            <div class="price">₩45,000</div>
-          </div>
-        </a>
+        <div class="actions">
+          <a href="wishlist.html"><button type="button" class="btn btn-cart" id="btn-wish">위시리스트</button></a>
+          <a href="#구매창"><button type="button" class="btn btn-buy">바로 구매</button></a>
+          
+        </div>
       </div>
+    </section>
 
-      <div class="card">
-        <a href="product_detail.html">
-          <div class="thumb"></div>
-          <div class="meta">
-            <div class="name">Product 4</div>
-            <div class="price">₩12,000</div>
-          </div>
-        </a>
+    <section class="desc-wrap">
+      <div class="desc-title">상품 설명</div>
+      <div class="desc-body" id="product-description">
+        브랜드, 모델명, 구매 시기, 사용감, 하자 유무 등 상세 설명을 입력하세요.
       </div>
-
-      <div class="card">
-        <a href="product_detail.html">
-          <div class="thumb"></div>
-          <div class="meta">
-            <div class="name">Product 5</div>
-            <div class="price">₩63,000</div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="product_detail.html">
-          <div class="thumb"></div>
-          <div class="meta">
-            <div class="name">Product 6</div>
-            <div class="price">₩22,000</div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="product_detail.html">
-          <div class="thumb"></div>
-          <div class="meta">
-            <div class="name">Product 7</div>
-            <div class="price">₩39,000</div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="product_detail.html">
-          <div class="thumb"></div>
-          <div class="meta">
-            <div class="name">Product 8</div>
-            <div class="price">₩49,000</div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="product_detail.html">
-          <div class="thumb"></div>
-          <div class="meta">
-            <div class="name">Product 9</div>
-            <div class="price">₩15,000</div>
-          </div>
-        </a>
-      </div>
-
-      <!-- 필요하면 아래로 계속 card 추가 -->
     </section>
   </div>
-  <footer>
+<footer>
   <div class="footer-container">
     <div class="footer-top">
        <div class="footer-logo logo">
@@ -410,5 +362,31 @@ footer {
   </div>
 </footer>
 
+  <script>
+  // 🔹 나중에 백엔드(DB)에서 상품 정보를 받아서 표시할 수 있도록 변수 세팅
+  const productData = {//예시 더미 데이터
+    image: "Morden share(1).jpg",
+    category: "의류",
+    name: "컴퓨터공학과 배꽃 은사 학잠",
+    seller: "화연이~",
+    price: "60,000원",
+    tags: "#이화여대 #학잠 #의류",
+    method: "직거래 · 택배",
+    description: "m 사이즈. 사이즈 미스로 판매합니다. 4월 초 학과 공구를 통해 구입했고 팔 부분 이염 하나 없이 깨끗합니다. 팀팩토리 과잠입니다. "
+  };
+
+  //DB 로드 시 데이터 반영
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("product-image").src = productData.image;
+    document.getElementById("product-category").textContent = productData.category;
+    document.getElementById("product-name").textContent = productData.name;
+    document.getElementById("product-seller").textContent = productData.seller;
+    document.getElementById("product-price").textContent = productData.price;
+    document.getElementById("product-tags").textContent = productData.tags;
+    document.getElementById("product-method").textContent = "거래 방법: " + productData.method;
+    document.getElementById("product-description").textContent = productData.description;
+  });
+  </script>
+  
 </body>
 </html>
