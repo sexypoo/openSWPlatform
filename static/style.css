@@ -1,0 +1,821 @@
+@import url('https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* ------------------------------------------------ */
+/* --------------- 헤더 및 네비게이션 ------------------ */
+
+/* 헤더 스타일 */
+header {
+    background-color: white;
+    padding: 20px 60px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 로고 */
+.logo {
+    justify-self: start;
+    /* 왼쪽 정렬 */
+}
+
+.logo .logo-link {
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.1;
+}
+
+.logo .ewha,
+.logo .market {
+    font-family: 'Doto', sans-serif;
+    font-size: 36px;
+    /* 두 줄 동일 크기 */
+    letter-spacing: 4px;
+}
+
+.logo .ewha {
+    color: #2e6b56;
+}
+
+.logo .market {
+    color: #777;
+}
+
+/* 네비게이션 */
+nav {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    justify-self: center;
+}
+
+.nav-item {
+    position: relative;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.nav-item>span {
+    font-size: 16px;
+    color: #333;
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.nav-item:hover>span {
+    transform: translateY(-5px);
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 10px 0;
+    min-width: 150px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    margin-top: 5px;
+    z-index: 100;
+}
+
+.nav-item:hover .dropdown {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    color: #666;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+/* 아이콘 및 로그인/회원가입 버튼 */
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-self: end;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+.login-btn {
+    padding: 8px 20px;
+    border: 1px solid #333;
+    border-radius: 20px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* 메인 컨텐츠 */
+.main-content {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 50px;
+    color: #333;
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* ------------------------------------------------ */
+/* --------------- 리뷰 등록 페이지 ------------------ */
+
+/* 상품 정보 섹션 */
+.product-info {
+    background: #f8f8f8;
+    padding: 30px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.product-field {
+    width: 100%;
+}
+
+.input-label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.text-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.text-input::placeholder {
+    color: #999;
+}
+
+/* 별점 평가 */
+.rating-section {
+    margin-bottom: 40px;
+}
+
+.stars {
+    display: flex;
+    gap: 10px;
+    font-size: 36px;
+}
+
+.star {
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star.filled {
+    color: #333;
+}
+
+/* 리뷰 내용 */
+.review-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.field-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.textarea-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.textarea-input.large {
+    min-height: 150px;
+}
+
+/* 사진 첨부 */
+.photo-upload {
+    border: 2px dashed #ddd;
+    border-radius: 4px;
+    padding: 60px 20px;
+    text-align: center;
+    cursor: pointer;
+    background: #fafafa;
+}
+
+.photo-upload:hover {
+    background: #f5f5f5;
+}
+
+.photo-upload-text {
+    color: #333;
+    font-size: 14px;
+}
+
+
+/* ------------------------------------------------ */
+/* --------------- 리뷰 전체 조회 페이지 -----------------*/
+
+/* 리뷰 전체 페이지 */
+.review-page {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+/* 제목 */
+.review-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* 리뷰 총 개수 */
+.review-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 50px;
+}
+
+/* 리뷰 카드 그리드 */
+.review-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 40px;
+    justify-items: center;
+}
+
+/* 카드 스타일 */
+.review-card {
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+/* 리뷰 이미지 */
+.review-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #eaeaea;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* 리뷰제목 */
+.review-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* 리뷰 별점 */
+.review-stars {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* 리뷰 작성 날짜 & 리뷰 아이디 */
+.review-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 13px;
+    color: #777;
+}
+
+/* 페이지네이션 */
+.pagination-section {
+    margin-top: 80px;
+    text-align: center;
+}
+
+.pagination-line {
+    width: 60px;
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 0 auto 20px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+}
+
+.page-num {
+    text-decoration: none;
+    color: #999;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: color 0.2s;
+}
+
+.page-num:hover,
+.page-num.active {
+    color: #2e6b56;
+}
+
+/* ------------------------------------------------ */
+/* --------------- 리뷰 상세보기 -----------------*/
+
+.review-detail-page {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+/* 제목 */
+.review-detail-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 60px;
+}
+
+.review-detail-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+}
+
+/* 왼쪽 영역 - 리뷰 이미지 갤러리 */
+.review-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 메인 이미지 */
+.main-image {
+    width: 85%;
+    aspect-ratio: 1 / 1;
+    background-color: #d9d9d9;
+    border-radius: 8px;
+    margin: 0 auto;
+}
+
+.thumbnail-container {
+    width: 85%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 0;
+}
+
+/* 작은 이미지 */
+.thumbnail {
+    width: calc((100% - 30px) / 3);
+    aspect-ratio: 1 / 1;
+    background-color: #d9d9d9;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 3px solid transparent;
+}
+
+.thumbnail:hover {
+    opacity: 0.8;
+}
+
+.thumbnail.active {
+    border: 3px solid white;
+    box-shadow: 0 0 0 1px #2e6b56;
+}
+
+/* 오른쪽 영역 - 리뷰 정보 */
+.review-detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 별점 */
+.review-stars-large {
+    font-size: 18px;
+    color: #333;
+    letter-spacing: 2px;
+}
+
+/* 별점 -> 숫자값 */
+.review-score {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 리뷰 제목 */
+.review-main-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    line-height: 1.4;
+}
+
+/* 작성자 및 작성일자 정보 */
+.review-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* 상품 정보 */
+.product-info-box {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 상품 이름 */
+.product-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 상품 상세 정보 */
+.product-detail {
+    font-size: 14px;
+    color: #666;
+}
+
+.review-content-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 리뷰 내용 본문 */
+.content-text {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.8;
+}
+
+/* 리뷰 전체 조회 화면으로 돌아가는 버튼 */
+.back-button {
+    align-self: center;
+    padding: 12px 40px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.back-button:hover {
+    background-color: #555;
+}
+
+@media (max-width: 768px) {
+    .review-detail-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+/* ------------------------------------------------ */
+/* --------------- 마이페이지 - 회원정보 조회 및 수정 -----------------*/
+
+.profile-card {
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+    left: -40px;
+}
+
+/* 제목 */
+.profile-card h2 {
+    font-size: 22px;
+    margin-bottom: 40px;
+    text-align: center;
+    color: #333;
+}
+
+.profile-content {
+    width: 100%;
+}
+
+.info-item {
+    margin-bottom: 24px;
+}
+
+/* 정보 항목 제목 */
+.info-item label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* 항목 정보 값 표시 */
+.info-display {
+    font-size: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 정보 수정 - 입력창 */
+.info-item input[type="text"],
+.info-item input[type="email"],
+.info-item input[type="tel"],
+.info-item input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+/* 입력창 선택했을 때 */
+.info-item input:focus {
+    outline: none;
+    border-color: #2e6b56;
+}
+
+/* 읽기 전용 필드 */
+.readonly-field {
+    font-size: 15px;
+    padding: 12px 16px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    color: #6c757d;
+}
+
+/* 비밀번호 입력 + 확인 */
+.password-check-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.password-check-row input {
+    flex: 1;
+}
+
+/* 확인 버튼 */
+.check-btn {
+    padding: 12px 20px;
+    background-color: #b7b7b7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s;
+}
+
+.check-btn:hover {
+    background-color: #9a9a9a;
+}
+
+/* 기본 버튼 */
+.primary-btn {
+    width: 50%;
+    max-width: 200px;
+    margin: 30px auto 0;
+    display: block;
+    padding: 12px;
+    background-color: #b7b7b7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.primary-btn:hover {
+    background-color: #9a9a9a;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.button-group button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* 저장 버튼 */
+.save-btn {
+    background-color: #b7b7b7;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #9a9a9a;
+}
+
+/* 취소 버튼 */
+.cancel-btn {
+    background-color: #e0e0e0;
+    color: #666;
+}
+
+.cancel-btn:hover {
+    background-color: #d0d0d0;
+}
+
+/* ------------------------------------------------ */
+/* --------------- footer -----------------*/
+footer {
+    border-top: 1px solid #e5e5e5;
+    padding: 28px 0;
+    background: #fafafa;
+    color: #333;
+    font-size: 14px;
+}
+
+.footer-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 28px;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.footer-logo {
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    color: #2e6b56;
+    font-weight: 600;
+}
+
+.footer-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-nav a {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.2s;
+}
+
+.footer-nav a:hover {
+    color: #2e6b56;
+}
+
+.footer-bottom {
+    text-align: center;
+    font-size: 13px;
+    color: #777;
+    line-height: 1.5;
+}
+
+/* 로고 */
+.logo {
+    justify-self: start;
+    /* 왼쪽 정렬 */
+}
+
+.logo .logo-link {
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.1;
+}
+
+.logo .ewha,
+.logo .market {
+    font-family: 'Doto', sans-serif;
+    font-size: 36px;
+    /* 두 줄 동일 크기 */
+    letter-spacing: 4px;
+}
+
+.logo .ewha {
+    color: #2e6b56;
+    /* 이화그린 */
+}
+
+.logo .market {
+    color: #777;
+}
+
+
+/* 반응형 */
+@media (max-width: 768px) {
+    header {
+        padding: 15px 20px;
+    }
+
+    nav {
+        gap: 30px;
+    }
+
+    .main-content {
+        margin: 40px auto;
+    }
+}
