@@ -1,0 +1,721 @@
+@import url('https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'); /* 아이콘 정상 표시용 */
+
+
+/* 기존 나머지 로그인 & 회원가입 페이지 스타일 유지 */
+/*로그인 페이지*/
+
+/* 로그인 페이지 스타일 */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh; 
+  background-color: #fff;
+  margin-top: 10px;
+}
+/*로그인 폼 박스*/
+.login-box {
+  width: 400px;
+  padding: 40px 50px;
+  text-align: center;
+  background: none;       /* 기존 흰 배경 제거 */
+  box-shadow: none;       /* 그림자 제거 */
+  border-radius: 0;       /* 둥근 모서리 제거 */
+  margin-top: -60px;/*로그인 창을 위로 살짝 올림*/
+}
+
+/*제목 로그인*/
+.login-box h2 {
+  margin-bottom: 30px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* 입력 필드 스타일 */
+.login-box label {
+  display: block;
+  text-align: left;
+  font-size: 14px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+/*아이디, 비밀번호 칸*/
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+/*focus시 초록색 빛 강조..*/
+.login-box input:focus {
+  outline: none;
+  border-color: #2e6b56; /* 이화그린 포인트 */
+  box-shadow: 0 0 4px rgba(46, 107, 86, 0.3);
+}
+
+/* 로그인 버튼 */
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background-color: #b7b7b7;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.login-box button:hover {
+  background-color: #9e9e9e;
+  transform: translateY(-2px);
+}
+
+/* 회원가입 링크 */
+.login-links {
+  margin-top: 15px;
+}
+
+.login-links a {
+  font-size: 13px;
+  color: #777;
+}
+
+.login-links a:hover {
+  text-decoration: underline;
+  color: #2e6b56;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 20px 30px;
+  }
+
+  .nav {
+    gap: 15px;
+  }
+
+  .login-box {
+    width: 90%;
+    padding: 30px;
+  }
+}
+
+
+
+
+/* ==============================
+   회원가입 페이지
+============================== */
+
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  min-height: 85vh;
+  background-color: #fff;
+  margin-top: 10px;
+}
+
+.signup-box {
+  width: 460px;
+  padding: 40px 50px;
+  text-align: left;
+}
+
+/* 제목 */
+.signup-box h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* label 공통 */
+.signup-box label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 입력 필드 */
+.signup-box input[type="text"],
+.signup-box input[type="email"],
+.signup-box input[type="password"],
+.signup-box input[type="tel"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 18px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* focus 효과 */
+.signup-box input:focus {
+  outline: none;
+  border-color: #2e6b56;
+  box-shadow: 0 0 4px rgba(46, 107, 86, 0.3);
+}
+
+/* 인증 관련 섹션 */
+
+.phone-section,
+.verify-section {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start; /* 위 기준 맞추기 유지 */
+}
+
+/* 휴대폰 번호 줄 아래 간격 줄이기 */
+.phone-section {
+  margin-bottom: 8px; /* 12px → 8px로 줄임 */
+}
+
+/* 인증번호 줄 위로 살짝 당기기 */
+.verify-section {
+  margin-top: 6px; 
+  margin-bottom: 18px; /* 나머지 폼 아래 간격 그대로 */
+}
+
+
+
+.phone-section input,
+.verify-section input {
+  flex: 1;
+  height: 42px; /* 고정 높이, 밑에도 다 새로 추가2 */
+  padding: 0 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.phone-section button,
+.verify-section button {
+  /*flex-shrink: 0;*/
+  display: flex;
+  align-items: center;
+  justify-content: center; /*위의 세 개 또 추가..*/
+  padding: 0 15px; /*원래는 10px 15px*/
+  height: 42px; /*위치 안 맞아서 추가*/
+  background-color: #b7b7b7;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: normal; /*이것도 새로 추가, 1->normal로 수정*/
+  cursor: pointer;
+  box-sizing: border-box; /*이것도 새로 추가2*/
+  transition: background-color 0.2s;
+}
+
+.phone-section button:hover,
+.verify-section button:hover {
+  background-color: #9e9e9e;
+}
+
+/* 오류 메시지 */
+.error-text {
+  color: red;
+  font-size: 13px;
+  margin-top: -12px;
+  margin-bottom: 10px;
+}
+
+/* 약관 동의 */
+.agreement {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #444;
+}
+
+.agreement h3 {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* 체크박스와 텍스트를 한 줄로 안 맞춰진 이슈가 있었음..*/
+.agreement label {
+  display: flex; 
+  align-items: flex-start; 
+  gap: 8px; /* 체크박스와 텍스트 간격 */
+  margin-bottom: 8px; 
+  cursor: pointer; /* 클릭 범위 확장 */
+  line-height: 1.3; /*이거 넣으니까 해결됨*/
+}
+
+/* 체크박스 스타일 */
+.agreement input[type="checkbox"] {
+  accent-color: #2e6b56; 
+  width: 16px;
+  height: 16px;
+  margin-top: 2px; /* 미세 보정 */
+}
+
+/* 회원가입 버튼 */
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #b7b7b7;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #9e9e9e;
+  transform: translateY(-2px);
+}
+
+/* 로그인 링크 */
+.login-link {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 18px;
+}
+
+.login-link a {
+  color: #2e6b56;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .signup-box {
+    width: 90%;
+    padding: 30px;
+  }
+
+  .phone-section,
+  .verify-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .phone-section button,
+  .verify-section button {
+    width: 100%;
+  }
+}
+
+
+/*메인페이지*/
+/* 메인 배너 (이미지 직접 삽입 버전) */
+.intro {
+    width: 100%;
+    margin-top: 10px; /* 헤더와의 간격 */
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.intro-img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* 🔹 섹션 공통 스타일 */
+.latest-section {
+    max-width: 1600px;
+    margin: 100px auto;
+    padding-left: 150px;
+    padding-right: 250px;
+    position: relative;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+/* 🔹 섹션 제목 간격 조정 */
+.latest-section h2 {
+    margin-bottom: 15px;
+}
+
+.latest-section p {
+    margin-bottom: 40px; /* 🔹 제목 아래 여백 추가 */
+}
+
+/* 🔹 카드 목록 */
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    justify-items: center;
+    align-items: start;
+    margin-top: 10px;/**/
+}
+
+/* 🔹 카드 공통 */
+.product-card, .review-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 16px;
+    width: 230px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.product-card:hover, .review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+}
+
+.product-card p {
+    margin: 4px 0; /* ✅ 상하 여백 최소화 */
+    line-height: 1.4;
+}
+
+
+/* 🔹 이미지 */
+.img-placeholder {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* 🔹 더보기 버튼 */
+.more-icon {
+    position: absolute;
+    right: 100px; /* ✅ 카드에서 약간 더 떨어지게 */
+    top: 60%;
+    transform: translateY(-50%);
+    width: 80px;
+    height: 80px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    background-color: #fff;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+
+    font-size: 14px;
+    color: #111;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.more-icon i {
+    font-size: 16px; /* 아이콘 크기 살짝 조정 */
+}
+.more-icon p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.more-icon:hover {
+    background-color: #f8f8f8;
+    border-color: #999;
+    transform: translateY(-50%) scale(1.05);
+}
+
+/* 🔹 반응형 */
+@media screen and (max-width: 1200px) {
+    .card-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .more-icon {
+        position: static;
+        margin: 40px auto 0 auto;
+        transform: none;
+    }
+}
+/* 마이페이지 전용 스타일 */
+.mypage-container {
+    display: flex;
+    padding: 60px 100px;
+    gap: 60px;
+    flex: 1;
+    background-color: #fff;
+    margin-top: 10px;
+}
+
+.sidebar {
+    width: 180px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.sidebar li {
+    padding: 10px 0;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.sidebar li:hover,
+.sidebar li.active {
+    color: #2e6b56;
+    font-weight: 600;
+}
+
+.sidebar li.disabled {
+    color: #333;
+    cursor: pointer;
+}
+
+.content-area {
+    flex: 1;
+    padding-top: 10px;
+}
+
+/* 내 리뷰 스타일 */
+.review-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-left: 40px;
+}
+
+.review-container h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.item-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    background-color: #fafafa;
+    margin-left: 60px;
+    margin-bottom: 25px;
+}
+
+.item-card p {
+    margin: 6px 0;
+}
+
+.item-card small {
+    color: #777;
+    font-size: 13px;
+}
+
+.review-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.review-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+.review-text p {
+    margin: 4px 0;
+    line-height: 1.4;
+}
+
+.review-text small {
+    color: #777;
+    font-size: 13px;
+}
+
+.review-title {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    width: 600px;
+    margin-left: 60px;
+    margin-bottom: 20px;
+}
+
+
+/*관심상품 부분*/
+.wishlist-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-left: 0;
+    /* 리뷰 카드와 정렬 맞춤 */
+    margin-bottom: 30px;
+    align-items: center;
+}
+
+.wishlist-container .item-card {
+    max-width: 600px;
+}
+
+
+.thumb-box {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #e9e9e9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #999;
+}
+
+
+.wishlist-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 600px;
+    margin-left: 60px;
+}
+
+
+
+/*회원정보 부분*/
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 40px;
+    max-width: 600px;
+    margin: -20px auto 0 60px;
+    background: none;
+    box-shadow: none;
+    border: none;
+}
+
+/* 회원정보 제목 */
+.profile-card h2 {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+/* 각 정보 항목 */
+.profile-card .info-item {
+    margin-bottom: 18px;
+    width: 100%;
+}
+
+/* 입력창/출력창 통일 */
+.profile-card input,
+.profile-card .readonly-field,
+.profile-card .info-display {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    background-color: #fafafa;
+}
+
+/* 버튼 공통 스타일 */
+.profile-card button,
+.check-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background-color: #e0e0e0;
+    /* 연한 회색 기본 */
+    color: #333;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* hover 시 진한 회색 + 흰 글씨 */
+.profile-card button:hover,
+.check-btn:hover {
+    background-color: #999;
+    color: #fff;
+}
+
+/* 버튼 정렬 */
+.profile-card .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* 비밀번호 확인 행 */
+.password-check-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0;
+    /*8px;*/
+    /* 입력창 위쪽 여백 */
+}
+
+/* ✅ 이 부분 추가 또는 수정 */
+.profile-card .info-item label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 6px;
+    /* ✅ 모든 label과 입력창 간격을 동일하게 통일 */
+}
+
+
+/* 비밀번호 확인 입력창 길이 조정 */
+.password-check-row input {
+    width: calc(100% - 90px);
+    /* ✅ 확인 버튼 폭만큼 계산해서 자동 맞춤 */
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    background-color: #fafafa;
+}
+
+/* 확인 버튼 스타일 */
+.check-btn {
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: 8px;
+    border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.check-btn:hover {
+    background-color: #999;
+    color: #fff;
+}
+
+/* ==============================
+마이페이지 입력창 focus 시 강조
+============================== */
+.profile-card input:focus {
+    outline: none;
+    border-color: #2e6b56;
+    /* 이화그린 포인트 */
+    box-shadow: 0 0 4px rgba(46, 107, 86, 0.3);
+}
