@@ -1,0 +1,67 @@
+{%extends "layout.html"%}
+{% block title %}상품 세부조회 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/product_style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="product-detail-page">
+  <div class="title">Products</div>
+    <hr/>
+    <section class="detail">
+    <!-- 왼쪽: 상품 이미지 -->
+    <div class="thumb-lg">
+    <img alt="상품 이미지" id="product-image" src="Morden share(1).jpg"/>
+    </div>
+    <!-- 오른쪽: 상품 정보 -->
+    <div class="info">
+    <div class="badge" id="product-category">product</div>
+    <div class="name" id="product-name">상품명</div>
+    <div class="seller">판매자: <span id="product-seller">이름</span></div>
+    <div class="price" id="product-price">0원</div>
+    <div class="subnote" id="product-tags">#태그</div>
+    <div class="subnote" id="product-method">거래 방법: 협의</div>
+    <div class="actions">
+    <a href="/mypage/wishlist"><button class="btn btn-cart" id="btn-wish" type="button">위시리스트</button></a>
+    <a href="#구매창"><button class="btn btn-buy" type="button">바로 구매</button></a>
+    </div>
+  </div>
+  </section>
+  <section class="desc-wrap">
+    <div class="desc-title">상품 설명</div>
+    <div class="desc-body" id="product-description">
+            브랜드, 모델명, 구매 시기, 사용감, 하자 유무 등 상세 설명을 입력하세요.
+          </div>
+  </section>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  // 🔹 나중에 백엔드(DB)에서 상품 정보를 받아서 표시할 수 있도록 변수 세팅
+  const productData = {//예시 더미 데이터
+    image: "Morden share(1).jpg",
+    category: "의류",
+    name: "컴퓨터공학과 배꽃 은사 학잠",
+    seller: "화연이~",
+    price: "60,000원",
+    tags: "#이화여대 #학잠 #의류",
+    method: "직거래 · 택배",
+    description: "m 사이즈. 사이즈 미스로 판매합니다. 4월 초 학과 공구를 통해 구입했고 팔 부분 이염 하나 없이 깨끗합니다. 팀팩토리 과잠입니다. "
+  };
+
+  //DB 로드 시 데이터 반영
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("product-image").src = productData.image;
+    document.getElementById("product-category").textContent = productData.category;
+    document.getElementById("product-name").textContent = productData.name;
+    document.getElementById("product-seller").textContent = productData.seller;
+    document.getElementById("product-price").textContent = productData.price;
+    document.getElementById("product-tags").textContent = productData.tags;
+    document.getElementById("product-method").textContent = "거래 방법: " + productData.method;
+    document.getElementById("product-description").textContent = productData.description;
+  });
+  </script>
+{% endblock %}

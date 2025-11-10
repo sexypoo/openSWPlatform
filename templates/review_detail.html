@@ -1,0 +1,94 @@
+{%extends "layout.html"%}
+{% block title %}리뷰 세부조회 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/review_style.css') }}">
+{% endblock %}
+
+{% block content %}
+    <main class="review-detail-page">
+        <!-- 제목 -->
+        <h2 class="review-detail-title">리뷰 상세보기</h2>
+
+        <div class="review-detail-container">
+            <!-- 왼쪽 영역: 이미지 갤러리 -->
+            <div class="review-gallery">
+                <div class="main-image" id="mainImage"></div>
+                <div class="thumbnail-container">
+                    <div class="thumbnail active" onclick="changeImage(0)"></div>
+                    <div class="thumbnail" onclick="changeImage(1)"></div>
+                    <div class="thumbnail" onclick="changeImage(2)"></div>
+                </div>
+            </div>
+
+            <!-- 오른쪽 영역: 리뷰 정보 -->
+            <div class="review-detail-info">
+                <!-- 별점 -->
+                <div class="review-rating">
+                    <div class="review-stars-large">★ ★ ★ ★ ★</div>
+                    <div class="review-score">5.0</div>
+                </div>
+
+                <!-- 리뷰 제목 -->
+                <h3 class="review-main-title">가격 대비 정말 만족스러운 제품입니다</h3>
+
+                <!-- 작성자 아이디 및 작성일자 -->
+                <div class="review-meta">
+                    <span class="review-author">happy_customer</span>
+                    <span class="review-date">2025.09.30</span>
+                </div>
+
+                <!-- 상품 정보 -->
+                <div class="product-info-box">
+                    <div class="product-name">지리 니트</div>
+                    <div class="product-detail">Color: Ivory, Size: S</div>
+                </div>
+
+                <!-- 리뷰 내용 -->
+                <div class="review-content-section">
+                    <div class="content-text">
+                        정말 만족스러운 구매였습니다!
+                        <br>
+                        사진으로 봤을 때도 예뻤지만 실물은 훨씬 더 예쁘네요. 소재도 부드럽고 착용감이 편안해서 하루 종일 입고 있어도 불편함이 없어요.
+                        <br>
+                        사이즈도 S사이즈로 주문했는데 딱 맞아요. 색상도 화면으로 본 것과 거의 동일하고, 디테일한 마감 처리도 깔끔합니다.
+                        <br>
+                        배송도 빠르게 와서 좋았고, 포장 상태도 완벽했습니다. 다른 색상도 구매하고 싶을 정도로 마음에 들어요!
+                        <br>
+                        주변 친구들에게도 추천했습니다. 가격 대비 정말 좋은 제품이에요 👍
+                    </div>
+                </div>
+
+                <!-- 목록으로 버튼 (리뷰 전체 조회 화면으로 이동) -->
+                <button class="back-button" onclick="location.href='review.html'">목록으로</button>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block script %}
+    <script>
+        // 썸네일 배경색 저장
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const mainImage = document.getElementById('mainImage');
+        const thumbnailBackgrounds = [];
+
+        // 각 썸네일의 배경 스타일 저장
+        thumbnails.forEach(thumb => {
+            thumbnailBackgrounds.push(thumb.style.background);
+        });
+
+        function changeImage(index) {
+            // 모든 썸네일에서 active 클래스 제거
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+
+            // 클릭된 썸네일에 active 클래스 추가
+            thumbnails[index].classList.add('active');
+
+            // 메인 이미지 배경 변경
+            mainImage.style.background = thumbnailBackgrounds[index];
+
+            console.log('이미지 ' + (index + 1) + ' 선택됨');
+        }
+    </script>
+{% endblock %}

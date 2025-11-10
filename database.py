@@ -13,14 +13,21 @@ class DBhandler:
 
     def insert_item(self, name, data, img_path):
         item_info = {
-            "seller": data['seller'],
-            "addr": data['addr'],
-            "email": data['email'],
+            "name" : name,
+            # "seller": data['seller'],
+            # 나중에 login user 정보로 교체하면 됨
+            
             "category": data['category'],
-            "card": data['card'],
-            "status": data['status'],
-            "phone": data['phone'],
+            "details": data['details'],
+            "price": data["price"],
+            "method":(data.getlist("method") if hasattr(data, "getlist") else data.get("method",[])),
             "img_path": img_path
+
+            # "addr": data['addr'],
+            # "email": data['email'],
+            # "card": data['card'],
+            # "status": data['status'],
+            # "phone": data['phone'],
         }
         self.db.child('items').child(name).set(item_info)
         print(data, img_path)
@@ -30,7 +37,8 @@ class DBhandler:
         user_info = {
             "id": data['id'],
             "pw": pw,
-            #"nickname": data['nickname']
+            "nickname": data['nickname'],
+            "email": data['email']
         }
         if self.user_duplicate_check(str(data['id'])):
             self.db.child("user").push(user_info)

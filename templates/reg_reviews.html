@@ -1,4 +1,115 @@
-{% extends "index.html" %}
-{% block section %}
-리뷰 등록 화면 입니다.
-{% endblock section %}
+{%extends "layout.html"%}
+{% block title %}리뷰 작성 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/review_style.css') }}">
+{% endblock %}
+
+{%block content %}
+<main class="main-content">
+    <h1 class="page-title">리뷰 작성</h1>
+
+    <!-- 상품 정보 -->
+    <div class="section">
+        <h2 class="section-title">상품 정보</h2>
+        <div class="product-info">
+            <div class="product-field">
+                <label class="input-label">상품명</label>
+                <input type="text" class="text-input" placeholder="상품명을 입력해주세요">
+            </div>
+            <div class="product-field">
+                <label class="input-label">상세 정보</label>
+                <input type="text" class="text-input" placeholder="상세정보(옵션)를 입력해주세요">
+            </div>
+        </div>
+    </div>
+
+    <!-- 별점 평가 -->
+    <div class="section rating-section">
+        <h2 class="section-title">별점 평가</h2>
+        <div class="stars" id="starRating">
+            <span class="star filled" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+    </div>
+
+    <!-- 리뷰 내용 -->
+    <div class="section">
+        <h2 class="section-title">리뷰 내용</h2>
+        <div class="review-fields">
+            <div class="field-group">
+                <label class="field-label">제목</label>
+                <input type="text" class="text-input" placeholder="리뷰 제목을 입력하세요">
+            </div>
+
+            <div class="field-group">
+                <label class="field-label">작성자</label>
+                <input type="text" class="text-input" placeholder="작성자 아이디를 입력하세요">
+            </div>
+
+            <div class="field-group">
+                <label class="field-label">내용</label>
+                <textarea class="textarea-input large" placeholder="상품에 대한 솔직한 리뷰를 작성해주세요."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- 사진 첨부 -->
+    <div class="section">
+        <h2 class="section-title">사진 첨부</h2>
+        <div class="photo-upload" onclick="document.getElementById('fileInput').click()">
+            <p class="photo-upload-text">클릭하여 사진을 첨부해주세요</p>
+            <input type="file" id="fileInput" style="display: none;" accept="image/*" multiple>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block script %}
+    <script>
+        // 별점 기능
+        const stars = document.querySelectorAll('.star');
+        let currentRating = 3;
+
+        stars.forEach(star => {
+            star.addEventListener('click', function () {
+                currentRating = parseInt(this.getAttribute('data-value'));
+                updateStars();
+            });
+
+            star.addEventListener('mouseenter', function () {
+                const value = parseInt(this.getAttribute('data-value'));
+                stars.forEach((s, index) => {
+                    if (index < value) {
+                        s.classList.add('filled');
+                    } else {
+                        s.classList.remove('filled');
+                    }
+                });
+            });
+        });
+
+        document.getElementById('starRating').addEventListener('mouseleave', updateStars);
+
+        function updateStars() {
+            stars.forEach((star, index) => {
+                if (index < currentRating) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+        }
+
+        // 파일 업로드 처리
+        document.getElementById('fileInput').addEventListener('change', function (e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                alert(`${files.length}개의 파일이 선택되었습니다.`);
+            }
+        });
+    </script>
+{% endblock %}
