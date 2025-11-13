@@ -7,61 +7,54 @@
 
 {% block content %}
 <div class="product-detail-page">
-  <div class="title">Products</div>
+    <div class="title">Products</div>
     <hr/>
     <section class="detail">
-    <!-- 왼쪽: 상품 이미지 -->
-    <div class="thumb-lg">
-    <img alt="상품 이미지" id="product-image" src="Morden share(1).jpg"/>
-    </div>
-    <!-- 오른쪽: 상품 정보 -->
-    <div class="info">
-    <div class="badge" id="product-category">product</div>
-    <div class="name" id="product-name">상품명</div>
-    <div class="seller">판매자: <span id="product-seller">이름</span></div>
-    <div class="price" id="product-price">0원</div>
-    <div class="subnote" id="product-tags">#태그</div>
-    <div class="subnote" id="product-method">거래 방법: 협의</div>
-    <div class="actions">
-    <a href="/mypage/wishlist"><button class="btn btn-cart" id="btn-wish" type="button">위시리스트</button></a>
-    <a href="#구매창"><button class="btn btn-buy" type="button">바로 구매</button></a>
-    </div>
-  </div>
-  </section>
-  <section class="desc-wrap">
-    <div class="desc-title">상품 설명</div>
-    <div class="desc-body" id="product-description">
-            브랜드, 모델명, 구매 시기, 사용감, 하자 유무 등 상세 설명을 입력하세요.
-          </div>
-  </section>
-  </div>
+        <!-- 왼쪽: 상품 이미지 -->
+        <div class="thumb-lg">
+            {% if product.img_path %}
+            <img alt="상품 이미지" id="product-image"
+                 src="{{ url_for('static', filename='images/' ~ product.img_path) }}">
+            {% else %}
+            <div class="thumb-lg placeholder" aria-label="이미지 없음"></div>
+            {% endif %}
+        </div>
+        <!-- 오른쪽: 상품 정보 -->
+        <div class="info">
+            <div class="badge" id="product-category">{{ product.category or '기타' }}</div>
+            <div class="name" id="product-name">{{ product.name or '상품명 없음' }}</div>
+            <div class="seller">판매자: <span id="product-seller">{{ product.seller or '알수없음' }}</span></div>
+            <div class="price" id="product-price">₩{{ product.price or 0 }}</div>
+            {% if product.tags %}
+            <div class="subnote" id="product-tags">{{ product.tags }}</div>
+            {% endif %}
+            {% if product.method %}
+            <div class="subnote" id="product-method">거래 방법: {{ product.method }}</div>
+            {% endif %}
+            <div class="actions">
+                <a href="{{ url_for('pages.view_wishlist') }}">
+                    <button class="btn btn-cart" id="btn-wish" type="button">위시리스트</button>
+                </a>
+                <a href="#구매창">
+                    <button class="btn btn-buy" type="button">바로 구매</button>
+                </a>
+            </div>
+        </div>
+    </section>
+    <section class="desc-wrap">
+        <div class="desc-title">상품 설명</div>
+        <div class="desc-body" id="product-description">
+            {{ product.details or '상세 설명이 없습니다.' }}
+        </div>
+    </section>
 </div>
 {% endblock %}
 
 {% block script %}
 <script>
-  // 🔹 나중에 백엔드(DB)에서 상품 정보를 받아서 표시할 수 있도록 변수 세팅
-  const productData = {//예시 더미 데이터
-    image: "Morden share(1).jpg",
-    category: "의류",
-    name: "컴퓨터공학과 배꽃 은사 학잠",
-    seller: "화연이~",
-    price: "60,000원",
-    tags: "#이화여대 #학잠 #의류",
-    method: "직거래 · 택배",
-    description: "m 사이즈. 사이즈 미스로 판매합니다. 4월 초 학과 공구를 통해 구입했고 팔 부분 이염 하나 없이 깨끗합니다. 팀팩토리 과잠입니다. "
-  };
+    // 🔹 나중에 백엔드(DB)에서 상품 정보를 받아서 표시할 수 있도록 변수 세팅
 
-  //DB 로드 시 데이터 반영
-  document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("product-image").src = productData.image;
-    document.getElementById("product-category").textContent = productData.category;
-    document.getElementById("product-name").textContent = productData.name;
-    document.getElementById("product-seller").textContent = productData.seller;
-    document.getElementById("product-price").textContent = productData.price;
-    document.getElementById("product-tags").textContent = productData.tags;
-    document.getElementById("product-method").textContent = "거래 방법: " + productData.method;
-    document.getElementById("product-description").textContent = productData.description;
-  });
-  </script>
+    //DB 로드 시 데이터 반영
+
+</script>
 {% endblock %}

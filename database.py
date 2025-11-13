@@ -58,3 +58,24 @@ class DBhandler:
             if value['id'] == id_string:
                 return False
         return True
+
+    def find_user(self, id_, pw_):
+        users = self.db.child("user").get()
+        taget_value=[]
+        for res in (users.each() or []):
+            value = res.val()
+            if value['id'] == id_ and value['pw'] == pw_:
+                return True
+        return False
+
+    def get_products(self):
+        raw = self.db.child("items").get().val() or {}
+        products = []
+        for pid, v in raw.items():
+            v = v or {}
+            v["id"] = pid
+            products.append(v)
+        return products
+
+    def get_product(self, product_id):
+        return self.db.child("items").child(product_id).get().val() or {}

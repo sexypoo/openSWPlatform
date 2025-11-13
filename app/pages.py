@@ -1,10 +1,13 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, current_app
 
 pages_bp = Blueprint("pages",__name__)
 
 @pages_bp.route("/")
 def index():
-    return render_template("index.html")
+    DB = current_app.config["DB"]
+    products = DB.get_products()
+    latest_products = products[-4:] if len(products) > 4 else products
+    return render_template("index.html", latest_products=latest_products)
 
 @pages_bp.route("/login")
 def login():
@@ -18,9 +21,11 @@ def signup():
 def view_list():
     return render_template("products.html")
 
-@pages_bp.route("/product/1") # be 적용 전 임시 기능
-def view_product():
-    return render_template("product_detail.html")
+# @pages_bp.route("/product/<string:product_id>")
+# def view_product(product_id):
+#     DB = current_app.config["DB"]
+#     product = DB.get_product(product_id)
+#     return render_template("product_detail.html", product=product, product_id=product_id)
 
 @pages_bp.route("/review")
 def view_review():

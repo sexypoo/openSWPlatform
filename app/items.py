@@ -1,7 +1,10 @@
 import os
-from flask import Blueprint, request, render_template
 from flask import current_app
 from werkzeug.utils import secure_filename
+from flask import Blueprint, request, render_template, flash, redirect, url_for, session, current_app
+from flask import current_app
+# from flask import sys
+from database import DBhandler
 
 items_bp = Blueprint("items",__name__)
 
@@ -31,3 +34,26 @@ def reg_item_submit_post():
     return render_template("submit_item_result.html",
                            data=data,
                            img_path="static/images/{}".format(image_file.filename))
+
+@items_bp.route("/products")
+def view_products():
+    DB = current_app.config["DB"]
+    page = request.args.get("page", 1, type=int)
+    per_page = 6
+    items = DB.get_products()
+    total = len(items)
+
+    start = (page - 1) * per_page
+    end = start + per_page
+    page_items = items[start:end]
+
+    from math import ceil
+    page_count = max(1, ceil(total / per_page))
+
+    return render_template("products.html", datas=page_items,page=page, page_count=page_count, total=total)
+
+@items_bp.route("/products/<string:product_id>")
+def view_product(product_id):
+    DB = current_app.config["DB"]
+    product = DB.get_product(product_id)
+    return render_template("product_detail.html", product=product, product_id=product_id)
