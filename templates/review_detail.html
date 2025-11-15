@@ -13,54 +13,53 @@
         <div class="review-detail-container">
             <!-- 왼쪽 영역: 이미지 갤러리 -->
             <div class="review-gallery">
-                <div class="main-image" id="mainImage"></div>
-                <div class="thumbnail-container">
-                    <div class="thumbnail active" onclick="changeImage(0)"></div>
-                    <div class="thumbnail" onclick="changeImage(1)"></div>
-                    <div class="thumbnail" onclick="changeImage(2)"></div>
+                {% if review.img_path %}
+                <div class="main-image">
+                    <img
+                        alt="상품 이미지"
+                        class="main-image-img"
+                        src="{{ url_for('static', filename='images/' ~ review.img_path) }}">
                 </div>
+                {% else %}
+                    <div class="main-image placeholder" aria-label="이미지 없음"></div>
+                {% endif %}
             </div>
 
             <!-- 오른쪽 영역: 리뷰 정보 -->
             <div class="review-detail-info">
                 <!-- 별점 -->
                 <div class="review-rating">
-                    <div class="review-stars-large">★ ★ ★ ★ ★</div>
-                    <div class="review-score">5.0</div>
+                    <div class="review-stars-large">
+                        {% set rating = review.rating or 0 %}
+                        {{ '★' * rating }}{{ '☆' * (5 - rating) }}
+                    </div>
+                    <div class="review-score">{{ rating }} / 5 </div>
                 </div>
 
                 <!-- 리뷰 제목 -->
-                <h3 class="review-main-title">가격 대비 정말 만족스러운 제품입니다</h3>
+                <h3 class="review-main-title">{{ review.title or '제목 없음'}}</h3>
 
                 <!-- 작성자 아이디 및 작성일자 -->
                 <div class="review-meta">
-                    <span class="review-author">happy_customer</span>
-                    <span class="review-date">2025.09.30</span>
+                    <span class="review-author">{{ review.purchaser or '알수없음' }}</span>
+                    <!--span class="review-date">2025.09.30</span-->
                 </div>
 
                 <!-- 상품 정보 -->
                 <div class="product-info-box">
-                    <div class="product-name">지리 니트</div>
-                    <div class="product-detail">Color: Ivory, Size: S</div>
+                    <div class="product-name">{{ review.name or '상품명 없음' }}</div>
+                    <div class="product-detail">{{ review.product_details or '상세 설명 없음' }}</div>
                 </div>
 
                 <!-- 리뷰 내용 -->
                 <div class="review-content-section">
                     <div class="content-text">
-                        정말 만족스러운 구매였습니다!
-                        <br>
-                        사진으로 봤을 때도 예뻤지만 실물은 훨씬 더 예쁘네요. 소재도 부드럽고 착용감이 편안해서 하루 종일 입고 있어도 불편함이 없어요.
-                        <br>
-                        사이즈도 S사이즈로 주문했는데 딱 맞아요. 색상도 화면으로 본 것과 거의 동일하고, 디테일한 마감 처리도 깔끔합니다.
-                        <br>
-                        배송도 빠르게 와서 좋았고, 포장 상태도 완벽했습니다. 다른 색상도 구매하고 싶을 정도로 마음에 들어요!
-                        <br>
-                        주변 친구들에게도 추천했습니다. 가격 대비 정말 좋은 제품이에요 👍
+                        {{ review.review_details or '내용 없음' }}
                     </div>
                 </div>
 
                 <!-- 목록으로 버튼 (리뷰 전체 조회 화면으로 이동) -->
-                <button class="back-button" onclick="location.href='review.html'">목록으로</button>
+                <button class="back-button" onclick="location.href='{{ url_for('reviews.view_reviews') }}'">목록으로</button>
             </div>
         </div>
     </main>

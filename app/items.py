@@ -10,7 +10,6 @@ items_bp = Blueprint("items",__name__)
 
 @items_bp.route("/submit_item")
 def reg_item_submit():
-    # 원본 GET 로직 그대로 유지
     name = request.args.get("name")
     seller = request.args.get("seller")
     addr = request.args.get("addr")
@@ -24,16 +23,25 @@ def reg_item_submit():
 
 @items_bp.route("/submit_item_post", methods=['POST'])
 def reg_item_submit_post():
+
+    # 로그인 상태 확인
+    seller_id = session.get("id")
+    if not seller_id:
+        flash("로그인 후에만 상품을 등록할 수 있습니다.")
+        return redirect(url_for("pages.login"))
+
+    # 이미지 파일 저장
     image_file = request.files["file"]
     image_file.save("static/images/{}".format(image_file.filename))
     
+    # 폼 데이터 저장
     data=request.form
     DB = current_app.config["DB"] # 현재 앱에서 생성된 DB를 가져와서 사용
-    DB.insert_item(data['name'], data, image_file.filename)
     
-    return render_template("submit_item_result.html",
-                           data=data,
-                           img_path="static/images/{}".format(image_file.filename))
+    # 로그인된 유저의 정보를 seller로 넘김
+    new_product_id = DB.insert_item(data['name'], data, image_file.filename, seller_id=seller_id)
+    
+    return redirect(url_for("items.view_product", product_id=new_product_id))
 
 @items_bp.route("/products")
 def view_products():
@@ -50,10 +58,15 @@ def view_products():
     from math import ceil
     page_count = max(1, ceil(total / per_page))
 
-    return render_template("products.html", datas=page_items,page=page, page_count=page_count, total=total)
+    return render_template("products.html", datas=page_items, page=page, page_count=page_count, total=total)
 
 @items_bp.route("/products/<string:product_id>")
 def view_product(product_id):
     DB = current_app.config["DB"]
     product = DB.get_product(product_id)
-    return render_template("product_detail.html", product=product, product_id=product_id)
+
+    # 내가 등록한 글인지 확인
+    current_id = session.get("id")
+    is_owner = (product.get("seller") == current_id)
+
+    return render_template("product_detail.html", product=product, product_id=product_id, is_owner=is_owner)

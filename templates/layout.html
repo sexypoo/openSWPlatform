@@ -38,12 +38,6 @@
             <span><a href="/" style="text-decoration: none; color: inherit;">Home</a></span>
         </div>
         <div class="nav-item">
-            {% if session.get('id') %}
-            <span style="margin-right: 10px"><b>{{ session['id'] }}</b>님 반갑습니다.</span>
-            <button class="login-btn" onclick="location.href='{{ url_for('auth.logout_user') }}'">로그아웃</button>
-            {% else %}
-            <button class="login-btn" onclick="location.href='{{ url_for('pages.login') }}' ">로그인/회원가입</button>
-            {% endif %}
             <span>Products</span>
             <div class="dropdown">
                 <a href="{{ url_for('items.view_products') }}" class="dropdown-item">상품 목록</a>
@@ -54,12 +48,18 @@
             <span>Reviews</span>
             <div class="dropdown">
                 <a href="/reg_reviews" class="dropdown-item">리뷰 작성</a>
-                <a href="/review" class="dropdown-item">모든 리뷰 보기</a>
+                <a href="/reviews" class="dropdown-item">모든 리뷰 보기</a>
             </div>
         </div>
     </nav>
 
     <div class="header-icons">
+        {% if session.get('id') %}
+            <span style="margin-right: 10px"><b>{{ session['id'] }}</b>님 반갑습니다.</span>
+            <button class="login-btn" onclick="location.href='{{ url_for('auth.logout_user') }}'">로그아웃</button>
+        {% else %}
+            <button class="login-btn" onclick="location.href='{{ url_for('pages.login') }}' ">로그인/회원가입</button>
+        {% endif %}
         <a href="/mypage/wishlist">
             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

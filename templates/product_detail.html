@@ -39,6 +39,16 @@
                     <button class="btn btn-buy" type="button">바로 구매</button>
                 </a>
             </div>
+            {% if is_owner %}
+            <div class="seller_actions">
+                <a href="#">
+                    <button class="btn btn-edit" id="btn-edit" type="button">수정하기</button>
+                </a>
+                <a href="#">
+                    <button class="btn btn-buy" id="btn-delete" type="button">삭제하기</button>
+                </a>
+            </div>
+            {% endif %}
         </div>
     </section>
     <section class="desc-wrap">
@@ -52,9 +62,6 @@
 
 {% block script %}
 <script>
-    // 🔹 나중에 백엔드(DB)에서 상품 정보를 받아서 표시할 수 있도록 변수 세팅
-
-    //DB 로드 시 데이터 반영
 
 </script>
 {% endblock %}

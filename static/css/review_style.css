@@ -168,10 +168,14 @@
 /* 리뷰 카드 그리드 */
 .review-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    /* 전체 화면 기준 항상 3열 */
+    grid-template-columns: repeat(3, 1fr);
     gap: 40px;
     justify-items: center;
+    max-width: 1200px;
+    margin: 0 auto 60px;
 }
+
 
 /* 카드 스타일 */
 .review-card {
@@ -192,6 +196,16 @@
     border-radius: 8px;
     margin-bottom: 15px;
 }
+
+/* review-image 안에 들어가는 실제 이미지 */
+.review-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;    /* 비율 유지하면서 꽉 채우기 */
+    display: block;
+    border-radius: 8px;   /* 박스 라운딩과 통일 */
+}
+
 
 /* 리뷰제목 */
 .review-text {
@@ -579,4 +593,32 @@
 
 .cancel-btn:hover {
     background-color: #d0d0d0;
+}
+.review-gallery {
+  width: 100%;
+  max-width: 480px;
+}
+
+.main-image {
+  width: 100%;
+  padding-top: 100%;   /* 1:1 비율 박스 */
+  position: relative;
+  background-color: #e5e5e5;   /* 이미지 없을 때 회색 배경 */
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* 실제 이미지 */
+.main-image-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* 이미지 꽉 채우되 비율 유지 */
+}
+
+/* 이미지 없을 때만 회색 박스 */
+.main-image.placeholder {
+  background-color: #e5e5e5;
 }
