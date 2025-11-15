@@ -1,0 +1,285 @@
+{%extends "layout.html"%}
+{% block title %}마이페이지 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/userhome_style.css') }}">
+{% endblock %}
+
+{% block content %}
+    <main class="mypage-container">
+        <aside class="sidebar">
+            <ul>
+                <li data-section="profile">회원정보</li>
+                <li data-section="wishlist">관심 상품</li>
+                <li class="active" data-section="review">내 리뷰</li>
+                <li class="disabled">구매 내역</li>
+                <li class="disabled">판매 내역</li>
+            </ul>
+        </aside>
+
+        <section class="content-area" id="content-area">
+            <!-- ===========================
+           서현님 파트: 회원정보 
+           <div class="profile-card">...</div>
+      ============================ -->
+            <div class="profile-card" id="profile-section" style="display: none;">
+                <h2 id="profile-title">회원정보</h2>
+
+                <div class="profile-content">
+                    <!-- 조회 모드 -->
+                    <div id="view-mode">
+                        <div class="info-item">
+                            <label>아이디</label>
+                            <div class="info-display" id="display-username">ewha2025</div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>비밀번호</label>
+                            <div class="info-display" id="display-password">********</div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>이메일</label>
+                            <div class="info-display" id="display-email">example@ewha.ac.kr</div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>휴대폰 번호</label>
+                            <div class="info-display" id="display-phone">010-1234-5678</div>
+                        </div>
+
+                        <button onclick="toggleEditMode()" class="primary-btn">
+                            회원정보 수정하기
+                        </button>
+                    </div>
+
+                    <!-- 수정 모드 -->
+                    <div id="edit-mode" style="display: none;">
+                        <div class="info-item">
+                            <label>아이디</label>
+                            <div class="readonly-field">ewha2025</div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>새 비밀번호 입력</label>
+                            <input type="password" id="edit-password-new" placeholder="새 비밀번호를 입력하세요" />
+                        </div>
+
+                        <div class="info-item">
+                            <label>비밀번호 확인</label>
+                            <div class="password-check-row">
+                                <input type="password" id="edit-password-confirm" placeholder="비밀번호를 다시 입력하세요" />
+                                <button onclick="checkPassword()" class="check-btn">확인</button>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>이메일</label>
+                            <input type="email" id="edit-email" value="example@ewha.ac.kr"
+                                placeholder="example@ewha.kr" />
+                        </div>
+
+                        <div class="info-item">
+                            <label>휴대폰 번호</label>
+                            <input type="tel" id="edit-phone" value="010-1234-5678" placeholder="010-0000-0000" />
+                        </div>
+
+                        <div class="button-group">
+                            <button onclick="saveChanges()" class="save-btn">저장하기</button>
+                            <button onclick="cancelEdit()" class="cancel-btn">취소</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ===========================
+           은규님 파트: 관심 상품 
+      ============================ -->
+            <div class="wishlist-container" id="wishlist-section" style="display: none;">
+                <h2 class="wishlist-title">관심 상품</h2>
+
+                <!-- 카드 1 -->
+                <div class="item-card">
+                    <a href="detail.html" style="text-decoration:none; color:inherit;">
+                        <div class="review-content">
+                            <div class="thumb-box">NO IMG</div>
+                            <div class="review-text">
+                                <div class="name" style="font-weight:600;">Product 1</div>
+                                <div class="price" style="color:#555;">₩29,000</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 카드 2 -->
+                <div class="item-card">
+                    <a href="detail.html" style="text-decoration:none; color:inherit;">
+                        <div class="review-content">
+                            <div class="thumb-box">NO IMG</div>
+                            <div class="review-text">
+                                <div class="name" style="font-weight:600;">Product 2</div>
+                                <div class="price" style="color:#555;">₩18,000</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 카드 3 -->
+                <div class="item-card">
+                    <a href="detail.html" style="text-decoration:none; color:inherit;">
+                        <div class="review-content">
+                            <div class="thumb-box">NO IMG</div>
+                            <div class="review-text">
+                                <div class="name" style="font-weight:600;">Product 3</div>
+                                <div class="price" style="color:#555;">₩45,000</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ===========================
+           내 리뷰 파트
+      ============================ -->
+            <h2 class="review-title">내 리뷰</h2>
+            <div class="item-card">
+                <div class="review-content">
+                    <img src="../static/images/ecobag.png" alt="에코백" class="review-img">
+                    <div class="review-text">
+                        <p>⭐️⭐️⭐️⭐️☆</p>
+                        <p>예뻐요!</p>
+                        <small>상품명: 에코백</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card">
+                <div class="review-content">
+                    <img src="../static/images/mug.png" alt="머그컵" class="review-img">
+                    <div class="review-text">
+                        <p>⭐️⭐️⭐️☆☆</p>
+                        <p>상품은 괜찮은데 색감이 화면과 조금 달라요.</p>
+                        <small>상품명: 머그컵</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card">
+                <div class="review-content">
+                    <img src="../static/images/tumbler.png" alt="텀블러" class="review-img">
+                    <div class="review-text">
+                        <p>⭐️⭐️⭐️⭐️⭐️</p>
+                        <p>디자인 예쁘고 보온력도 좋아요!</p>
+                        <small>상품명: 스타벅스 텀블러</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+{% endblock %}
+
+{% block script %}
+ <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const menuItems = document.querySelectorAll(".sidebar li[data-section]");
+
+            const sections = {
+                profile: document.getElementById("profile-section"),
+                wishlist: document.getElementById("wishlist-section"),
+                reviewCards: document.querySelectorAll(".content-area > .item-card"), //  내 리뷰 카드만 선택
+                reviewTitle: document.querySelector(".review-title")  //  내 리뷰 제목 추가
+            };
+
+            //  (1) 기본 상태: 회원정보만 보이게
+            sections.profile.style.display = "block";
+            sections.wishlist.style.display = "none";
+            sections.reviewCards.forEach(card => (card.style.display = "none"));
+            sections.reviewTitle.style.display = "none"; //  내 리뷰 제목도 기본은 숨김
+
+            // “회원정보”만 active로 표시
+            menuItems.forEach(li => li.classList.remove("active"));
+            document.querySelector('.sidebar li[data-section="profile"]').classList.add("active");
+
+            //  클릭 시 섹션 전환
+            menuItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    const section = item.dataset.section;
+
+                    // 모든 active 초기화 후 클릭한 메뉴만 active로
+                    menuItems.forEach(li => li.classList.remove("active"));
+                    item.classList.add("active");
+
+                    // 모든 섹션 숨기기
+                    sections.profile.style.display = "none";
+                    sections.wishlist.style.display = "none";
+                    sections.reviewCards.forEach(card => (card.style.display = "none"));
+                    sections.reviewTitle.style.display = "none"; //  제목도 함께 숨기기
+
+                    // 클릭한 섹션만 보이기
+                    if (section === "profile") {
+                        sections.profile.style.display = "block";
+                    } else if (section === "wishlist") {
+                        sections.wishlist.style.display = "block"; //  관심상품 표시 문제 수정
+                    } else if (section === "review") {
+                        sections.reviewCards.forEach(card => (card.style.display = "block"));
+                        sections.reviewTitle.style.display = "block"; //  내 리뷰일 때만 보이기
+                    }
+                });
+            });
+        });
+
+
+        /* ===========================
+           ✳ 회원정보 수정 모드 관련 기능
+        =========================== */
+        function toggleEditMode() {
+            document.getElementById('view-mode').style.display = 'none';
+            document.getElementById('edit-mode').style.display = 'block';
+        }
+
+        function cancelEdit() {
+            document.getElementById('view-mode').style.display = 'block';
+            document.getElementById('edit-mode').style.display = 'none';
+        }
+
+        function saveChanges() {
+            // 입력값 가져오기
+            const passwordNew = document.getElementById('edit-password-new').value;
+            const email = document.getElementById('edit-email').value;
+            const phone = document.getElementById('edit-phone').value;
+
+            // 비밀번호 업데이트 시 * 처리
+            if (passwordNew) {
+                document.getElementById('display-password').textContent = '*'.repeat(passwordNew.length);
+            }
+
+            // 이메일, 전화번호 업데이트
+            document.getElementById('display-email').textContent = email;
+            document.getElementById('display-phone').textContent = phone;
+
+            // 수정모드 → 조회모드로 전환
+            cancelEdit();
+
+            alert('회원정보가 수정되었습니다.');
+        }
+
+        // (선택) 비밀번호 확인 버튼 작동 예시
+        function checkPassword() {
+            const pw1 = document.getElementById('edit-password-new').value;
+            const pw2 = document.getElementById('edit-password-confirm').value;
+
+            if (!pw1 || !pw2) {
+                alert('비밀번호를 모두 입력해주세요.');
+                return;
+            }
+
+            if (pw1 === pw2) {
+                alert('비밀번호가 일치합니다.');
+            } else {
+                alert('비밀번호가 일치하지 않습니다.');
+            }
+        }
+    </script>
+{% endblock %}

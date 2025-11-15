@@ -15,9 +15,11 @@ def create_app():
     from .pages import pages_bp
     from .auth import auth_bp
     from .items import items_bp
+    from .reviews import reviews_bp
 
     app.register_blueprint(pages_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(items_bp)
+    app.register_blueprint(reviews_bp)
 
     return app

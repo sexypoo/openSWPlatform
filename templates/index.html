@@ -1,31 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='./css/style.css') }}">
-    <script src="{{ url_for('static', filename='main.js') }}" defer></script>
-</head>
-    <body>
-        <nav class="navbar">
-        <div class="navbar__logo">
-        <a href="">EwhaMarket</a>
+{% extends "layout.html" %}
+{% block title %}홈 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/userhome_style.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<!-- 메인 배너(이미지) -->
+<section class="intro">
+    <img src="./static/images/intro.png" alt="EWHA MARKET 소개 이미지" class="intro-img">
+</section>
+
+<!-- Latest Products -->
+<section class="latest-section">
+    <div class="section-header">
+        <h2>Latest Products</h2>
+        <p>최신 등록 상품</p>
+    </div>
+    <div class="card-container">
+        {% if latest_products %}
+        {% for p in latest_products %}
+
+        {# 안전 가드: 값이 없으면 기본값으로 대체 #}
+        {% set name = p.name | default(p.id) %}
+        {% set img = p.img_path| default('') %}
+        {% set details = p.details | default('', true) %}
+        {% set price = p.price | default(0) %}
+
+        <div class="product-card">
+            <a href="{{ url_for('items.view_product', product_id=p.id) }}">
+                <div class="img-placeholder"
+                     {% if img %}
+                     style="background-image:url('{{ url_for('static', filename='images/' ~ img) }}'); background-size:cover; background-position:center;"
+                     {% endif %}>
+                </div>
+                <h3>{{ name }}</h3>
+                <p>{{ details[:20] }}{% if details %}...{% endif %}</p>
+                <span>₩{{ price }}</span>
+            </a>
         </div>
-        <ul class="navbar__menu">
-        <li><a href="/login">Login</a></li>
-        <li><a href="/list">List</a></li>
-        <li><a href="/review">Review</a></li>
-        <li><a href="/reg_items">Register Items</a></li>
-        <li><a href="/reg_reviews">Register Reviews</a></li>
-        </ul>
-        <a href="#" class="navbar__toogleBtn">
-        <i class="fas fa-bars"></i>
-        </a>
-        </nav>
-        <section>
-            {% block section %}
-            {% endblock section %}
-        </section>
-    </body>
-</html>
+
+        {% endfor %}
+        {% else %}
+        <p>등록된 상품이 없습니다.</p>
+        {% endif %}
+        <div class="more-icon" onclick="location.href='{{ url_for('items.view_products') }}'">
+            <i class="fa-solid fa-arrow-right"></i>
+            <p>더보기</p>
+        </div>
+    </div>
+</section>
+
+<!-- Latest Reviews -->
+<section class="latest-section">
+    <div class="section-header">
+        <h2>Latest Reviews</h2>
+        <p>최신 등록 리뷰</p>
+    </div>
+    <div class="card-container">
+        <div class="review-card">
+            <div class="img-placeholder"></div>
+            <h3>리뷰제목</h3>
+            <div class="stars">★★★★★</div>
+            <p>리뷰내용...</p>
+        </div>
+        <div class="review-card">
+            <div class="img-placeholder"></div>
+            <h3>리뷰제목</h3>
+            <div class="stars">★★★★★</div>
+            <p>리뷰내용...</p>
+        </div>
+        <div class="review-card">
+            <div class="img-placeholder"></div>
+            <h3>리뷰제목</h3>
+            <div class="stars">★★★★★</div>
+            <p>리뷰내용...</p>
+        </div>
+        <div class="review-card">
+            <div class="img-placeholder"></div>
+            <h3>리뷰제목</h3>
+            <div class="stars">★★★★★</div>
+            <p>리뷰내용...</p>
+        </div>
+        <div class="more-icon" onclick="location.href='review.html'">
+            <i class="fa-solid fa-arrow-right"></i>
+            <p>더보기</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

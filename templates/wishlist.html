@@ -1,0 +1,99 @@
+{%extends "layout.html"%}
+{% block title %}위시리스트 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/product_style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="wishlist-page">
+  <div class="title">Wishlist</div>
+  <hr/>
+  <section class="grid" id="wishlistGrid">
+  <!-- 카드들이 JS로 자동 생성됨 -->
+  </section>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    localStorage.setItem("wishlist", JSON.stringify([1, 2, 3]));
+  // 💾 임시 상품 데이터 (실제로는 DB에서 불러올 수도 있음)
+  const products = [
+    { id: 1, name: "Product 1", price: 29000 },
+    { id: 2, name: "Product 2", price: 18000 },
+    { id: 3, name: "Product 3", price: 45000 },
+    { id: 4, name: "Product 4", price: 12000 },
+    { id: 5, name: "Product 5", price: 63000 },
+    { id: 6, name: "Product 6", price: 22000 },
+    { id: 7, name: "Product 7", price: 39000 },
+    { id: 8, name: "Product 8", price: 49000 },
+    { id: 9, name: "Product 9", price: 15000 },
+  ];
+
+  // 💖 LocalStorage에 저장된 위시리스트 불러오기
+  let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+  // 🖼️ 화면에 상품 카드 생성
+  const grid = document.getElementById("wishlistGrid");
+
+  function renderProducts() {
+    grid.innerHTML = ""; // 초기화
+    const visibleProducts = products.filter(p => wishlist.includes(p.id));
+
+    if (visibleProducts.length === 0) {
+      grid.innerHTML = "<p>위시리스트가 비어 있습니다.</p>";
+      return;
+    }
+
+    visibleProducts.forEach(p => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <a href="detail.html">
+          <div class="thumb" aria-label="상품 이미지">
+            <span class="heart ${wishlist.includes(p.id) ? "" : "inactive"}" data-id="${p.id}">❤️</span>
+          </div>
+          <div class="meta">
+            <div class="name">${p.name}</div>
+            <div class="price">₩${p.price.toLocaleString()}</div>
+          </div>
+        </a>
+      `;
+      grid.appendChild(card);
+    });
+
+    attachHeartEvents();
+  }
+
+  // 💡 하트 클릭 이벤트 추가
+  function attachHeartEvents() {
+    const hearts = document.querySelectorAll(".heart");
+    hearts.forEach(heart => {
+      heart.addEventListener("click", e => {
+        e.preventDefault(); // 링크 클릭 방지
+        const id = parseInt(heart.dataset.id);
+
+        if (wishlist.includes(id)) {
+          // 이미 위시리스트에 있음 → 제거
+          wishlist = wishlist.filter(x => x !== id);
+          heart.classList.add("inactive");
+        } else {
+          // 없으면 추가
+          wishlist.push(id);
+          heart.classList.remove("inactive");
+        }
+
+        // 변경사항 저장
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        renderProducts(); // 새로고침 없이 즉시 반영
+      });
+    });
+  }
+
+  // 🚀 페이지 로드 시 위시리스트 렌더링
+  renderProducts();
+</script>
+{% endblock %}

@@ -1,4 +1,126 @@
-{% extends "index.html" %}
-{% block section %}
-리뷰 등록 화면 입니다.
-{% endblock section %}
+{%extends "layout.html"%}
+{% block title %}리뷰 작성 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/review_style.css') }}">
+{% endblock %}
+
+{%block content %}
+<main class="main-content">
+    <h1 class="page-title">리뷰 작성</h1>
+
+    <!-- 상품 정보 -->
+     <form action="{{ url_for('reviews.reg_review_submit_post') }}" method="post" enctype="multipart/form-data">
+    <div class="section">
+        <h2 class="section-title">상품 정보</h2>
+        <div class="product-info">
+            <div class="product-field">
+                <label class="input-label" for="name">상품명</label>
+                <input type="text" class="text-input" id="pname" name="name" placeholder="상품명을 입력해주세요">
+            </div>
+            <div class="product-field">
+                <label class="input-label" for="p_details">상세 정보</label>
+                <input type="text" class="text-input" id="p_details" name="p_details" placeholder="상세정보(옵션)를 입력해주세요">
+            </div>
+        </div>
+    </div>
+
+    <!-- 별점 평가 -->
+    <div class="section rating-section">
+        <h2 class="section-title">별점 평가</h2>
+        <div class="stars" id="starRating">
+            <span class="star filled" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+
+        <input type="hidden" id="rating" name="rating" value="1">
+    </div>
+
+    <!-- 리뷰 내용 -->
+    <div class="section">
+        <h2 class="section-title">리뷰 내용</h2>
+        <div class="review-fields">
+            <div class="field-group">
+                <label class="field-label" for="title">제목</label>
+                <input type="text" class="text-input" id="title" name="title" placeholder="리뷰 제목을 입력하세요">
+            </div>
+
+            <div class="field-group">
+                <label class="field-label" for="seller_id">판매자</label>
+                <input type="text" class="text-input" id="seller_id" name="seller_id" placeholder="판매자 아이디를 입력하세요">
+            </div>
+
+            <div class="field-group">
+                <label class="field-label" for="r_details">내용</label>
+                <textarea class="textarea-input large" id="r_details" name="r_details" placeholder="상품에 대한 솔직한 리뷰를 작성해주세요."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- 사진 첨부 -->
+    <div class="section">
+        <h2 class="section-title">사진 첨부</h2>
+        <div class="photo-upload" onclick="document.getElementById('fileInput').click()">
+            <p class="photo-upload-text">클릭하여 사진을 첨부해주세요</p>
+            <input accept="image/*" id="fileInput" name="file" type="file" style="display: none;" multiple>
+        </div>
+    </div>
+    <div class="section">
+        <button type="submit" class="submit-button">리뷰 등록</button>
+    </div>
+    </form>
+</main>
+{% endblock %}
+
+{% block script %}
+    <script>
+        // 별점 기능
+        const stars = document.querySelectorAll('.star'); // 별 5개 각각
+        const ratingInput = document.getElementById('rating'); // 서버로 보낼 hidden input
+        let currentRating = parseInt(ratingInput.value) || 1; // 현재 선택된 별점 값
+
+        updateStars(); // hidden input에 맞춰 별 색 칠하는 함수
+
+        stars.forEach(star => {
+            star.addEventListener('click', function () {
+                currentRating = parseInt(this.getAttribute('data-value'));
+                ratingInput.value = currentRating; // 서버에 보낼 값 현재 선택된 별 개수로 갱신
+                updateStars();
+            });
+
+            star.addEventListener('mouseenter', function () {
+                const value = parseInt(this.getAttribute('data-value'));
+                stars.forEach((s, index) => {
+                    if (index < value) {
+                        s.classList.add('filled');
+                    } else {
+                        s.classList.remove('filled');
+                    }
+                });
+            });
+        });
+
+        document.getElementById('starRating').addEventListener('mouseleave', updateStars);
+
+        function updateStars() { // hidden input에 맞춰 별 색 칠하는 함수
+            stars.forEach((star, index) => {
+                if (index < currentRating) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+        }
+
+        // 파일 업로드 처리
+        document.getElementById('fileInput').addEventListener('change', function (e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                alert(`${files.length}개의 파일이 선택되었습니다.`);
+            }
+        });
+    </script>
+{% endblock %}
