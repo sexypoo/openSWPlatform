@@ -29,7 +29,7 @@
         {% set price = p.price | default(0) %}
 
         <div class="product-card">
-            <a href="{{ url_for('items.view_product', product_id=p.id) }}">
+            <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.name) }}">
                 <div class="img-placeholder"
                      {% if img %}
                      style="background-image:url('{{ url_for('static', filename='images/' ~ img) }}'); background-size:cover; background-position:center;"

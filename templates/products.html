@@ -14,7 +14,7 @@
     <section class="grid">
         {% for p in datas %}
         <div class="card">
-            <a href="{{ url_for('items.view_product', product_id=p.id) }}">
+            <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.name) }}">
                 <div class="thumb"
                      aria-label="상품 이미지"
                      {% if p.img_path %}

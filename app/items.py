@@ -41,7 +41,7 @@ def reg_item_submit_post():
     # 로그인된 유저의 정보를 seller로 넘김
     new_product_id = DB.insert_item(data['name'], data, image_file.filename, seller_id=seller_id)
     
-    return redirect(url_for("items.view_product", product_id=new_product_id))
+    return redirect(url_for("items.view_product", product_id=new_product_id, slug=data['name']))
 
 @items_bp.route("/products")
 def view_products():
@@ -60,8 +60,8 @@ def view_products():
 
     return render_template("products.html", datas=page_items, page=page, page_count=page_count, total=total)
 
-@items_bp.route("/products/<string:product_id>")
-def view_product(product_id):
+@items_bp.route("/products/<string:product_id>/<slug>")
+def view_product(product_id, slug):
     DB = current_app.config["DB"]
     product = DB.get_product(product_id)
 
