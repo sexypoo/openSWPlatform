@@ -8,18 +8,30 @@ from database import DBhandler
 
 reviews_bp = Blueprint("reviews",__name__)
 
-@reviews_bp.route("/submit_review")
-def reg_item_submit():
-    name = request.args.get("name")
-    seller = request.args.get("seller")
-    addr = request.args.get("addr")
-    email = request.args.get("email")
-    category = request.args.get("category")
-    card = request.args.get("card")
-    status = request.args.get("status")
-    phone = request.args.get("phone")
-    print(name, seller, addr, email, category, card, status, phone)
-    return render_template("reg_items.html")
+@reviews_bp.route("/get_product",methods=['GET'])
+def reg_review_get():
+    DB = current_app.config["DB"]
+
+    item_id = request.args.get("item_id")
+
+    item = DB.get_product(item_id) if item_id else None
+
+    return render_template("reg_reviews.html", item=item, item_id=item_id, review=None, review_id=None)
+
+
+@reviews_bp.route("/reg_reviews")
+def reg_review():
+    DB = current_app.config["DB"]
+    item_id = request.args.get("item_id")
+    item = DB.get_product(item_id) if item_id else None
+
+    return render_template(
+        "reg_reviews.html",
+        review=None,
+        item=item,
+        item_id=item_id,
+        mode="create",
+    )
 
 @reviews_bp.route("/submit_review_post", methods=['POST'])
 def reg_review_submit_post():
@@ -30,30 +42,66 @@ def reg_review_submit_post():
         return redirect(url_for("pages.login"))
 
     # 이미지 파일 저장
-    image_file = request.files["file"]
-    image_file.save("static/images/{}".format(image_file.filename))
+    image_file = request.files.get("file")
+    img_filename = None
+    if image_file and image_file.filename:          # 파일이 실제로 있을 때만
+        img_filename = image_file.filename
+        image_file.save(f"static/images/{img_filename}")
+
     
     # 폼 데이터 저장
-    data = request.form
+    data = request.form.to_dict()
     DB = current_app.config["DB"] # 현재 앱에서 생성된 DB를 가져와서 사용
     
-    # 로그인된 유저의 정보를 purchaser로 넘김
-    new_review_id = DB.insert_review(data['name'], data, image_file.filename, purchaser_id=purchaser_id)
+    item_id = data.get("item_id") or None
+
+    # 기본값: 사용자가 폼에 쓴 값
+    name = data.get("name", "")
+    p_details = data.get("p_details", "")
+    seller_id = data.get("seller_id", "")
+
+    # item_id가 있으면 product 값으로 덮어쓰기
+    if item_id:
+        product = DB.get_product(item_id) or {}
+        name = product.get("name", name)
+        p_details = product.get("details", p_details)
+        seller_id = product.get("seller", seller_id)
+
+    # insert_review가 기대하는 키 맞추기
+    data["p_details"] = p_details
+    data["seller_id"] = seller_id
+
+    # 리뷰 저장
+    new_review_id = DB.insert_review(
+        name=name,
+        data=data,
+        img_path=image_file.filename,
+        purchaser_id=purchaser_id,
+        item_id=item_id,
+    )
     
     return redirect(url_for("reviews.view_review", review_id=new_review_id))
 
 @reviews_bp.route("/reviews")
 def view_reviews():
     DB = current_app.config["DB"]
+
+    # 현재 페이지 받아오기
     page = request.args.get("page", 1, type = int)
     per_page = 6
+
+    # 전체 리뷰 받아오기 + 정렬
     reviews = DB.get_reviews()
+    reviews.sort(key=lambda r:r["id"], reverse=True)
+
     total = len(reviews)
 
+    # 슬라이싱
     start = (page-1) *  per_page
     end = start + per_page
     page_reviews = reviews[start:end]
 
+    # 페이지 개수
     from math import ceil
     page_count = max(1, ceil(total/per_page))
 
@@ -71,4 +119,61 @@ def view_review(review_id):
     is_owner = (review.get("purchaser") == current_id)
 
     return render_template("review_detail.html", review=review, review_id=review_id, is_owner=is_owner)
+
+@reviews_bp.route("/reviews/update/<string:review_id>", methods=["GET","POST"])
+def update_review(review_id):
+    DB = current_app.config["DB"]
+    user_id = session.get("id")
+
+    review = DB.get_review(review_id)
+    if not review or review.get("purchaser") != user_id:
+        flash("수정 권한이 없습니다.")
+        return redirect(url_for("reviews.view_review",review_id=review_id))
+    
+    if request.method == "POST":
+        data = request.form.to_dict()
+
+        update_fields = {
+            "title": data.get("title"),
+            "review_details": data.get("r_details"),
+            "rating": data.get("rating")
+        }
+
+        image_file = request.files.get("file")
+
+        if image_file and image_file.filename:
+            img_filename = image_file.filename
+            image_file.save(f"static/images/{img_filename}")
+            update_fields["img_path"] = img_filename
+
+        DB.update_review(review_id, update_fields)
+        flash("리뷰가 수정되었습니다.")
+        return redirect(url_for("reviews.view_review", review_id=review_id))
+    
+    item = None
+    item_id = review.get("item_id")
+    if item_id: # 만약 리뷰와 연결된 상품이 있다면 정보 받아오기
+        item = DB.get_product(item_id)
+    return render_template(
+        "reg_reviews.html",
+        review=review,
+        review_id=review_id,
+        item=item,
+        item_id=item_id, # 필요하면 템플릿에서 새 작성/수정 구분용
+    )
+
+
+@reviews_bp.route("/reviews/delete/<string:review_id>")
+def delete_review(review_id):
+    DB = current_app.config["DB"]
+    user_id = session.get("id")
+
+    review = DB.get_review(review_id)
+    if not review or review.get("seller") != user_id:
+        flash("삭제 권한이 없습니다.")
+        return redirect(url_for("reviews.view_review",review_id=review_id))
+    
+    DB.delete_review(review_id)
+    flash("상품이 삭제되었습니다.")
+    return redirect(url_for("reviews.view_reviews"))
 

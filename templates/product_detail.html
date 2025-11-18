@@ -37,11 +37,14 @@
             </div>
             {% endif %}
             <div class="actions">
-                <a href="{{ url_for('pages.view_wishlist') }}">
-                    <button class="btn btn-cart" id="btn-wish" type="button">위시리스트</button>
-                </a>
+                <div class="wish-heart" id="wish-btn">
+                     <i class="fa-regular fa-heart"></i>
+                </div>
                 <a href="#구매창">
                     <button class="btn btn-buy" type="button">바로 구매</button>
+                </a>
+                <a href="{{ url_for('reviews.reg_review_get', item_id=product.id) }}">
+                    <button class="btn btn-review" type="button">리뷰 작성</button>
                 </a>
             </div>
             {% if is_owner %}
@@ -78,5 +81,21 @@
         // Flask의 delete 라우트로 이동
         window.location.href = `/products/${productId}/${slug}/delete`;
     });
-</script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const wishBtn = document.getElementById("wish-btn");
+            const icon = wishBtn.querySelector("i");
+
+            wishBtn.addEventListener("click", () => {
+                wishBtn.classList.toggle("active");
+
+                if (wishBtn.classList.contains("active")) {
+                    icon.classList.remove("fa-regular");
+                    icon.classList.add("fa-solid");
+                } else {
+                    icon.classList.remove("fa-solid");
+                    icon.classList.add("fa-regular");
+                }
+            });
+        });
+  </script>
 {% endblock %}

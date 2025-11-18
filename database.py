@@ -46,7 +46,11 @@ class DBhandler:
         return products
 
     def get_product(self, product_id):
-        return self.db.child("items").child(product_id).get().val() or {}
+        data = self.db.child("items").child(product_id).get().val() or {}
+        if data:
+            data["id"] = product_id
+
+        return data
 
     def update_product(self, product_id, data):
         self.db.child("items").child(product_id).update(data)
@@ -93,7 +97,8 @@ class DBhandler:
     
     # review 핸들러
     
-    def insert_review(self, name, data, img_path, purchaser_id):
+    # Create
+    def insert_review(self, name, data, img_path, purchaser_id, item_id=None):
         review_info = {
             "name" : name,
             "title" : data['title'],
@@ -102,7 +107,8 @@ class DBhandler:
             "product_details": data['p_details'],
             "review_details": data['r_details'],
             "rating": data['rating'],
-            "img_path": img_path
+            "img_path": img_path,
+            "item_id": item_id
         }
 
         res = self.db.child("reviews").push(review_info)
@@ -111,6 +117,7 @@ class DBhandler:
         print(data, img_path, "new_id=", new_id)
         return new_id
     
+    # Read all
     def get_reviews(self):
         raw = self.db.child("reviews").get().val() or {}
         reviews = []
@@ -120,6 +127,17 @@ class DBhandler:
             reviews.append(v)
         return reviews
     
+    # Read One
     def get_review(self, review_id):
-        return self.db.child("reviews").child(review_id).get().val() or {}
+        data = self.db.child("reviews").child(review_id).get().val() or {}
+        if data:
+            data["id"] = review_id
+        return data
     
+    # Update
+    def update_review(self, review_id, data):
+        self.db.child("reviews").child(review_id).update(data)
+
+    # Delete
+    def delete_review(self, review_id):
+        self.db.child("reviews").child(review_id).remove()
