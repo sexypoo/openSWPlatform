@@ -6,8 +6,10 @@ pages_bp = Blueprint("pages",__name__)
 def index():
     DB = current_app.config["DB"]
     products = DB.get_products()
+    reviews = DB.get_reviews()
     latest_products = products[-4:] if len(products) > 4 else products
-    return render_template("index.html", latest_products=latest_products)
+    latest_reviews = reviews[-4:] if len(reviews) > 4 else reviews
+    return render_template("index.html", latest_products=latest_products, latest_reviews=latest_reviews)
 
 @pages_bp.route("/login")
 def login():
@@ -35,9 +37,6 @@ def view_review():
 def reg_item():
     return render_template("reg_items.html")
 
-@pages_bp.route("/reg_reviews")
-def reg_review():
-    return render_template("reg_reviews.html")
 
 @pages_bp.route("/mypage")
 def view_mypage():

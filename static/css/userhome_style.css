@@ -719,3 +719,7 @@
     /* 이화그린 포인트 */
     box-shadow: 0 0 4px rgba(46, 107, 86, 0.3);
 }
+
+a {
+    text-decoration: none;
+}

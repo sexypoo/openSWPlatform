@@ -38,12 +38,35 @@
         <!-- 페이지네이션 -->
         <div class="pagination-section">
             <nav class="pagination" aria-label="pagination">
-                <a href="#" class="page-num prev" aria-label="Previous">‹</a>
-                <a href="#" class="page-num active">1</a>
-                <a href="#" class="page-num">2</a>
-                <a href="#" class="page-num">3</a>
-                <a href="#" class="page-num next" aria-label="Next">›</a>
-            </nav>
+                {# 이전 버튼 #}
+                {% if page > 1 %}
+                    <a href="{{ url_for('reviews.view_reviews', page=page-1) }}"
+                    class="page-num prev"
+                    aria-label="Previous">‹</a>
+                {% else %}
+                    <span class="page-num prev disabled" aria-label="Previous">‹</span>
+                {% endif %}
+
+                {# 페이지 번호들 #}
+                {% for p in range(1, page_count + 1) %}
+                    {% if p == page %}
+                        <span class="page-num active">{{ p }}</span>
+                    {% else %}
+                        <a href="{{ url_for('reviews.view_reviews', page=p) }}"
+                        class="page-num">{{ p }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {# 다음 버튼 #}
+                {% if page < page_count %}
+                    <a href="{{ url_for('reviews.view_reviews', page=page+1) }}"
+                    class="page-num next"
+                    aria-label="Next">›</a>
+                {% else %}
+                    <span class="page-num next disabled" aria-label="Next">›</span>
+                {% endif %}
+
+    </nav>
         </div>
     </main>
 

@@ -1,4 +1,6 @@
 import os
+from crypt import methods
+
 from flask import current_app
 from werkzeug.utils import secure_filename
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session, current_app
@@ -70,3 +72,57 @@ def view_product(product_id, slug):
     is_owner = (product.get("seller") == current_id)
 
     return render_template("product_detail.html", product=product, product_id=product_id, is_owner=is_owner)
+
+
+@items_bp.route("/products/<string:product_id>/<slug>/edit", methods=['GET', 'POST'])
+def edit_product(product_id, slug):
+    DB = current_app.config["DB"]
+    product = DB.get_product(product_id)
+    current_id = session.get("id")
+    if product.get("seller") != current_id:
+        flash("수정 권한이 없습니다")
+        return redirect(url_for("items.view_product", product_id=product_id, slug=slug))
+    if request.method == "GET":
+        return render_template("edit_product.html", product=product, product_id=product_id, slug=slug)
+
+    data = request.form
+    image_file = request.files.get("file")
+    file_name = product.get("img_path")
+
+    if image_file and image_file.filename:
+        file_name = secure_filename(image_file.filename)
+        image_file.save("static/images/{}".format(image_file.filename))
+
+    methods = data.getlist("method") if hasattr(data, "getlist") else data.get("method", [])
+    update_data = {
+        "name": data["name"],
+        "category": data["category"],
+        "details": data["details"],
+        "price": data["price"],
+        "quantity": data["quantity"],
+        "method": methods,
+        "img_path": file_name,
+        "seller": product.get("seller")
+    }
+
+    DB.update_product(product_id, update_data)
+    flash("상품이 수정되었습니다")
+    return redirect(url_for("items.view_product", product_id=product_id, slug=slug))
+
+
+@items_bp.route("/products/<string:product_id>/<slug>/delete", methods=['GET', 'POST'])
+def delete_product(product_id, slug):
+    DB = current_app.config["DB"]
+    product = DB.get_product(product_id)
+    current_id = session.get("id")
+
+    if product.get("seller") != current_id:
+        flash("삭제 권한이 없습니다.")
+        return redirect(url_for("items.view_product", product_id=product_id, slug=slug))
+
+    DB.delete_product(product_id)
+    flash("상품이 삭제 되었습니다")
+    return redirect(url_for("items.view_products"))
+
+
+
