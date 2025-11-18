@@ -31,6 +31,11 @@
             {% if product.method %}
             <div class="subnote" id="product-method">거래 방법: {{ product.method }}</div>
             {% endif %}
+            {% if product.quantity is defined and product.quantity|int < 5 %}
+            <div style="color:#d60000; font-weight:600; margin-top:8px;">
+                현재 이 상품의 재고가 {{ product.quantity }}개 남았습니다!
+            </div>
+            {% endif %}
             <div class="actions">
                 <div class="wish-heart" id="wish-btn">
                      <i class="fa-regular fa-heart"></i>
@@ -44,10 +49,10 @@
             </div>
             {% if is_owner %}
             <div class="seller_actions">
-                <a href="#">
+                <a href="{{url_for('items.edit_product', product_id=product_id, slug=product.name) }}">
                     <button class="btn btn-edit" id="btn-edit" type="button">수정하기</button>
                 </a>
-                <a href="#">
+                <a href="{{url_for('items.delete_product', product_id=product_id, slug=product.name) }}">
                     <button class="btn btn-buy" id="btn-delete" type="button">삭제하기</button>
                 </a>
             </div>
@@ -64,22 +69,33 @@
 {% endblock %}
 
 {% block script %}
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const wishBtn = document.getElementById("wish-btn");
-    const icon = wishBtn.querySelector("i");
+    <script>
+        document.getElementById("btn-delete")?.addEventListener("click", function () {
+        const confirmed = confirm("정말 이 상품을 삭제하시겠습니까?");
+        if (!confirmed) return;  // NO → 취소
 
-    wishBtn.addEventListener("click", () => {
-        wishBtn.classList.toggle("active");
+        // YES → 실제 삭제 요청 보내기
+        const productId = "{{ product_id }}";
+        const slug = "{{ product.name }}";
 
-        if (wishBtn.classList.contains("active")) {
-            icon.classList.remove("fa-regular");
-            icon.classList.add("fa-solid");
-        } else {
-            icon.classList.remove("fa-solid");
-            icon.classList.add("fa-regular");
-        }
+        // Flask의 delete 라우트로 이동
+        window.location.href = `/products/${productId}/${slug}/delete`;
     });
-});
-</script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const wishBtn = document.getElementById("wish-btn");
+            const icon = wishBtn.querySelector("i");
+
+            wishBtn.addEventListener("click", () => {
+                wishBtn.classList.toggle("active");
+
+                if (wishBtn.classList.contains("active")) {
+                    icon.classList.remove("fa-regular");
+                    icon.classList.add("fa-solid");
+                } else {
+                    icon.classList.remove("fa-solid");
+                    icon.classList.add("fa-regular");
+                }
+            });
+        });
+  </script>
 {% endblock %}
