@@ -38,6 +38,9 @@
                 <a href="#구매창">
                     <button class="btn btn-buy" type="button">바로 구매</button>
                 </a>
+                <a href="{{ url_for('reviews.reg_review_get', item_id=product.id) }}">
+                    <button class="btn btn-review" type="button">리뷰 작성</button>
+                </a>
             </div>
             {% if is_owner %}
             <div class="seller_actions">

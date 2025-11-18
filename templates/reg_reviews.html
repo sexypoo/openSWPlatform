@@ -5,22 +5,37 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/review_style.css') }}">
 {% endblock %}
 
+{% if review %}
+  {% set form_action = url_for('reviews.update_review', review_id=review_id) %}
+{% else %}
+  {% set form_action = url_for('reviews.reg_review_submit_post') %}
+{% endif %}
+
 {%block content %}
 <main class="main-content">
     <h1 class="page-title">리뷰 작성</h1>
 
     <!-- 상품 정보 -->
-     <form action="{{ url_for('reviews.reg_review_submit_post') }}" method="post" enctype="multipart/form-data">
+    <form 
+    method="post"
+    enctype="multipart/form-data"
+    action="{{form_action}}">
+    <input type="hidden" name="item_id" value="{{ item_id or '' }}">
     <div class="section">
         <h2 class="section-title">상품 정보</h2>
         <div class="product-info">
             <div class="product-field">
                 <label class="input-label" for="name">상품명</label>
-                <input type="text" class="text-input" id="pname" name="name" placeholder="상품명을 입력해주세요">
+                <input type="text" class="text-input" id="pname" name="name"  value="{{ item.name if item else review.name }}" placeholder="상품명을 입력해주세요">
+            </div>
+            <div class="product-field">
+                <label class="input-label" for="seller" value="{{ item.seller if item else review.seller }}">판매자</label>
+                <input type="text" class="text-input" id="seller" name="seller" value="{{ item.seller if item and item.seller else '' }}"placeholder="판매자 아이디를 입력하세요">
             </div>
             <div class="product-field">
                 <label class="input-label" for="p_details">상세 정보</label>
-                <input type="text" class="text-input" id="p_details" name="p_details" placeholder="상세정보(옵션)를 입력해주세요">
+                <input type="text" class="text-input" id="p_details" name="p_details" value="{{ item.details if item else review.product_details }}"
+                placeholder="상세정보(옵션)를 입력해주세요">
             </div>
         </div>
     </div>
@@ -45,17 +60,17 @@
         <div class="review-fields">
             <div class="field-group">
                 <label class="field-label" for="title">제목</label>
-                <input type="text" class="text-input" id="title" name="title" placeholder="리뷰 제목을 입력하세요">
+                <input type="text" class="text-input" id="title" name="title" value = "{{ review.title }}" placeholder="리뷰 제목을 입력하세요">
             </div>
 
             <div class="field-group">
                 <label class="field-label" for="seller_id">판매자</label>
-                <input type="text" class="text-input" id="seller_id" name="seller_id" placeholder="판매자 아이디를 입력하세요">
+                <input type="text" class="text-input" id="seller_id" name="seller_id" value="{{ review.seller }}" placeholder="판매자 아이디를 입력하세요">
             </div>
 
             <div class="field-group">
                 <label class="field-label" for="r_details">내용</label>
-                <textarea class="textarea-input large" id="r_details" name="r_details" placeholder="상품에 대한 솔직한 리뷰를 작성해주세요."></textarea>
+                <textarea class="textarea-input large" id="r_details" name="r_details" placeholder="상품에 대한 솔직한 리뷰를 작성해주세요.">{{ review.review_details }}</textarea>
             </div>
         </div>
     </div>
