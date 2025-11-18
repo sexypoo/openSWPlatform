@@ -37,7 +37,7 @@
             </div>
             {% endif %}
             <div class="actions">
-                <div class="wish-heart" id="wish-btn">
+                <div class="wish-heart" id="heart">
                      <i class="fa-regular fa-heart"></i>
                 </div>
                 <a href="#구매창">
@@ -81,21 +81,97 @@
         // Flask의 delete 라우트로 이동
         window.location.href = `/products/${productId}/${slug}/delete`;
     });
-        document.addEventListener("DOMContentLoaded", () => {
-            const wishBtn = document.getElementById("wish-btn");
-            const icon = wishBtn.querySelector("i");
 
-            wishBtn.addEventListener("click", () => {
-                wishBtn.classList.toggle("active");
+    document.addEventListener("DOMContentLoaded", () => {
+    const wishBtn = document.getElementById("heart");
+    if (!wishBtn) return;
 
-                if (wishBtn.classList.contains("active")) {
-                    icon.classList.remove("fa-regular");
-                    icon.classList.add("fa-solid");
-                } else {
-                    icon.classList.remove("fa-solid");
-                    icon.classList.add("fa-regular");
+    // 실제 UI 변경은 applyHeartUI에서 처리
+    const icon = wishBtn.querySelector("i");
+
+    wishBtn.addEventListener("click", () => {
+        // 현재 active 상태에 따라 like / unlike 호출
+        if (wishBtn.classList.contains("active")) {
+            // 이미 눌려있으면 취소
+            unlike();
+        } else {
+            // 안 눌려있으면 등록
+            like();
+        }
+    });
+});
+
+    // 하트 모양/색 바꾸는 함수
+    function applyHeartUI(isOn) {
+        const heart = document.getElementById("heart");
+        if (!heart) return;
+
+        const icon = heart.querySelector("i");
+        if (isOn) {
+            heart.classList.add("active");
+            heart.style.color = "#2e6b56";  // 이화 그린
+            if (icon) {
+                icon.classList.remove("fa-regular");
+                icon.classList.add("fa-solid");
+            }
+        } else {
+            heart.classList.remove("active");
+            heart.style.color = "#aaa";
+            if (icon) {
+                icon.classList.remove("fa-solid");
+                icon.classList.add("fa-regular");
+            }
+        }
+    }
+
+    function showHeart(){
+        $.ajax({
+            type:'GET',
+            url:'/show_heart/{{ product_id }}/',
+            data: {},
+            success: function(response){
+                let my_heart = response['my_heart'] || {};
+                if(my_heart['interested'] === 'Y'){
+                    applyHeartUI(true);
                 }
-            });
+                else{
+                    applyHeartUI(false);
+                }
+            }
         });
+    }
+
+    function like(){
+        $.ajax({
+            type:'POST',
+            url:'/like/{{ product_id }}/',
+            data:{
+                interested:"Y"
+            },
+            success:function(response){
+                alert(response['msg']);
+                applyHeartUI(true);
+            }
+        });
+    }
+
+    function unlike(){
+        $.ajax({
+            type:'POST',
+            url:'/unlike/{{ product_id }}/',
+            data:{
+                interested:"N"
+            },
+            success: function(response){
+                alert(response['msg']);
+                applyHeartUI(false);
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        showHeart();
+    });
+
   </script>
 {% endblock %}

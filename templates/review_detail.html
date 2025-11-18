@@ -13,16 +13,25 @@
         <div class="review-detail-container">
             <!-- 왼쪽 영역: 이미지 갤러리 -->
             <div class="review-gallery">
-                {% if review.img_path %}
-                <div class="main-image">
-                    <img
-                        alt="상품 이미지"
-                        class="main-image-img"
-                        src="{{ url_for('static', filename='images/' ~ review.img_path) }}">
+                {% if review.images and review.images|length > 0 %}
+                <div class="gallery-container">
+                    <div class="gallery-track" id="galleryTrack">
+                        {% for img in review.images %}
+                        <div class="gallery-slide">
+                            <img src="{{ url_for('static', filename='images/' ~ img) }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- 좌우 버튼 -->
+                    <button class="gallery-btn prev" id="galleryPrev">❮</button>
+                    <button class="gallery-btn next" id="galleryNext">❯</button>
                 </div>
+
                 {% else %}
                     <div class="main-image placeholder" aria-label="이미지 없음"></div>
                 {% endif %}
+
             </div>
 
             <!-- 오른쪽 영역: 리뷰 정보 -->
@@ -95,5 +104,51 @@
 
             console.log('이미지 ' + (index + 1) + ' 선택됨');
         }
-    </script>
+
+        const track = document.getElementById("galleryTrack");
+        const prevBtn = document.getElementById("galleryPrev");
+        const nextBtn = document.getElementById("galleryNext");
+
+        const slides = document.querySelectorAll(".gallery-slide");
+        const totalSlides = slides.length;
+
+        let index = 0;
+        let autoSlideInterval;
+
+        function updateSlide() {
+            track.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        function nextSlide() {
+            index = (index + 1) % totalSlides;
+            updateSlide();
+        }
+
+        function prevSlide() {
+            index = (index - 1 + totalSlides) % totalSlides;
+            updateSlide();
+        }
+
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(nextSlide, 3000);
+        }
+
+        function stopAutoSlide() {
+            clearInterval(autoSlideInterval);
+        }
+
+        prevBtn.addEventListener("click", () => {
+            stopAutoSlide();
+            prevSlide();
+            startAutoSlide();
+        });
+
+        nextBtn.addEventListener("click", () => {
+            stopAutoSlide();
+            nextSlide();
+            startAutoSlide();
+        });
+
+        if (totalSlides > 1) startAutoSlide();
+        </script>
 {% endblock %}

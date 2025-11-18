@@ -40,3 +40,7 @@ def login_user():
 def logout_user():
     session.clear()
     return redirect(url_for("pages.index"))
+
+@auth_bp.route("/user_info")
+def get_user_info():
+    return render_template("mypage.html")

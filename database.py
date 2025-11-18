@@ -98,7 +98,7 @@ class DBhandler:
     # review 핸들러
     
     # Create
-    def insert_review(self, name, data, img_path, purchaser_id, item_id=None):
+    def insert_review(self, name, data, img_paths, purchaser_id, item_id=None):
         review_info = {
             "name" : name,
             "title" : data['title'],
@@ -107,14 +107,13 @@ class DBhandler:
             "product_details": data['p_details'],
             "review_details": data['r_details'],
             "rating": data['rating'],
-            "img_path": img_path,
+            "images": img_paths,
             "item_id": item_id
         }
 
         res = self.db.child("reviews").push(review_info)
         new_id = res['name']
 
-        print(data, img_path, "new_id=", new_id)
         return new_id
     
     # Read all
@@ -141,3 +140,26 @@ class DBhandler:
     # Delete
     def delete_review(self, review_id):
         self.db.child("reviews").child(review_id).remove()
+
+    # wish 핸들러
+
+    def get_heart_byid(self, uid, id):
+        hearts = self.db.child("heart").child(uid).get()
+        target_value = ""
+        if hearts.val() == None:
+            return target_value
+        
+        for res in hearts.each():
+            key_value = res.key()
+
+            if key_value == id:
+                target_value = res.val()
+
+        return target_value
+    
+    def update_heart(self, uid, isHeart, item):
+        heart_info = {
+            "interested" : isHeart
+        }
+        self.db.child("heart").child(uid).child(item).set(heart_info)
+        return True
