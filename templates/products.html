@@ -1,0 +1,77 @@
+{%extends "layout.html"%}
+{% block title %}상품 전체보기 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/product_style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="products-page">
+    <div class="title">Products</div>
+    <hr/>
+
+    <!-- 상품 카드 목록 -->
+    <section class="grid">
+        {% for p in datas %}
+        <div class="card">
+            <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.name) }}">
+                <div class="thumb"
+                     aria-label="상품 이미지"
+                     {% if p.img_path %}
+                     style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');"
+                     {% endif %}>
+                </div>
+                <div class="meta">
+                    <div class="name">{{ p.name }}</div>
+                    <div class="price">
+                        ₩{{ p.price }}
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% else %}
+        <p>표시할 상품이 없습니다.</p>
+        {% endfor %}
+    </section>
+    <nav class="pagination" aria-label="pagination" style="margin-top:30px; text-align:center;">
+
+        {# 이전 버튼 #}
+        {% if page > 1 %}
+        <a class="page-num prev" href="{{ url_for('items.view_products', page=page-1) }}">‹</a>
+        {% else %}
+        <span class="page-num prev disabled">‹</span>
+        {% endif %}
+
+        {# 페이지 번호 버튼 #}
+        {% for i in range(1, page_count + 1) %}
+        {% if i == page %}
+        <span class="page-num active">{{ i }}</span>
+        {% else %}
+        <a class="page-num" href="{{ url_for('items.view_products', page=i) }}">{{ i }}</a>
+        {% endif %}
+        {% endfor %}
+
+        {# 다음 버튼 #}
+        {% if page < page_count %}
+        <a class="page-num next" href="{{ url_for('items.view_products', page=page+1) }}">›</a>
+        {% else %}
+        <span class="page-num next disabled">›</span>
+        {% endif %}
+    </nav>
+</div>
+{% endblock %}
+
+
+{% block script %}
+<script>
+    document.addEventListener('click', function (e) {
+        const a = e.target.closest('.page-num');
+        if (!a || a.classList.contains('prev') || a.classList.contains('next')) return;
+        e.preventDefault();
+        document.querySelectorAll('.pagination .page-num').forEach(el => el.classList.remove('active'));
+        a.classList.add('active');
+        // TODO: 실제 데이터 로딩 로직 연결
+    });
+</script>
+{% endblock %}
+

@@ -1,67 +1,176 @@
-{% extends "index.html" %}
-{% block section %}
-<form method="post" enctype="multipart/form-data" action="/submit_item_post">
-    <div><br><br>
-        <label for="name">Item name: </label>
-        <input type="text" name="name" id="name" required><br><br>
+{%extends "layout.html"%}
+{% block title %}상품 등록 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/product_style.css') }}">
+{% endblock %}
+
+{%block content %}
+<div class="reg-items-page">
+
+  <div class="title">Item Registeration</div>
+  <hr/>
+  <form method="POST" enctype="multipart/form-data" action="{{ url_for('items.reg_item_submit_post') }}">
+    <div class="grid">
+    <!-- left: upload area -->
+      <div>
+        <label class="upload-card req-dot">
+        <small>사진</small>
+        <img alt="" class="preview" hidden="" id="previewImg"/>
+        <div class="hint">클릭하여 파일을 선택하세요</div>
+        <input accept="image/*" id="file" name="file" type="file" required/>
+      </label>
     </div>
-    <div>
-        <label for="seller"> Seller ID: </label>
-        <input type="text" name="seller" id="seller" required><br><br>
+    <!-- right: form -->
+  <div>
+    <div class="field">
+      <label class="req-dot" for="name">상품명</label>
+      <input id="pname" name="name" placeholder="상품명" required="" type="text"/>
     </div>
-    <div>
-        <label for=
-                       "addr"> Address: </label>
-        <input type="text" name=
-                "addr" id=
-                       "addr" required><br><br>
+    <div class="field">
+      <label class="req-dot" for="category">카테고리</label>
+      <select id="cate" name="category" required="">
+        <option disabled="" selected="" value="">카테고리</option>
+        <option value="cloth">의류</option>
+        <option value="book">서적</option>
+        <option value="etc">잡화</option>
+      </select>
     </div>
-    <div>
-        <label for=
-                       "email">Email: </label>
-        <input type="text" name="email" id="email" required><br><br>
+    <div class="field">
+      <label class="req-dot" for="details">설명</label>
+      <textarea id="details" name="details" placeholder="브랜드, 모델명, 구매 시기, 하자 유무 등 상품 설명을 최대한 자세하게 적어주세요." required=""></textarea>
     </div>
-    <div>
-        <label for="category">Category: </label>
-        <br>
-        <select id="category" name="category">
-            <option value="Clothes" selected> Clothes</option>
-            <option value="Beauty"> Beauty</option>
-            <option value="Books"> Books</option>
-            <option value="Furniture"> Furniture</option>
-            <option value="Electronics"> Electronics</option>
-            <option value="ETC"> ETC</option>
-        </select><br><br>
+    <div class="field">
+      <label for="tag">태그</label>
+      <input id="tag" name="tag" placeholder="#태그" type="text"/>
     </div>
-    <div>
-        <label for="card">Credit Card? (Y/N): </label>
-        <br>
-        <select id="card" name="card">
-            <option value="Y" selected>Yes</option>
-            <option value="N">No</option>
-        </select><br><br>
+    <div class="field">
+      <label class="req-dot">가격</label>
+      <div class="price-row">
+        <input id="price" inputmode="numeric" name="price" placeholder="가격" required="" type="text"/>
+        <input aria-label="통화 단위" disabled="" type="text" value="(원)"/>
+      </div>
     </div>
-    <div>
-        <label for="status">Status? </label>
-        <br>
-        <select id="status" name="status">
-            <option value="new" selected>New</option>
-            <option value=
-                            "lnew">Likely New
-            </option>
-            <option value="used">Used</option>
-        </select><br><br>
+    <div class="field">
+    <label class="req-dot" id="label-method">거래 방법</label>
+    <div class="check-grid">
+      <label><input name="method" type="checkbox" value="ftf"/>대면 직거래 가능</label>
+      <label><input name="method" type="checkbox" value="nftf"/>비대면 직거래 가능</label>
+      <label><input name="method" type="checkbox" value="post"/>택배 거래 가능</label>
+      <label><input name="method" type="checkbox" value="personal"/>거래 방법 개인 문의 요함</label>
     </div>
-    <div>
-        <label for="phone">Phone : </label>
-        <input type="text" name="phone" id="phone"><br><br>
     </div>
-    <div>
-        <label for="file">Representative Image upload: </label>
-        <input type="file" name="file" id="file" accept="image/*"><br><br>
+    <div class="submit-wrap">
+      <button class="btn" disabled="" type="submit">상품 등록</button><!--처음엔 비활성화-->
     </div>
-    <div>
-        <input type="submit" value="Submit!"><br><br>
-    </div>
-</form>
-{% endblock section %}
+  </div>
+  </div>
+  </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+//사진 파일을 넣으면 미리보기로 사진이 등록 창에 올라가도록 하기 
+document.addEventListener("DOMContentLoaded", function () {
+  const fileInput = document.getElementById("file");
+  const hint = document.querySelector(".upload-card .hint");
+  const previewImg = document.getElementById("previewImg");
+  let currentURL = null;
+
+  fileInput.addEventListener("change", () => {//사용자가 새로 파일을 선택할 때 시행되는 함수
+    const f = fileInput.files && fileInput.files[0];//선택한 것 중 첫 번째 파일을 f에 넣음. 
+
+    if (!f) {//파일을 선택하지 않고 선택창을 닫았을 때, 다시 '사진', * 띄움.
+      if (currentURL) { URL.revokeObjectURL(currentURL); currentURL = null; }
+      previewImg.hidden = true;
+      previewImg.removeAttribute("src");
+      hint.style.display = "";
+      return;
+    }
+
+    if (currentURL) { URL.revokeObjectURL(currentURL); currentURL = null; }
+
+    if (!f.type.startsWith("image/")) {//이미지가 아닌 다른 파일을 넣을 때, 경고 + 입력창 리셋
+      alert("이미지 파일을 선택하세요.");
+      fileInput.value = "";
+      previewImg.hidden = true;
+      previewImg.removeAttribute("src");
+      hint.style.display = "";
+      return;
+    }
+
+    const url = URL.createObjectURL(f);//선택한 파일을 임시로 브라우저에서 미리 볼 수 있는 URL로 바꿈. 
+    currentURL = url;
+
+    previewImg.src = url;
+    previewImg.hidden = false;//이미지가 화면에 보이도록 설정
+    hint.style.display = "none";//힌트는 숨김.
+  });
+});
+
+//필수 항목을 모두 채워야 제출 가능하게 만들기 + with red dot
+document.addEventListener("DOMContentLoaded", function() {              // DOM이 모두 그려진 뒤에 스크립트 실행
+  const form = document.querySelector("form");                          // 입력 from 전체 form에 넣기
+  const requiredFields = form.querySelectorAll(                         // required가 붙은 항목들 전부 가져오기 
+    "input[required], textarea[required], select[required]"
+  );
+  const fileInput = document.getElementById("file");                    // 사진 파일 가져오기
+  const uploadLabel = fileInput.closest(".upload-card");                // 사진파일, 부모 카드: uploadedLabe1 가져오기
+  const checkboxes = form.querySelectorAll(                             // 체크박스 4개 가져오기
+    "input[type='checkbox'][name='method']"
+  );
+  const submitButton = form.querySelector(".btn");                      // submitButton: '상품 등록' 버튼 가져오기 나중에 조건이 다 맞으면 disabled = false로 바꿔서 활성화
+  const methodLabel = document.getElementById("label-method");          // methodLabel: '거래 방법' label이 checkbox와 직접적으로 연결되어있지 않기 때문에 따로 불러와야함. 
+
+  function showDot(el, visible) {                                       // 레드닷 표시할지 설정하는 함수
+    if (!el) return;                                                    // 대상이 없으면 종료
+    el.style.setProperty("--show-dot", visible ? "visible" : "hidden"); // setProperty 해당 CSS의 visible 변수를 script의 visible 값에 따라 설정. 
+  }
+
+  function checkRequired() {                                            // 모든 필수 조건 충족하는지 검사
+    let allFilled = true;                                               // allFilled = true로 가정하고 시작
+
+    // 1) 텍스트/textarea/select 필수 필드 검사
+    requiredFields.forEach(field => {                                   // 각 필수 필드를 돌며
+      const label = field.closest(".field")?.querySelector(".req-dot"); // 같은 .field 안의 req-dot 레이블 찾기
+      if (field.value.trim() === "") {                                  // field.value.trim()값이 비었으면
+        showDot(label, true);                                           // 켜기
+        allFilled = false;                                              // 하나라도 비었으니 전체 완료=false
+      } else {
+        showDot(label, false);                                          // 끄기
+      }
+    });
+
+    // 2) 파일(사진/동영상) 업로드 검사
+    if (fileInput.files.length === 0) {                                 // 선택된 파일이 없으면
+      showDot(uploadLabel, true);                                       // 켜기
+      allFilled = false;
+    } else {
+      showDot(uploadLabel, false);                                      // 끄기
+    }
+
+    // 3) 체크박스 그룹(거래방법) 최소 1개 검사
+    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);   // 하나라도 체크되어 있으면 true
+    if (!anyChecked) {                                                  // 아무 것도 안 고르면
+      showDot(methodLabel, true);                                       // 켜기
+      allFilled = false;
+    } else {
+      showDot(methodLabel, false);                                      // 끄기
+    }
+
+    // 4) 모든 조건 만족 여부로 제출 버튼 상태 결정
+    submitButton.disabled = !allFilled;                                 // 모두 채워짐 allFilled=true -> disabled=false  즉, 활성화
+  }
+
+  // 입력 변화에 반응: 타이핑/선택/체크 변경 시마다 재검사
+  [...requiredFields, fileInput, ...checkboxes].forEach(el => {         // 스프레드로 하나의 배열처럼 묶기
+    el.addEventListener("input", checkRequired);                        // 타이핑/체크 토글 등 즉시 반응
+    el.addEventListener("change", checkRequired);                       // 셀렉트/파일 변경 등 값 확정 시 반응
+  });
+
+  checkRequired();                                                      // 페이지 로드 직후 초기 상태 한 번 점검
+});
+</script>
+{% endblock %}

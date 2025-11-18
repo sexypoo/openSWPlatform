@@ -1,173 +1,93 @@
-<!DOCTYPE html>
-<html lang="ko">
+{%extends "layout.html"%}
+{% block title %}리뷰 작성 | EWHA MARKET{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 외부 CSS 파일 연결 -->
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <title>리뷰 작성 - EWHA MARKET</title>
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/review_style.css') }}">
+{% endblock %}
 
-</head>
+{%block content %}
+<main class="main-content">
+    <h1 class="page-title">리뷰 작성</h1>
 
-<body>
-    <header>
-        <!-- 사이트 로고 -->
-        <div class="logo">
-            <a href="index.html" class="logo-link">
-                <div class="ewha">EWHA</div>
-                <div class="market">MARKET</div>
-            </a>
-        </div>
-
-        <!-- 네비게이션 메뉴 -->
-        <nav>
-            <!-- 홈으로 이동 -->
-            <div class="nav-item">
-                <span><a href="index.html" style="text-decoration: none; color: inherit;">Home</a></span>
+    <!-- 상품 정보 -->
+     <form action="{{ url_for('reviews.reg_review_submit_post') }}" method="post" enctype="multipart/form-data">
+    <div class="section">
+        <h2 class="section-title">상품 정보</h2>
+        <div class="product-info">
+            <div class="product-field">
+                <label class="input-label" for="name">상품명</label>
+                <input type="text" class="text-input" id="pname" name="name" placeholder="상품명을 입력해주세요">
             </div>
-
-            <!-- Products 메뉴 (드롭다운 포함) -->
-            <div class="nav-item">
-                <span>Products</span>
-                <div class="dropdown">
-                    <a href="list.html" class="dropdown-item">상품 목록</a>
-                    <a href="reg_items.html" class="dropdown-item">상품 등록 페이지</a>
-                </div>
-            </div>
-
-            <!-- Reviews 메뉴 (드롭다운 포함) -->
-            <div class="nav-item">
-                <span>Reviews</span>
-                <div class="dropdown">
-                    <a href="reg_reviews.html" class="dropdown-item">리뷰 작성</a>
-                    <a href="review.html" class="dropdown-item">모든 리뷰 보기</a>
-                </div>
-            </div>
-        </nav>
-
-        <!-- 오른쪽 상단 아이콘 (하트, 사용자) + 로그인/회원가입 버튼 -->
-        <div class="header-icons">
-            <!-- 하트 아이콘 (위시리스트 화면 연결) -->
-            <a href="wishlist.html">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682
-                   a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318
-                   a4.5 4.5 0 00-6.364 0z"></path>
-                </svg>
-            </a>
-
-            <!-- 사용자 아이콘 (마이페이지 연결) -->
-            <a href="mypage.html">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0z
-                   M12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-            </a>
-
-            <!-- 로그인/회원가입 버튼 -->
-            <button class="login-btn" onclick="location.href='login.html'">로그인/회원가입</button>
-        </div>
-    </header>
-
-
-
-    <main class="main-content">
-        <h1 class="page-title">리뷰 작성</h1>
-
-        <!-- 상품 정보 -->
-        <div class="section">
-            <h2 class="section-title">상품 정보</h2>
-            <div class="product-info">
-                <div class="product-field">
-                    <label class="input-label">상품명</label>
-                    <input type="text" class="text-input" placeholder="상품명을 입력해주세요">
-                </div>
-                <div class="product-field">
-                    <label class="input-label">상세 정보</label>
-                    <input type="text" class="text-input" placeholder="상세정보(옵션)를 입력해주세요">
-                </div>
+            <div class="product-field">
+                <label class="input-label" for="p_details">상세 정보</label>
+                <input type="text" class="text-input" id="p_details" name="p_details" placeholder="상세정보(옵션)를 입력해주세요">
             </div>
         </div>
+    </div>
 
-        <!-- 별점 평가 -->
-        <div class="section rating-section">
-            <h2 class="section-title">별점 평가</h2>
-            <div class="stars" id="starRating">
-                <span class="star filled" data-value="1">★</span>
-                <span class="star" data-value="2">★</span>
-                <span class="star" data-value="3">★</span>
-                <span class="star" data-value="4">★</span>
-                <span class="star" data-value="5">★</span>
-            </div>
+    <!-- 별점 평가 -->
+    <div class="section rating-section">
+        <h2 class="section-title">별점 평가</h2>
+        <div class="stars" id="starRating">
+            <span class="star filled" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
         </div>
 
-        <!-- 리뷰 내용 -->
-        <div class="section">
-            <h2 class="section-title">리뷰 내용</h2>
-            <div class="review-fields">
-                <div class="field-group">
-                    <label class="field-label">제목</label>
-                    <input type="text" class="text-input" placeholder="리뷰 제목을 입력하세요">
-                </div>
+        <input type="hidden" id="rating" name="rating" value="1">
+    </div>
 
-                <div class="field-group">
-                    <label class="field-label">작성자</label>
-                    <input type="text" class="text-input" placeholder="작성자 아이디를 입력하세요">
-                </div>
+    <!-- 리뷰 내용 -->
+    <div class="section">
+        <h2 class="section-title">리뷰 내용</h2>
+        <div class="review-fields">
+            <div class="field-group">
+                <label class="field-label" for="title">제목</label>
+                <input type="text" class="text-input" id="title" name="title" placeholder="리뷰 제목을 입력하세요">
+            </div>
 
-                <div class="field-group">
-                    <label class="field-label">내용</label>
-                    <textarea class="textarea-input large" placeholder="상품에 대한 솔직한 리뷰를 작성해주세요."></textarea>
-                </div>
+            <div class="field-group">
+                <label class="field-label" for="seller_id">판매자</label>
+                <input type="text" class="text-input" id="seller_id" name="seller_id" placeholder="판매자 아이디를 입력하세요">
+            </div>
+
+            <div class="field-group">
+                <label class="field-label" for="r_details">내용</label>
+                <textarea class="textarea-input large" id="r_details" name="r_details" placeholder="상품에 대한 솔직한 리뷰를 작성해주세요."></textarea>
             </div>
         </div>
+    </div>
 
-        <!-- 사진 첨부 -->
-        <div class="section">
-            <h2 class="section-title">사진 첨부</h2>
-            <div class="photo-upload" onclick="document.getElementById('fileInput').click()">
-                <p class="photo-upload-text">클릭하여 사진을 첨부해주세요</p>
-                <input type="file" id="fileInput" style="display: none;" accept="image/*" multiple>
-            </div>
+    <!-- 사진 첨부 -->
+    <div class="section">
+        <h2 class="section-title">사진 첨부</h2>
+        <div class="photo-upload" onclick="document.getElementById('fileInput').click()">
+            <p class="photo-upload-text">클릭하여 사진을 첨부해주세요</p>
+            <input accept="image/*" id="fileInput" name="file" type="file" style="display: none;" multiple>
         </div>
-    </main>
+    </div>
+    <div class="section">
+        <button type="submit" class="submit-button">리뷰 등록</button>
+    </div>
+    </form>
+</main>
+{% endblock %}
 
-    <!-- footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-top">
-                <div class="footer-logo logo">
-                    <a href="../index.html" class="logo-link">
-                        <span class="ewha">EWHA</span><br><span class="market">MARKET</span>
-                    </a>
-                </div>
-
-                <nav class="footer-nav">
-                    <ul>
-                        <li><a href="#main">Home</a></li>
-                        <li><a href="products.html">Products</a></li>
-                        <li><a href="#review">Reviews</a></li>
-                    </ul>
-                </nav>
-            </div>
-
-            <div class="footer-bottom">
-                <p>© 2025 EWHA MARKET. Designed for educational purposes by Ewha students.
-                    Contact: <a href="mailto:support@ewhamarket.kr"
-                        style="color:#2e6b56; text-decoration:none;">support@ewhamarket.kr</a></p>
-            </div>
-        </div>
-    </footer>
-
+{% block script %}
     <script>
         // 별점 기능
-        const stars = document.querySelectorAll('.star');
-        let currentRating = 3;
+        const stars = document.querySelectorAll('.star'); // 별 5개 각각
+        const ratingInput = document.getElementById('rating'); // 서버로 보낼 hidden input
+        let currentRating = parseInt(ratingInput.value) || 1; // 현재 선택된 별점 값
+
+        updateStars(); // hidden input에 맞춰 별 색 칠하는 함수
 
         stars.forEach(star => {
             star.addEventListener('click', function () {
                 currentRating = parseInt(this.getAttribute('data-value'));
+                ratingInput.value = currentRating; // 서버에 보낼 값 현재 선택된 별 개수로 갱신
                 updateStars();
             });
 
@@ -185,7 +105,7 @@
 
         document.getElementById('starRating').addEventListener('mouseleave', updateStars);
 
-        function updateStars() {
+        function updateStars() { // hidden input에 맞춰 별 색 칠하는 함수
             stars.forEach((star, index) => {
                 if (index < currentRating) {
                     star.classList.add('filled');
@@ -203,6 +123,4 @@
             }
         });
     </script>
-</body>
-
-</html>
+{% endblock %}
