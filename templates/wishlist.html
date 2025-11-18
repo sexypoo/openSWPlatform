@@ -49,49 +49,60 @@
     }
 
     visibleProducts.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <a href="detail.html">
-          <div class="thumb" aria-label="상품 이미지">
-            <span class="heart ${wishlist.includes(p.id) ? "" : "inactive"}" data-id="${p.id}">❤️</span>
-          </div>
-          <div class="meta">
-            <div class="name">${p.name}</div>
-            <div class="price">₩${p.price.toLocaleString()}</div>
-          </div>
-        </a>
-      `;
-      grid.appendChild(card);
+      const isWished = wishlist.includes(p.id);
+
+     const card = document.createElement("div");
+     card.className = "card";
+     card.innerHTML = `
+      <a href="detail.html">
+        <div class="thumb" aria-label="상품 이미지">
+         <span class="heart wish-heart ${isWished ? "active" : ""}" data-id="${p.id}">
+           <i class="fa-${isWished ? "solid" : "regular"} fa-heart"></i>
+         </span>
+        </div>
+        <div class="meta">
+          <div class="name">${p.name}</div>
+          <div class="price">₩${p.price.toLocaleString()}</div>
+        </div>
+      </a>
+    `;
+    grid.appendChild(card);
     });
+
 
     attachHeartEvents();
   }
 
   // 💡 하트 클릭 이벤트 추가
   function attachHeartEvents() {
-    const hearts = document.querySelectorAll(".heart");
-    hearts.forEach(heart => {
-      heart.addEventListener("click", e => {
-        e.preventDefault(); // 링크 클릭 방지
-        const id = parseInt(heart.dataset.id);
+  const hearts = document.querySelectorAll(".heart");
+  hearts.forEach(heart => {
+    heart.addEventListener("click", e => {
+      e.preventDefault();   // a 링크 클릭 막기
 
-        if (wishlist.includes(id)) {
-          // 이미 위시리스트에 있음 → 제거
-          wishlist = wishlist.filter(x => x !== id);
-          heart.classList.add("inactive");
-        } else {
-          // 없으면 추가
-          wishlist.push(id);
-          heart.classList.remove("inactive");
-        }
+      const id = parseInt(heart.dataset.id);
+      const icon = heart.querySelector("i");
 
-        // 변경사항 저장
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
-        renderProducts(); // 새로고침 없이 즉시 반영
-      });
+      if (wishlist.includes(id)) {
+        // 제거
+        wishlist = wishlist.filter(x => x !== id);
+        heart.classList.remove("active");
+        icon.classList.remove("fa-solid");
+        icon.classList.add("fa-regular");
+      } else {
+        // 추가
+        wishlist.push(id);
+        heart.classList.add("active");
+        icon.classList.remove("fa-regular");
+        icon.classList.add("fa-solid");
+      }
+
+      localStorage.setItem("wishlist", JSON.stringify(wishlist));
     });
-  }
+  });
+}
+
+
 
   // 🚀 페이지 로드 시 위시리스트 렌더링
   renderProducts();
