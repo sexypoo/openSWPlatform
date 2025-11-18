@@ -1,0 +1,111 @@
+{%extends "layout.html"%}
+{% block title %}상품 수정 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/product_style.css') }}">
+{% endblock %}
+
+{%block content %}
+<div class="reg-items-page">
+  <div class="title">Item Edit</div>
+  <hr/>
+  <form method="POST" enctype="multipart/form-data" action="{{ url_for('items.edit_product', product_id=product_id, slug=slug) }}">
+    <div class="grid">
+
+      <div>
+        <label class="upload-card req-dot">
+        <small>사진</small>
+        <img alt="" class="preview" id="previewImg"
+             src="{{ url_for('static', filename='images/' ~ product.img_path) }}">
+        <div class="hint" style="display:none;">클릭하여 파일을 선택하세요</div>
+        <input accept="image/*" id="file" name="file" type="file"/>
+      </label>
+      </div>
+
+      <div>
+        <div class="field">
+          <label class="req-dot" for="name">상품명</label>
+          <input id="pname" name="name" required type="text" value="{{ product.name }}">
+        </div>
+
+        <div class="field">
+          <label class="req-dot" for="category">카테고리</label>
+          <select id="cate" name="category" required>
+            <option disabled value="">카테고리</option>
+            <option value="cloth" {% if product.category=='cloth' %}selected{% endif %}>의류</option>
+            <option value="book" {% if product.category=='book' %}selected{% endif %}>서적</option>
+            <option value="etc" {% if product.category=='etc' %}selected{% endif %}>잡화</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="req-dot" for="details">설명</label>
+          <textarea id="details" name="details" required>{{ product.details }}</textarea>
+        </div>
+
+        <div class="field">
+          <label class="req-dot" for="quantity">수량</label>
+          <input type="number" name="quantity" id="quantity" min="1" required value="{{ product.quantity }}">
+        </div>
+
+        <div class="field">
+          <label for="tag">태그</label>
+          <input id="tag" name="tag" type="text" value="{{ product.tags }}">
+        </div>
+
+        <div class="field">
+          <label class="req-dot">가격</label>
+          <div class="price-row">
+            <input id="price" inputmode="numeric" name="price" required type="text" value="{{ product.price }}">
+            <input disabled type="text" value="(원)">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="req-dot" id="label-method">거래 방법</label>
+          <div class="check-grid">
+            <label><input name="method" type="checkbox" value="대면 직거래 가능"
+                {% if "대면 직거래 가능" in product.method %}checked{% endif %}>대면 직거래 가능</label>
+
+            <label><input name="method" type="checkbox" value="비대면 직거래 가능"
+                {% if "비대면 직거래 가능" in product.method %}checked{% endif %}>비대면 직거래 가능</label>
+
+            <label><input name="method" type="checkbox" value="택배 거래 가능"
+                {% if "택배 거래 가능" in product.method %}checked{% endif %}>택배 거래 가능</label>
+
+            <label><input name="method" type="checkbox" value="거래 방법 개인 문의 요함"
+                {% if "거래 방법 개인 문의 요함" in product.method %}checked{% endif %}>거래 방법 개인 문의 요함</label>
+          </div>
+        </div>
+
+        <div class="submit-wrap">
+          <button class="btn" type="submit">상품 수정</button>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const fileInput = document.getElementById("file");
+  const previewImg = document.getElementById("previewImg");
+
+  fileInput.addEventListener("change", () => {
+    const f = fileInput.files && fileInput.files[0];
+    if (!f) return;
+    if (!f.type.startsWith("image/")) {
+      alert("이미지 파일을 선택하세요.");
+      fileInput.value = "";
+      return;
+    }
+    const url = URL.createObjectURL(f);
+    previewImg.src = url;
+    previewImg.hidden = false;
+  });
+});
+</script>
+{% endblock %}

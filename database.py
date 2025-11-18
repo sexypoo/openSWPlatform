@@ -19,6 +19,7 @@ class DBhandler:
             "category": data['category'],
             "details": data['details'],
             "price": data["price"],
+            "quantity": data.get("quantity", 1),
             "method":(data.getlist("method") if hasattr(data, "getlist") else data.get("method",[])),
             "img_path": img_path
 
@@ -46,6 +47,12 @@ class DBhandler:
 
     def get_product(self, product_id):
         return self.db.child("items").child(product_id).get().val() or {}
+
+    def update_product(self, product_id, data):
+        self.db.child("items").child(product_id).update(data)
+
+    def delete_product(self, product_id):
+        self.db.child("items").child(product_id).remove()
 
     # auth 핸들러
 
