@@ -42,13 +42,20 @@ def reg_review_submit_post():
         return redirect(url_for("pages.login"))
 
     # 이미지 파일 저장
-    image_file = request.files.get("file")
-    img_filename = None
-    if image_file and image_file.filename:          # 파일이 실제로 있을 때만
-        img_filename = image_file.filename
-        image_file.save(f"static/images/{img_filename}")
+    files = request.files.getlist("file")
+    img_filenames = []
 
-    
+    for image_file in files[:3]:
+        if not image_file or not image_file.filename:
+            continue
+
+        filename = secure_filename(image_file.filename)
+        save_path = f"static/images/{filename}"
+
+        image_file.save(save_path)
+        img_filenames.append(filename)
+
+        
     # 폼 데이터 저장
     data = request.form.to_dict()
     DB = current_app.config["DB"] # 현재 앱에서 생성된 DB를 가져와서 사용
@@ -67,7 +74,6 @@ def reg_review_submit_post():
         p_details = product.get("details", p_details)
         seller_id = product.get("seller", seller_id)
 
-    # insert_review가 기대하는 키 맞추기
     data["p_details"] = p_details
     data["seller_id"] = seller_id
 
@@ -75,7 +81,7 @@ def reg_review_submit_post():
     new_review_id = DB.insert_review(
         name=name,
         data=data,
-        img_path=image_file.filename,
+        img_paths=img_filenames,
         purchaser_id=purchaser_id,
         item_id=item_id,
     )
