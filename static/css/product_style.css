@@ -483,6 +483,10 @@ input[type="checkbox"] {
   height: 18px;
   cursor: pointer;
 }
+
+a {
+    text-decoration: none;
+}
 /* 상세페이지 하트 버튼 */
 .wish-heart {
   width: 46px;

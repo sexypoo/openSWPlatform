@@ -60,6 +60,12 @@
 
                 <!-- 목록으로 버튼 (리뷰 전체 조회 화면으로 이동) -->
                 <button class="back-button" onclick="location.href='{{ url_for('reviews.view_reviews') }}'">목록으로</button>
+                <a href="{{ url_for('reviews.update_review', review_id=review.id) }}" class="btn btn-edit">
+                    수정하기
+                </a>
+                <a href="{{ url_for('reviews.delete_review', review_id=review.id) }}" class="btn btn-delete">
+                    삭제하기
+                </a>
             </div>
         </div>
     </main>
