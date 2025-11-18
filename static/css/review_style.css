@@ -119,24 +119,115 @@
     min-height: 150px;
 }
 
-/* 사진 첨부 */
-.photo-upload {
-    border: 2px dashed #ddd;
-    border-radius: 4px;
-    padding: 60px 20px;
-    text-align: center;
+/* 섹션 헤더 (제목 + 안내문구) */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+/* 사진 제한 안내 텍스트 */
+.photo-limit-text {
+    font-size: 13px;
+    color: #999;
+}
+
+/* 사진 업로드 섹션 */
+.photo-upload-section {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+/* 사진 불러오기 버튼 (정사각형) */
+.photo-upload-btn {
+    width: 150px;
+    height: 150px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
     cursor: pointer;
-    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    flex-shrink: 0;
 }
 
-.photo-upload:hover {
-    background: #f5f5f5;
+.photo-upload-btn:hover {
+    border-color: #2e6b56;
+    box-shadow: 0 0 4px rgba(46, 107, 86, 0.3);
 }
 
-.photo-upload-text {
-    color: #333;
+/* 버튼 내 텍스트 */
+.upload-btn-text {
     font-size: 14px;
+    color: #333;
 }
+
+/* 업로드 카운트 */
+.upload-count {
+    font-size: 13px;
+    color: #999;
+}
+
+/* 사진 미리보기 컨테이너 */
+.photo-preview-container {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* 각 사진 아이템 */
+.photo-preview-item {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+/* 미리보기 이미지 */
+.preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 삭제 버튼 */
+.delete-photo-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 25px;
+    height: 25px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.delete-photo-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* 버튼 섹션 (오른쪽 정렬) */
+.button-section {
+    display: flex;
+    justify-content: center;
+}
+
 
 
 /* ------------------------------------------------ */
@@ -237,15 +328,8 @@
     text-align: center;
 }
 
-.pagination-line {
-    width: 60px;
-    border: none;
-    border-top: 1px solid #ccc;
-    margin: 0 auto 20px;
-}
-
 .pagination {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     gap: 14px;
 }
@@ -256,12 +340,16 @@
     font-size: 14px;
     padding: 6px 10px;
     border-radius: 6px;
-    transition: color 0.2s;
+    transition: color 0.2s, background-color 0.2s;
 }
 
-.page-num:hover,
-.page-num.active {
+.page-num:hover {
     color: #2e6b56;
+}
+
+.page-num.active {
+    color: #fff;
+    background: #2e6b56;
 }
 
 /* ------------------------------------------------ */
