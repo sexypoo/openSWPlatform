@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko">
 
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for msg in messages %}
+      <script>
+        alert("{{ msg }}");
+      </script>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -118,3 +128,4 @@
 {% block script %}{% endblock %}
 </body>
 </html>
+

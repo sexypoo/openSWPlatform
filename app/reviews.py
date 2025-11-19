@@ -175,7 +175,7 @@ def delete_review(review_id):
     user_id = session.get("id")
 
     review = DB.get_review(review_id)
-    if not review or review.get("seller") != user_id:
+    if not review or review.get("purchaser") != user_id:
         flash("삭제 권한이 없습니다.")
         return redirect(url_for("reviews.view_review",review_id=review_id))
     
