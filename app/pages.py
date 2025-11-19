@@ -36,12 +36,3 @@ def view_review():
 @pages_bp.route("/reg_items")
 def reg_item():
     return render_template("reg_items.html")
-
-
-@pages_bp.route("/mypage")
-def view_mypage():
-    return render_template("mypage.html");
-
-@pages_bp.route("/mypage/wishlist")
-def view_wishlist():
-    return render_template("wishlist.html");

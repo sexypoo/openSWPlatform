@@ -163,3 +163,50 @@ class DBhandler:
         }
         self.db.child("heart").child(uid).child(item).set(heart_info)
         return True
+    
+    # User Handler
+
+    def get_user(self, user_id: str):
+        users = self.db.child("user").get()
+
+        if not users or users.val() is None:
+            return None
+        
+        for res in (users.each() or []):
+            value = res.val() or {}
+            if value.get("id") == user_id:
+                user_data = value.copy()
+                user_data["_key"] = res.key()
+                return user_data
+        
+        return None
+    
+    def update_user_password(self, user_id:str, new_password:str):
+        users = self.db.child("user").get()
+
+        if not users or users.val() is None:
+            return False
+        
+        for res in (users.each() or []):
+            value = res.val() or {}
+            if str(value.get("id")) == str(user_id):
+                key = res.key()
+                self.db.child("user").child(key).update({"pw":new_password})
+                print(new_password)
+
+                return True
+        return False
+    
+    def update_user_email(self, user_id:str, new_email:str):
+        users = self.db.child("user").get()
+
+        if not users or users.val() is None:
+            return False
+        
+        for res in (users.each() or []):
+            value = res.val() or {}
+            if str(value.get("id")) == str(user_id):
+                key = res.key()
+                self.db.child("user").child(key).update({"email":new_email})
+                return True
+        return False
