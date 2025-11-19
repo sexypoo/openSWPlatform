@@ -13,10 +13,12 @@ def mypage():
         flash("로그인이 필요합니다.")
         return redirect(url_for("auth.login"))
 
-    user = DB.get_user(user_id)  # 유저 정보 가져오는 함수 필요 (id, email 등)
-    print(user)
+    user = DB.get_user(user_id)
+    heart_ids = DB.get_my_heart_ids(user_id)
+    products = DB.get_products_by_ids(heart_ids)
+    # reviews = DB.get_user_reviews(user_id)
 
-    return render_template("mypage.html", user=user)
+    return render_template("mypage.html", user=user, products=products)
 
 
 @user_bp.route("/mypage/update", methods=["POST"])

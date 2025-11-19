@@ -164,6 +164,26 @@ class DBhandler:
         self.db.child("heart").child(uid).child(item).set(heart_info)
         return True
     
+    def get_my_heart_ids(self,uid):
+        mywish = self.db.child("heart").child(uid).get()
+
+        if not mywish.each():
+            return []
+        
+        ids = []
+        for node in mywish.each():
+            data = node.val()
+            if isinstance(data,dict) and data.get("interested") == "Y":
+                ids.append(node.key())
+        return ids
+    
+    def get_products_by_ids(self,id_list):
+        all_products = self.get_products()
+        id_set = set(id_list) # 검색 속도 향상
+        products = [p for p in all_products if p.get("id") in id_set]
+        return products
+
+
     # User Handler
 
     def get_user(self, user_id: str):

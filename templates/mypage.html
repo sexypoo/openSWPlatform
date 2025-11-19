@@ -80,51 +80,29 @@
                 </div>
             </div>
 
-
-            <!-- ===========================
-           은규님 파트: 관심 상품 
-      ============================ -->
             <div class="wishlist-container" id="wishlist-section" style="display: none;">
                 <h2 class="wishlist-title">관심 상품</h2>
 
-                <!-- 카드 1 -->
+                {% if products %}
+                {% for p in products %}
                 <div class="item-card">
-                    <a href="detail.html" style="text-decoration:none; color:inherit;">
+                    <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.slug) }}" style="text-decoration:none; color:inherit;">
                         <div class="review-content">
-                            <div class="thumb-box">NO IMG</div>
+                            <div class="thumb-box"
+                            aria-label="상품 이미지"
+                            {% if p.img_path %}
+                            style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');"
+                            {% endif %}></div>
                             <div class="review-text">
-                                <div class="name" style="font-weight:600;">Product 1</div>
-                                <div class="price" style="color:#555;">₩29,000</div>
+                                <div class="name" style="font-weight:600;">{{ p.name }}</div>
+                                <div class="price" style="color:#555;">₩{{ p.price }}</div>
                             </div>
                         </div>
                     </a>
                 </div>
+                {% endfor %}
+                {% endif %}
 
-                <!-- 카드 2 -->
-                <div class="item-card">
-                    <a href="detail.html" style="text-decoration:none; color:inherit;">
-                        <div class="review-content">
-                            <div class="thumb-box">NO IMG</div>
-                            <div class="review-text">
-                                <div class="name" style="font-weight:600;">Product 2</div>
-                                <div class="price" style="color:#555;">₩18,000</div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- 카드 3 -->
-                <div class="item-card">
-                    <a href="detail.html" style="text-decoration:none; color:inherit;">
-                        <div class="review-content">
-                            <div class="thumb-box">NO IMG</div>
-                            <div class="review-text">
-                                <div class="name" style="font-weight:600;">Product 3</div>
-                                <div class="price" style="color:#555;">₩45,000</div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
             </div>
 
             <!-- ===========================
