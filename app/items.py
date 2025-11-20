@@ -101,7 +101,8 @@ def edit_product(product_id, slug):
         "quantity": data["quantity"],
         "method": methods,
         "img_path": file_name,
-        "seller": product.get("seller")
+        "seller": product.get("seller"),
+        "tags": data.get("tag", "")
     }
 
     DB.update_product(product_id, update_data)

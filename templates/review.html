@@ -17,8 +17,8 @@
         <!-- 카드 전체를 상세보기 링크로 -->
         <a class="review-card" href="{{ url_for('reviews.view_review', review_id=p.id) }}">
             <div class="review-image">
-                {% if p.img_path %}
-                    <img src="{{ url_for('static', filename='images/' ~ p.img_path) }}">
+                {% if p.images %}
+                    <img src="{{ url_for('static', filename='images/' ~ p.images[0]) }}">
                 {% endif %}
             </div>
             <p class="review-text">{{ p.title }}</p>

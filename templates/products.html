@@ -68,60 +68,68 @@
 
 {% block script %}
 <script>
+
   document.addEventListener('DOMContentLoaded', () => {
-    /* ===== 0. localStorage에서 위시리스트 불러오기 ===== */
-    let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+  let wishlist = [];   // 이제 localStorage 대신 서버에서 받아오기
 
-    /* ===== 1. 하트 모양을 실제 상태에 맞게 그려주는 함수 ===== */
-    function updateHeartVisual(heart) {
-      const id = Number(heart.dataset.id);
-      const icon = heart.querySelector('i');
-      if (!icon) return;
+  function updateHeartVisual(heart) {
+    const id = heart.dataset.id;   // 문자열로 다루자
+    const icon = heart.querySelector('i');
+    if (!icon) return;
 
-      if (wishlist.includes(id)) {
-        // 활성 상태 (초록색, 채워진 하트)
-        heart.classList.add('active');
-        icon.classList.remove('fa-regular');
-        icon.classList.add('fa-solid');
-      } else {
-        // 비활성 상태 (회색, 빈 하트)
-        heart.classList.remove('active');
-        icon.classList.remove('fa-solid');
-        icon.classList.add('fa-regular');
-      }
+    if (wishlist.includes(id)) {
+      heart.classList.add('active');
+      icon.classList.remove('fa-regular');
+      icon.classList.add('fa-solid');
+    } else {
+      heart.classList.remove('active');
+      icon.classList.remove('fa-solid');
+      icon.classList.add('fa-regular');
     }
+  }
 
-    /* ===== 2. 처음 로드될 때 모든 하트 상태 맞추기 ===== */
-    document.querySelectorAll('.products-page .heart').forEach(heart => {
-      updateHeartVisual(heart);
-    });
+  // 1) 페이지 로드 시, 내 위시 목록 먼저 불러오기
+  fetch('{{ url_for("wish.my_hearts") }}')
+    .then(res => res.json())
+    .then(data => {
+      wishlist = (data.hearts || []).map(String);  // 문자열 배열로 맞추기
 
-    /* ===== 3. 하트 클릭 시 토글 (여러 개 전부 가능) ===== */
-    const productsPage = document.querySelector('.products-page');
-    if (productsPage) {
-      productsPage.addEventListener('click', (e) => {
-        const heart = e.target.closest('.heart');
-        if (!heart) return;        // 하트를 누른 게 아니면 무시
-
-        e.preventDefault();        // a 태그 이동 방지
-        e.stopPropagation();
-
-        const id = Number(heart.dataset.id);
-
-        if (wishlist.includes(id)) {
-          // 이미 위시에 있으면 → 제거
-          wishlist = wishlist.filter(x => x !== id);
-        } else {
-          // 없으면 → 추가
-          wishlist.push(id);
-        }
-
-        // 저장 & 비주얼 업데이트
-        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      document.querySelectorAll('.products-page .heart').forEach(heart => {
         updateHeartVisual(heart);
       });
-    }
+    });
 
+  // 2) 하트 클릭 시, 백엔드에 like/unlike 요청
+  const productsPage = document.querySelector('.products-page');
+  if (productsPage) {
+    productsPage.addEventListener('click', (e) => {
+      const heart = e.target.closest('.heart');
+      if (!heart) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const id = heart.dataset.id;
+
+      const isWish = wishlist.includes(id);
+      const url = isWish
+        ? `{{ url_for("wish.unlike", id="__ID__") }}`.replace('__ID__', id)
+        : `{{ url_for("wish.like", id="__ID__") }}`.replace('__ID__', id);
+
+      fetch(url, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+          // 로컬 배열 업데이트
+          if (isWish) {
+            wishlist = wishlist.filter(x => x !== id);
+          } else {
+            wishlist.push(id);
+          }
+          updateHeartVisual(heart);
+        });
+    });
+  }
+});
 </script>
 {% endblock %}
 
