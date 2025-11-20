@@ -38,3 +38,14 @@ def unlike(id):
     
     DB.update_heart(session['id'], 'N', id)
     return jsonify({'msg': '위시 등록 해제'})
+
+@wish_bp.route('/my_hearts',methods=['GET'])
+def my_hearts():
+    DB = current_app.config["DB"]
+    uid = session.get('id')
+
+    if not uid:
+        return jsonify({'hearts':[]})
+    
+    heart_ids = DB.get_my_heart_ids(uid)
+    return jsonify({'hearts':heart_ids})

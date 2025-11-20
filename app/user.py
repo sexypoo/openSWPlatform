@@ -15,10 +15,12 @@ def mypage():
 
     user = DB.get_user(user_id)
     heart_ids = DB.get_my_heart_ids(user_id)
-    products = DB.get_products_by_ids(heart_ids)
-    # reviews = DB.get_user_reviews(user_id)
+    wishlist = DB.get_products_by_ids(heart_ids)
 
-    return render_template("mypage.html", user=user, products=products)
+    my_items = DB.get_items_by_seller(user_id)
+    my_reviews = DB.get_reviews_by_purchaser(user_id)
+
+    return render_template("mypage.html", user=user, products=wishlist, sold_list=my_items, review_list=my_reviews)
 
 
 @user_bp.route("/mypage/update", methods=["POST"])

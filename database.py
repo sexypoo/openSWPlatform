@@ -182,6 +182,28 @@ class DBhandler:
         id_set = set(id_list) # 검색 속도 향상
         products = [p for p in all_products if p.get("id") in id_set]
         return products
+    
+    def get_items_by_seller(self,seller_id):
+        sell_items = self.db.child("items").order_by_child("seller").equal_to(seller_id).get()
+        items = []
+
+        for node in (sell_items.each() or []):
+            v = node.val() or {}
+            v["id"] = node.key()
+            items.append(v)
+
+        return items
+    
+    def get_reviews_by_purchaser(self,purchaser_id):
+        review_items = self.db.child("reviews").order_by_child("purchaser").equal_to(purchaser_id).get()
+        reviews = []
+
+        for node in (review_items.each() or []):
+            v = node.val() or {}
+            v["id"] = node.key()
+            reviews.append(v)
+
+        return reviews
 
 
     # User Handler

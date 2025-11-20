@@ -13,7 +13,7 @@
                 <li data-section="wishlist">관심 상품</li>
                 <li class="active" data-section="review">내 리뷰</li>
                 <li class="disabled">구매 내역</li>
-                <li class="disabled">판매 내역</li>
+                <li data-section="sell">판매 내역</li>
             </ul>
         </aside>
 
@@ -83,9 +83,10 @@
             <div class="wishlist-container" id="wishlist-section" style="display: none;">
                 <h2 class="wishlist-title">관심 상품</h2>
 
-                {% if products %}
-                {% for p in products %}
+                {% if wishlist %}
+                {% for p in wishlist %}
                 <div class="item-card">
+
                     <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.slug) }}" style="text-decoration:none; color:inherit;">
                         <div class="review-content">
                             <div class="thumb-box"
@@ -105,41 +106,52 @@
 
             </div>
 
-            <!-- ===========================
-           내 리뷰 파트
-      ============================ -->
+            <!-- 내 리뷰 파트 -->
+             <div class="review-container" id="review-section" style="display: none;"></div>
             <h2 class="review-title">내 리뷰</h2>
+            {% if review_list %}
+            {% for p in review_list %}
             <div class="item-card">
                 <div class="review-content">
-                    <img src="../static/images/ecobag.png" alt="에코백" class="review-img">
+                    <div class="thumb-box"
+                            aria-label="상품 이미지"
+                            {% if p.images %}
+                            style="background-image:url('{{ url_for('static', filename='images/' ~ p.images[0]) }}');"
+                            {% endif %}></div>
                     <div class="review-text">
-                        <p>⭐️⭐️⭐️⭐️☆</p>
-                        <p>예뻐요!</p>
-                        <small>상품명: 에코백</small>
+                        <p>{% set r = (p.rating or 0)|int %}
+                            {{ '★' * r }}{{ '☆' * (5 - r) }}</p>
+                        <p>{{ p.title }}</p>
+                        <small>상품명 : {{ p.name }}</small>
                     </div>
                 </div>
             </div>
+            {% endfor %}
+            {% else %}
+            <p class="empty-text">등록한 리뷰가 없습니다.</p>
+            {% endif %}
 
-            <div class="item-card">
-                <div class="review-content">
-                    <img src="../static/images/mug.png" alt="머그컵" class="review-img">
-                    <div class="review-text">
-                        <p>⭐️⭐️⭐️☆☆</p>
-                        <p>상품은 괜찮은데 색감이 화면과 조금 달라요.</p>
-                        <small>상품명: 머그컵</small>
-                    </div>
-                </div>
-            </div>
 
-            <div class="item-card">
-                <div class="review-content">
-                    <img src="../static/images/tumbler.png" alt="텀블러" class="review-img">
-                    <div class="review-text">
-                        <p>⭐️⭐️⭐️⭐️⭐️</p>
-                        <p>디자인 예쁘고 보온력도 좋아요!</p>
-                        <small>상품명: 스타벅스 텀블러</small>
+            <!-- 판매완료 리스트 -->
+            <div class="sell-list" id="completed-list" style="display:none;">
+                {% if sold_list %}
+                {% for item in sold_list %}
+                <div class="sell-card">
+                    <div class="sell-thumb"
+                    {% if item.img_path %}
+                    style="background-image:url('{{ url_for('static', filename='images/' ~ item.img_path) }}');"
+                    {% endif %}></div>
+                    <div class="sell-info">
+                        <div class="sell-name">{{item.name}}</div>
+                        <div class="sell-detail">{{item.details}}</div>
+                        <div class="sell-price">₩{{item.price}}</div>
                     </div>
+                    <div class="sell-date"></div>
                 </div>
+                {% endfor %}
+                {% else %}
+                <p class="empty-text">등록한 상품이 아직 없습니다.</p>
+                {% endif %}
             </div>
         </section>
     </main>
@@ -155,7 +167,8 @@
                 profile: document.getElementById("profile-section"),
                 wishlist: document.getElementById("wishlist-section"),
                 reviewCards: document.querySelectorAll(".content-area > .item-card"), //  내 리뷰 카드만 선택
-                reviewTitle: document.querySelector(".review-title")  //  내 리뷰 제목 추가
+                reviewTitle: document.querySelector(".review-title"),  //  내 리뷰 제목 추가
+                sellList : document.getElementById("completed-list")
             };
 
             //  (1) 기본 상태: 회원정보만 보이게
@@ -163,6 +176,7 @@
             sections.wishlist.style.display = "none";
             sections.reviewCards.forEach(card => (card.style.display = "none"));
             sections.reviewTitle.style.display = "none"; //  내 리뷰 제목도 기본은 숨김
+            sections.sellList.style.display = "none";
 
             // “회원정보”만 active로 표시
             menuItems.forEach(li => li.classList.remove("active"));
@@ -191,7 +205,9 @@
                     } else if (section === "review") {
                         sections.reviewCards.forEach(card => (card.style.display = "block"));
                         sections.reviewTitle.style.display = "block"; //  내 리뷰일 때만 보이기
-                    }
+                    } else if (section === "sell") {
+                        sections.sellList.style.display = "block";
+}
                 });
             });
         });
