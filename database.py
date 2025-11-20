@@ -21,7 +21,8 @@ class DBhandler:
             "price": data["price"],
             "quantity": data.get("quantity", 1),
             "method":(data.getlist("method") if hasattr(data, "getlist") else data.get("method",[])),
-            "img_path": img_path
+            "img_path": img_path,
+            "tags": data.get("tag","")
 
             # "addr": data['addr'],
             # "email": data['email'],

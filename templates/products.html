@@ -128,17 +128,6 @@
         });
     });
   }
-
-  /* 기존 페이지네이션 클릭 유지 */
-  document.addEventListener('click', function (e) {
-    const a = e.target.closest('.page-num');
-    if (!a || a.classList.contains('prev') || a.classList.contains('next')) return;
-    e.preventDefault();
-    document.querySelectorAll('.pagination .page-num')
-      .forEach(el => el.classList.remove('active'));
-    a.classList.add('active');
-    // TODO: 실제 데이터 로딩 로직 연결
-  });
 });
 </script>
 {% endblock %}
