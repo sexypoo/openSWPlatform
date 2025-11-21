@@ -376,6 +376,10 @@
     padding: 16px;
     width: 230px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    display: flex;            /* 카드 내부를 균일하게 유지 */
+    flex-direction: column;   /* 위→아래 배치 */
+    height: 100%;             /* 카드 높이를 grid가 강제로 통일하게 하는 핵심 */
 }
 .product-card:hover, .review-card:hover {
     transform: translateY(-4px);
@@ -385,6 +389,14 @@
 .product-card p {
     margin: 4px 0; /* ✅ 상하 여백 최소화 */
     line-height: 1.4;
+}
+
+.product-card p:nth-of-type(1) {
+    /* 상품설명 부분만 선택됨 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;      /* 딱 2줄까지만 표시해서 상품내용이 길 때 튀어나오는 걸 방지! */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 
