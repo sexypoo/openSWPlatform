@@ -59,6 +59,41 @@ class DBhandler:
     def delete_product(self, product_id):
         self.db.child("items").child(product_id).remove()
 
+    # 구매 내역 저장
+    def add_purchase_for_user(self, user_id, product_id, purchase_info):
+        ref = (
+            self.db.child("user")
+            .child(user_id)
+            .child("purchases")
+            .child(product_id)
+            .push(purchase_info)
+        )
+
+        return ref["name"] # name : auto id
+
+    def get_purchases_by_user(self, user_id):
+        data = (
+            self.db.child("user")
+            .child(user_id)
+            .child("purchases")
+            .get().val()
+        ) or {}
+
+        result = []
+
+        for product_id, purchase_map in data.items():
+            if not isinstance(purchase_map, dict):
+                continue
+            for purchase_id, info in purchase_map.items():
+                if not isinstance(info, dict):
+                    continue
+                info["product_id"] = product_id
+                info["purchase_id"] = purchase_id
+                result.append(info)
+
+        result.sort(key=lambda x : x.get("purchased_at",0),reverese=True)
+        return result
+
     # auth 핸들러
 
     def insert_user(self, data, pw):
@@ -95,6 +130,17 @@ class DBhandler:
             if value['id'] == id_ and value['pw'] == pw_:
                 return True
         return False
+    
+    def get_uid_by_id(self, user_id:str):
+        snap = self.db.child("user").get().val() or {}
+
+        for uid, info in snap.items():
+            if not isinstance(info, dict):
+                continue
+            if info.get("id") == user_id:
+                return uid
+        
+        return None
     
     # review 핸들러
     
@@ -141,6 +187,18 @@ class DBhandler:
     # Delete
     def delete_review(self, review_id):
         self.db.child("reviews").child(review_id).remove()
+
+    def has_purchased_product(self, uid, product_id):
+
+        data = (
+            self.db.child("user")
+            .child(uid)
+            .child("purchases")
+            .child(product_id)
+            .get()
+            .val()
+        )
+        return bool(data)
 
     # wish 핸들러
 
