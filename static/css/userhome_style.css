@@ -365,6 +365,7 @@
     justify-items: center;
     align-items: start;
     margin-top: 10px;/**/
+    align-items: stretch; /* ← 추가! */
 }
 
 /* 🔹 카드 공통 */
@@ -396,12 +397,11 @@
     margin-bottom: 10px;
 }
 
-/* 🔹 더보기 버튼 */
 .more-icon {
-    position: absolute;
-    right: 100px; /* ✅ 카드에서 약간 더 떨어지게 */
-    top: 60%;
-    transform: translateY(-50%);
+    position: relative;     /* HTML 흐름 유지하면서 미세 위치 조정 가능 */
+    top: -10px;             /* 살짝 위로 */
+    left: -20px;            /* 살짝 왼쪽으로 */
+
     width: 80px;
     height: 80px;
     border: 1px solid #ccc;
