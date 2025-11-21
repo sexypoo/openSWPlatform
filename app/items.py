@@ -1,9 +1,10 @@
 import os
+import time
 
 from flask import current_app
 from werkzeug.utils import secure_filename
-from flask import Blueprint, request, render_template, flash, redirect, url_for, session, current_app
-from flask import current_app
+from flask import Blueprint, request, render_template, flash, redirect, url_for, session
+from flask import current_app, jsonify
 # from flask import sys
 from database import DBhandler
 
@@ -124,5 +125,62 @@ def delete_product(product_id, slug):
     flash("상품이 삭제 되었습니다")
     return redirect(url_for("items.view_products"))
 
+@items_bp.route("/products/<string:product_id>/<slug>/buy",methods=["POST"])
+def buy_product(product_id, slug):
+    DB = current_app.config["DB"]
+    # 실제 아이디
+    user_id = session.get("id")
 
+    # 로그인 여부 확인
+    if not user_id:
+        flash("로그인 후에만 상품을 구매할 수 있습니다.")
+        return redirect(url_for("pages.login"))
+    
+    # 고유 아이디
+    uid = DB.get_uid_by_id(user_id)
 
+    # 상품 정보 조회
+    product = DB.get_product(product_id)
+    
+    # 폼 데이터 받기
+    quantity = request.form.get("quantity","1")
+    purchaser_name = request.form.get("purchaser_name", "")
+    purchaser_contact = request.form.get("purchaser_contact","")
+    purchaser_addr = request.form.get("purchaser_addr","")
+
+    # 수량 검증
+    try:
+        quantity=int(quantity)
+    except ValueError:
+        return jsonify({"success":False, "message":"수량은 1개 이상이어야 합니다."}),400
+    
+    if quantity <= 0:
+        return jsonify({"success":False,"message":"수량은 1개 이상이어야 합니다."}),400
+    
+    # 재고 체크
+    stock = int(product.get("quantity",0)) # 현재 수량 받아오기
+    if quantity > stock:
+        return jsonify({"success":False, "message":"재고가 부족합니다."}),400
+    
+    # 구매 내역 데이터 구성
+    purchase_data = {
+        "quantity": quantity,
+        "purchased_at": int(time.time()),
+        "purchaser_id":user_id,
+        "purchaser_name":purchaser_name,
+        "purchaser_contact":purchaser_contact,
+        "purchaser_addr":purchaser_addr
+    }
+
+    # DB 저장 (구조 : user/{uid}/purchases/{pid}/{auto_id})
+    DB.add_purchase_for_user(uid, product_id, purchase_data)
+
+    # item 재고 차감
+    new_stock = stock-quantity
+    DB.update_product(product_id, {"quantity": new_stock})
+
+    return jsonify({
+        "success":True,
+        "message":"구매가 완료되었습니다.",
+        "remain_quantity":new_stock
+    })

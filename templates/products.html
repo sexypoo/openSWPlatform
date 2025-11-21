@@ -14,12 +14,15 @@
     {% for p in datas %}
     <div class="card">
       <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.name) }}">
-        <div class="thumb" aria-label="상품 이미지" {% if p.img_path %}
+        <div class="thumb {% if p.quantity == 0 %}soldout-thumb{% endif %}" aria-label="상품 이미지" {% if p.img_path %}
           style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');" {% endif %}>
           <span class="heart wish-heart" data-id="{{ p.id }}">
             <i class="fa-regular fa-heart"></i>
           </span>
         </div>
+        {% if p.quantity == 0 %}
+        <div class="soldout-badge">품절</div>
+        {% endif %}
         <div class="meta">
           <div class="name">{{ p.name }}</div>
           <div class="price">

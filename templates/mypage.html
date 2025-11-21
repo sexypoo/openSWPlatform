@@ -73,7 +73,7 @@
 
                         <div class="button-group">
                             <button type="submit" class="save-btn">저장하기</button>
-                            <button onclick="cancelEdit()" class="cancel-btn">취소</button>
+                            <button type="button" onclick="cancelEdit()" class="cancel-btn">취소</button>
                         </div>
                         </form>
                     </div>
@@ -87,7 +87,7 @@
                 {% for p in wishlist %}
                 <div class="item-card">
 
-                    <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.slug) }}" style="text-decoration:none; color:inherit;">
+                    <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.name) }}" style="text-decoration:none; color:inherit;">
                         <div class="review-content">
                             <div class="thumb-box"
                             aria-label="상품 이미지"
@@ -107,11 +107,13 @@
             </div>
 
             <!-- 내 리뷰 파트 -->
-             <div class="review-container" id="review-section" style="display: none;"></div>
+            <div class="review-container" id="review-section" style="display: none;"></div>
             <h2 class="review-title">내 리뷰</h2>
             {% if review_list %}
             {% for p in review_list %}
             <div class="item-card">
+
+                <a href="{{ url_for('reviews.view_review', review_id=p.id) }}" style="text-decoration:none; color:inherit;">
                 <div class="review-content">
                     <div class="thumb-box"
                             aria-label="상품 이미지"
@@ -125,6 +127,7 @@
                         <small>상품명 : {{ p.name }}</small>
                     </div>
                 </div>
+                </a>
             </div>
             {% endfor %}
             {% else %}
@@ -132,22 +135,25 @@
             {% endif %}
 
 
-            <!-- 판매완료 리스트 -->
+            <!-- 판매 리스트 -->
             <div class="sell-list" id="completed-list" style="display:none;">
                 {% if sold_list %}
-                {% for item in sold_list %}
+                {% for p in sold_list %}
+                <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.name) }}" style="text-decoration:none; color:inherit;">
                 <div class="sell-card">
                     <div class="sell-thumb"
-                    {% if item.img_path %}
-                    style="background-image:url('{{ url_for('static', filename='images/' ~ item.img_path) }}');"
-                    {% endif %}></div>
+                    {% if p.img_path %}
+                    style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');"
+                    {% endif %}>
+                    </div>
                     <div class="sell-info">
-                        <div class="sell-name">{{item.name}}</div>
-                        <div class="sell-detail">{{item.details}}</div>
-                        <div class="sell-price">₩{{item.price}}</div>
+                        <div class="sell-name">{{p.name}}</div>
+                        <div class="sell-detail">{{p.details}}</div>
+                        <div class="sell-price">₩{{p.price}}</div>
                     </div>
                     <div class="sell-date"></div>
                 </div>
+                </a>
                 {% endfor %}
                 {% else %}
                 <p class="empty-text">등록한 상품이 아직 없습니다.</p>
@@ -196,6 +202,7 @@
                     sections.wishlist.style.display = "none";
                     sections.reviewCards.forEach(card => (card.style.display = "none"));
                     sections.reviewTitle.style.display = "none"; //  제목도 함께 숨기기
+                    sections.sellList.style.display = "none"
 
                     // 클릭한 섹션만 보이기
                     if (section === "profile") {

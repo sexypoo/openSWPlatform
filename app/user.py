@@ -11,16 +11,17 @@ def mypage():
 
     if not user_id:
         flash("로그인이 필요합니다.")
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("pages.login"))
 
     user = DB.get_user(user_id)
+
     heart_ids = DB.get_my_heart_ids(user_id)
     wishlist = DB.get_products_by_ids(heart_ids)
 
     my_items = DB.get_items_by_seller(user_id)
     my_reviews = DB.get_reviews_by_purchaser(user_id)
 
-    return render_template("mypage.html", user=user, products=wishlist, sold_list=my_items, review_list=my_reviews)
+    return render_template("mypage.html", user=user, wishlist=wishlist, sold_list=my_items, review_list=my_reviews)
 
 
 @user_bp.route("/mypage/update", methods=["POST"])
@@ -44,3 +45,4 @@ def update_profile():
     print(new_password,new_email)
     flash("회원정보가 수정되었습니다.")
     return redirect(url_for("user.mypage"))
+

@@ -13,8 +13,20 @@ def reg_review_get():
     DB = current_app.config["DB"]
 
     item_id = request.args.get("item_id")
-
     item = DB.get_product(item_id) if item_id else None
+
+    user_id = session.get("id")
+    if not user_id:
+        flash("로그인이 필요합니다.")
+        return redirect(url_for("auth.login"))
+    
+    if item_id:
+        uid = DB.get_uid_by_id(user_id) # Firebase 고유 id 변환
+        if not DB.has_purchased_product(uid, item_id):
+            flash("구매한 상품에만 리뷰를 작성할 수 있습니다.")
+            slug = item.get("name", "")
+            return redirect(url_for("items.view_product", product_id=item_id, slug=slug))
+
 
     return render_template("reg_reviews.html", item=item, item_id=item_id, review=None, review_id=None)
 
@@ -22,15 +34,16 @@ def reg_review_get():
 @reviews_bp.route("/reg_reviews")
 def reg_review():
     DB = current_app.config["DB"]
+
     item_id = request.args.get("item_id")
     item = DB.get_product(item_id) if item_id else None
 
     return render_template(
         "reg_reviews.html",
-        review=None,
         item=item,
         item_id=item_id,
-        mode="create",
+        review=None,
+        review_id=None
     )
 
 @reviews_bp.route("/submit_review_post", methods=['POST'])

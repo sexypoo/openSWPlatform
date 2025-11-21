@@ -145,12 +145,34 @@
   display: grid;
   place-items: center;
   overflow: hidden;
+  position:relative;
 }
 
 .product-detail-page .thumb-lg img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* 품절일 때 이미지 어둡게 */
+.thumb-lg.soldout img {
+    filter: grayscale(100%) brightness(40%);
+}
+
+/* detail 품절 배지 */
+.thumb-lg .soldout-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    z-index: 5;
+    pointer-events: none;
 }
 
 /* 정보 섹션 */
@@ -609,4 +631,100 @@ a {
 
 .wish-heart:hover {
   transform: scale(1.05);
+}
+
+/* ====== 공통 모달 스타일 ====== */
+.modal {
+    position: fixed;
+    inset: 0; /* top:0; right:0; bottom:0; left:0; */
+    background: rgba(0, 0, 0, 0.45); /* 배경 어둡게 */
+    display: none;                   /* JS에서 flex로 바꿔서 열기 */
+    justify-content: center;         /* 정중앙 정렬 (가로) */
+    align-items: center;             /* 정중앙 정렬 (세로) */
+    z-index: 9999;
+}
+
+/* 모달 카드 */
+.modal-content {
+    background: #ffffff;
+    min-width: 320px;
+    max-width: 420px;
+    width: 90%;
+    padding: 20px 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    font-family: inherit; /* 페이지와 폰트 통일 */
+}
+
+/* 상단 타이틀 + 닫기 버튼 정렬 */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* 닫기 X 버튼 */
+.modal-close {
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    border: none;
+    background: none;
+}
+
+/* 인풋 라벨/필드 통일감 있게 */
+.modal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.modal-form-group label {
+    font-size: 13px;
+    color: #555;
+}
+
+.modal-form-group input {
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+/* 버튼 영역 */
+.modal-actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* EWHA MARKET 버튼 스타일에 최대한 맞추기 */
+.modal-btn-primary {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: none;
+    background: #2e6b56;       /* 이화 그린 */
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.modal-btn-primary:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
+/* 메시지 */
+#buy-message {
+    margin-top: 8px;
+    font-size: 13px;
 }
