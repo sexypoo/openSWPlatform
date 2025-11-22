@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, current_app
 
+# 엔드포인트별로 페이지 보여줌
 pages_bp = Blueprint("pages",__name__)
 
 @pages_bp.route("/")

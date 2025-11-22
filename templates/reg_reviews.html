@@ -16,6 +16,7 @@
     <h1 class="page-title">리뷰 작성</h1>
 
     <form method="post" enctype="multipart/form-data" action="{{form_action}}">
+        {{ form.hidden_tag() }}
     <input type="hidden" name="item_id" value="{{ item_id or '' }}">
     <div class="section">
         <h2 class="section-title">상품 정보</h2>
