@@ -11,6 +11,14 @@
     padding: 0 20px;
 }
 
+.page-title{
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 60px;
+}
+
 /* 구획 */
 .section {
     margin: 40px 0;
@@ -243,6 +251,7 @@
 
 /* 제목 */
 .review-title {
+    text-align: center;
     font-size: 22px;
     font-weight: 700;
     color: #333;
@@ -277,7 +286,17 @@
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+.review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+}
+
+
 
 /* 리뷰 이미지 */
 .review-image {
@@ -462,6 +481,52 @@
     gap: 20px;
     font-size: 14px;
     color: #666;
+}
+
+/* 작성자 정보와 수정/삭제 버튼을 한 줄에 배치 */
+.review-meta-with-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+}
+
+.review-author {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 수정/삭제 버튼 */
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-link {
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.action-link:hover {
+    color: #2e6b56;
+    text-decoration: none;
+}
+
+.action-divider {
+    font-size: 14px;
+    color: #333;
+}
+
+/* 구분선 */
+.divider-line {
+    width: 100%;
+    height: 1px;
+    background-color: #ddd;
+    margin: 10px 0 20px 0;
 }
 
 /* 상품 정보 */
@@ -713,4 +778,51 @@
 
 a {
     text-decoration: none;
+}
+
+.gallery-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    height: 350px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.gallery-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s ease;
+}
+
+.gallery-slide {
+    min-width: 100%;
+    height: 100%;
+}
+
+.gallery-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gallery-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.7);
+    border: none;
+    font-size: 24px;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.gallery-btn.prev { left: 10px; }
+.gallery-btn.next { right: 10px; }
+
+.gallery-btn:hover {
+    background: white;
 }
