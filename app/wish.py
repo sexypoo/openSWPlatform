@@ -7,8 +7,10 @@ from flask import jsonify
 
 from database import DBhandler
 
+# 위시리스트 기능
 wish_bp = Blueprint("wish",__name__)
 
+# db에서 위시 여부 (Y/N) 받아와 리턴
 @wish_bp.route('/show_heart/<string:id>/', methods=['GET'])
 def show_heart(id):
     DB = current_app.config["DB"]
@@ -19,6 +21,7 @@ def show_heart(id):
     my_heart = DB.get_heart_byid(session['id'], id)
     return jsonify({'my_heart':my_heart})
 
+# 위시 등록
 @wish_bp.route('/like/<string:id>/', methods=['POST'])
 def like(id):
     DB = current_app.config["DB"]
@@ -29,6 +32,7 @@ def like(id):
     DB.update_heart(session['id'], 'Y', id)
     return jsonify({'msg': '위시 등록 완료!'})
 
+# 위시 해제
 @wish_bp.route('/unlike/<string:id>/', methods=['POST'])
 def unlike(id):
     DB = current_app.config["DB"]
@@ -39,7 +43,8 @@ def unlike(id):
     DB.update_heart(session['id'], 'N', id)
     return jsonify({'msg': '위시 등록 해제'})
 
-@wish_bp.route('/my_hearts',methods=['GET'])
+# 내 위시리스트 목록 받아오기 - mypage와 함께 사용
+@wish_bp.route('/my_hearts')
 def my_hearts():
     DB = current_app.config["DB"]
     uid = session.get('id')

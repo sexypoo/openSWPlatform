@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_wtf import CSRFProtect
 from database import DBhandler
 
 def create_app():
@@ -7,6 +8,8 @@ def create_app():
 
     app.config["SECRET_KEY"] = "helloosp"
     app.config["ALLOWED_EXTS"] = {"png", "jpg", "jpeg", "gif", "webp"}
+
+    csrf = CSRFProtect(app)
 
     # DB 인스턴스 한 번만 생성해서 공유
     app.config["DB"] = DBhandler()

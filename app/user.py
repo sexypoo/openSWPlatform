@@ -2,9 +2,11 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 
 from .auth import _hash_pw
 
+# 마이페이지의 기능을 다룸
+
 user_bp = Blueprint("user", __name__)
 
-@user_bp.route("/mypage", methods=["GET"])
+@user_bp.route("/mypage")
 def mypage():
     DB = current_app.config["DB"]
     user_id = session.get("id")
@@ -23,26 +25,28 @@ def mypage():
 
     return render_template("mypage.html", user=user, wishlist=wishlist, sold_list=my_items, review_list=my_reviews)
 
-
+# 회원정보 수정
 @user_bp.route("/mypage/update", methods=["POST"])
 def update_profile():
     DB = current_app.config["DB"]
     user_id = session.get("id")
 
+    # 로그인 검증
     if not user_id:
         flash("로그인이 필요합니다.")
         return redirect(url_for("login"))
 
+    # form에서 변경할 비밀번호와 email 받아옴
     new_password = request.form.get("password_new")
     new_email = request.form.get("email")
 
+    # 업데이트
     if new_password:
-        hashed = _hash_pw(new_password)
+        hashed = _hash_pw(new_password) # 암호화 후 전달
         DB.update_user_password(user_id, hashed)
     if new_email:
         DB.update_user_email(user_id, new_email)
 
-    print(new_password,new_email)
     flash("회원정보가 수정되었습니다.")
     return redirect(url_for("user.mypage"))
 

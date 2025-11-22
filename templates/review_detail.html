@@ -55,10 +55,20 @@
                 </div>
 
                 <!-- 상품 정보 -->
+                {% if review.item_id %}
+                <a href="{{ url_for('items.view_product', product_id=review.item_id, slug=review.name) }}">
+                    <div class="product-info-box">
+                        <div class="product-name">{{ review.name or '상품명 없음' }}</div>
+                        <div class="product-detail">{{ review.product_details or '상세 설명 없음' }}</div>
+                    </div>
+                </a>
+                {% else %}
                 <div class="product-info-box">
                     <div class="product-name">{{ review.name or '상품명 없음' }}</div>
                     <div class="product-detail">{{ review.product_details or '상세 설명 없음' }}</div>
                 </div>
+                {% endif %}
+
 
                 <!-- 리뷰 내용 -->
                 <div class="review-content-section">

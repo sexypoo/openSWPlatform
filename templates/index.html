@@ -64,7 +64,7 @@
 
         {# 안전 가드: 값이 없으면 기본값으로 대체 #}
         {% set name = r.title | default(r.id) %}
-        {% set img = r.images[0] | default('') %}
+        {% set img = r.images[0] if r.images else '' %}
         {% set details = r.review_details | default('', true) %}
         {% set star = r.rating|int or 0 %}
 
