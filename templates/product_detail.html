@@ -7,14 +7,16 @@
 
 {% block content %}
 <div class="product-detail-page">
-    <div class="title">Products</div>
-    <hr/>
+    <div class="title">상품 상세 내용</div>
     <section class="detail">
         <!-- 왼쪽: 상품 이미지 -->
-        <div class="thumb-lg">
+        <div class="thumb-lg {% if product.quantity == 0 %}soldout{% endif %}">
             {% if product.img_path %}
             <img alt="상품 이미지" id="product-image"
                  src="{{ url_for('static', filename='images/' ~ product.img_path) }}">
+            {% if product.quantity == 0 %}
+            <div class="soldout-badge">품절</div>
+            {% endif %}
             {% else %}
             <div class="thumb-lg placeholder" aria-label="이미지 없음"></div>
             {% endif %}
@@ -26,7 +28,7 @@
             <div class="seller">판매자: <span id="product-seller">{{ product.seller or '알수없음' }}</span></div>
             <div class="price" id="product-price">₩{{ product.price or 0 }}</div>
             {% if product.tags %}
-            <div class="subnote" id="product-tags">{{ product.tags }}</div>
+            <div class="subnote" id="product-tags">태그: {{ product.tags }}</div>
             {% endif %}
             {% if product.method %}
             <div class="subnote" id="product-method">거래 방법: {{ product.method }}</div>
@@ -37,15 +39,56 @@
             </div>
             {% endif %}
             <div class="actions">
-                <div class="wish-heart" id="wish-btn">
+                <div class="wish-heart" id="heart">
                      <i class="fa-regular fa-heart"></i>
                 </div>
-                <a href="#구매창">
-                    <button class="btn btn-buy" type="button">바로 구매</button>
-                </a>
                 <a href="{{ url_for('reviews.reg_review_get', item_id=product.id) }}">
                     <button class="btn btn-review" type="button">리뷰 작성</button>
                 </a>
+            </div>
+
+            <button type="button" id="buy-now-btn" class="btn btn-primary">
+            바로 구매
+            </button>
+
+            <!-- 구매 모달 -->
+            <div id="buyModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">바로 구매</div>
+                    <button type="button" id="buyModalClose" class="modal-close">✕</button>
+                </div>
+
+                <form id="buyForm">
+                <!-- 수량 -->
+                <div class="modal-form-group">
+                    <label for="buy-quantity">수량</label>
+                    <input type="number" id="buy-quantity" name="quantity" min="1" value="1">
+                </div>
+
+                <!-- 내 정보 (원하면 기본값을 세션에서 채우는 것도 가능) -->
+                <div class="modal-form-group">
+                    <label for="purchaser-name">이름</label>
+                    <input type="text" id="purchaser-name" name="purchaser_name" placeholder="홍길동" required>
+                </div>
+
+                <div class="modal-form-group">
+                    <label for="purchaser-phone">연락 수단</label>
+                    <input type="text" id="purchaser-contact" name="purchaser-contact" placeholder="SNS, 전화번호 등 연락 가능한 수단을 적어주세요." required>
+                </div>
+
+                <div class="modal-form-group">
+                    <label for="purchaser-addr">주소</label>
+                    <input type="text" id="purchaser-addr" name="purchaser_addr" placeholder="택배 거래시 주소를 적어주세요">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="modal-btn-primary">구매 확정</button>
+                </div>
+                </form>
+
+                <p id="buy-message" style="margin-top:10px;"></p>
+            </div>
             </div>
             {% if is_owner %}
             <div class="seller_actions">
@@ -81,21 +124,160 @@
         // Flask의 delete 라우트로 이동
         window.location.href = `/products/${productId}/${slug}/delete`;
     });
-        document.addEventListener("DOMContentLoaded", () => {
-            const wishBtn = document.getElementById("wish-btn");
-            const icon = wishBtn.querySelector("i");
 
-            wishBtn.addEventListener("click", () => {
-                wishBtn.classList.toggle("active");
+    document.addEventListener("DOMContentLoaded", () => {
+    const wishBtn = document.getElementById("heart");
+    if (!wishBtn) return;
 
-                if (wishBtn.classList.contains("active")) {
-                    icon.classList.remove("fa-regular");
-                    icon.classList.add("fa-solid");
-                } else {
-                    icon.classList.remove("fa-solid");
-                    icon.classList.add("fa-regular");
+    // 실제 UI 변경은 applyHeartUI에서 처리
+    const icon = wishBtn.querySelector("i");
+
+    wishBtn.addEventListener("click", () => {
+        // 현재 active 상태에 따라 like / unlike 호출
+        if (wishBtn.classList.contains("active")) {
+            // 이미 눌려있으면 취소
+            unlike();
+        } else {
+            // 안 눌려있으면 등록
+            like();
+        }
+    });
+});
+
+    // 하트 모양/색 바꾸는 함수
+    function applyHeartUI(isOn) {
+        const heart = document.getElementById("heart");
+        if (!heart) return;
+
+        const icon = heart.querySelector("i");
+        if (isOn) {
+            heart.classList.add("active");
+            heart.style.color = "#2e6b56";  // 이화 그린
+            if (icon) {
+                icon.classList.remove("fa-regular");
+                icon.classList.add("fa-solid");
+            }
+        } else {
+            heart.classList.remove("active");
+            heart.style.color = "#aaa";
+            if (icon) {
+                icon.classList.remove("fa-solid");
+                icon.classList.add("fa-regular");
+            }
+        }
+    }
+
+    function showHeart(){
+        $.ajax({
+            type:'GET',
+            url:'/show_heart/{{ product_id }}/',
+            data: {},
+            success: function(response){
+                let my_heart = response['my_heart'] || {};
+                if(my_heart['interested'] === 'Y'){
+                    applyHeartUI(true);
                 }
-            });
+                else{
+                    applyHeartUI(false);
+                }
+            }
         });
+    }
+
+    function like(){
+        $.ajax({
+            type:'POST',
+            url:'/like/{{ product_id }}/',
+            data:{
+                interested:"Y"
+            },
+            success:function(response){
+                alert(response['msg']);
+                applyHeartUI(true);
+            }
+        });
+    }
+
+    function unlike(){
+        $.ajax({
+            type:'POST',
+            url:'/unlike/{{ product_id }}/',
+            data:{
+                interested:"N"
+            },
+            success: function(response){
+                alert(response['msg']);
+                applyHeartUI(false);
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        showHeart();
+    });
+
+    // Flask에서 넘겨준 값 (view_product에서 넘겨줬다고 가정)
+    const productId = "{{ product_id }}";
+    const slug = "{{ product.name }}";  // 실제로는 slug 필드를 쓰는 게 좋음
+    const buyUrl = `/products/${productId}/${slug}/buy`;
+
+    const buyNowBtn = document.getElementById('buy-now-btn');
+    const buyModal = document.getElementById('buyModal');
+    const buyModalClose = document.getElementById('buyModalClose');
+    const buyForm = document.getElementById('buyForm');
+    const buyMessage = document.getElementById('buy-message');
+
+    // 모달 열기/닫기
+    buyNowBtn.addEventListener('click', () => {
+        buyMessage.textContent = "";
+        buyModal.style.display = 'flex';
+    });
+
+    buyModalClose.addEventListener('click', () => {
+        buyModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === buyModal) {
+        buyModal.style.display = 'none';
+        }
+    });
+
+    // 구매 폼 제출
+    buyForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(buyForm);
+
+        try {
+        const res = await fetch(buyUrl, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            buyMessage.style.color = 'red';
+            buyMessage.textContent = data.message || '구매에 실패했습니다.';
+            return;
+        }
+
+        buyMessage.style.color = 'green';
+        buyMessage.textContent = data.message || '구매가 완료되었습니다.';
+
+        // 재고 텍스트 갱신 (재고 표시해놓은 span이 있다고 가정)
+        const stockSpan = document.getElementById('stock-text');
+        if (stockSpan && typeof data.remain_quantity !== 'undefined') {
+            stockSpan.textContent = `현재 이 상품의 재고가 ${data.remain_quantity}개 남았습니다!`;
+        }
+
+
+        } catch (err) {
+        buyMessage.style.color = 'red';
+        buyMessage.textContent = '네트워크 오류가 발생했습니다.';
+        }
+    });
+
   </script>
 {% endblock %}
