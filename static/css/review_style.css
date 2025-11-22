@@ -4,13 +4,6 @@
 /* ------------------------------------------------ */
 /* --------------- 리뷰 등록 페이지 ------------------ */
 
-/* 공통 컨테이너 */
-.main-content {
-    max-width: 1200px;
-    margin: 60px auto;
-    padding: 0 20px;
-}
-
 .page-title{
     text-align: center;
     font-size: 22px;
@@ -241,14 +234,6 @@
 /* ------------------------------------------------ */
 /* --------------- 리뷰 전체 조회 페이지 -----------------*/
 
-/* 리뷰 전체 페이지 */
-.review-page {
-    max-width: 1200px;
-    margin: 60px auto;
-    padding: 0 20px;
-    text-align: center;
-}
-
 /* 제목 */
 .review-title {
     text-align: center;
@@ -263,6 +248,7 @@
     font-size: 14px;
     color: #666;
     margin-bottom: 50px;
+    text-align: center;
 }
 
 /* 리뷰 카드 그리드 */
@@ -374,12 +360,6 @@
 /* ------------------------------------------------ */
 /* --------------- 리뷰 상세보기 -----------------*/
 
-.review-detail-page {
-    max-width: 1200px;
-    margin: 60px auto;
-    padding: 0 20px;
-}
-
 /* 제목 */
 .review-detail-title {
     text-align: center;
@@ -475,23 +455,14 @@
     line-height: 1.4;
 }
 
-/* 작성자 및 작성일자 정보 */
-.review-meta {
-    display: flex;
-    gap: 20px;
-    font-size: 14px;
-    color: #666;
-}
-
-/* 작성자 정보와 수정/삭제 버튼을 한 줄에 배치 */
+/* 작성자와 수정/삭제 버튼을 한 줄에 배치 */
 .review-meta-with-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
-    color: #333;
 }
 
+/* 작성자 */
 .review-author {
     font-size: 14px;
     color: #666;
@@ -504,18 +475,19 @@
     gap: 8px;
 }
 
-.action-link {
+.btn-edit, .btn-delete {
     font-size: 14px;
     color: #333;
     text-decoration: none;
     cursor: pointer;
 }
 
-.action-link:hover {
+.btn-edit:hover, .btn-delete:hover {
     color: #2e6b56;
     text-decoration: none;
 }
 
+/* 수정, 삭제 구분선 */
 .action-divider {
     font-size: 14px;
     color: #333;
