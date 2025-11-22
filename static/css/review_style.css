@@ -535,6 +535,10 @@
     font-size: 14px;
     color: #333;
     line-height: 1.8;
+    min-height: 120px;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 18px;
 }
 
 /* 리뷰 전체 조회 화면으로 돌아가는 버튼 */
