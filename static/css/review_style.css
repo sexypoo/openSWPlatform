@@ -254,14 +254,12 @@
 /* 리뷰 카드 그리드 */
 .review-grid {
     display: grid;
-    /* 전체 화면 기준 항상 3열 */
     grid-template-columns: repeat(3, 1fr);
     gap: 40px;
     justify-items: center;
     max-width: 1200px;
     margin: 0 auto 60px;
 }
-
 
 /* 카드 스타일 */
 .review-card {
@@ -282,8 +280,6 @@
     box-shadow: 0 5px 12px rgba(0,0,0,0.1);
 }
 
-
-
 /* 리뷰 이미지 */
 .review-image {
     width: 100%;
@@ -297,11 +293,10 @@
 .review-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;    /* 비율 유지하면서 꽉 채우기 */
+    object-fit: cover;
     display: block;
-    border-radius: 8px;   /* 박스 라운딩과 통일 */
+    border-radius: 8px;
 }
-
 
 /* 리뷰제목 */
 .review-text {
@@ -360,6 +355,14 @@
 /* ------------------------------------------------ */
 /* --------------- 리뷰 상세보기 -----------------*/
 
+/* 페이지 전체 래퍼 */
+.review-detail-page {
+    max-width: 1200px;
+    margin: 60px auto 120px;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+
 /* 제목 */
 .review-detail-title {
     text-align: center;
@@ -371,53 +374,9 @@
 
 .review-detail-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: start;
-}
-
-/* 왼쪽 영역 - 리뷰 이미지 갤러리 */
-.review-gallery {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* 메인 이미지 */
-.main-image {
-    width: 85%;
-    aspect-ratio: 1 / 1;
-    background-color: #d9d9d9;
-    border-radius: 8px;
-    margin: 0 auto;
-}
-
-.thumbnail-container {
-    width: 85%;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    gap: 0;
-}
-
-/* 작은 이미지 */
-.thumbnail {
-    width: calc((100% - 30px) / 3);
-    aspect-ratio: 1 / 1;
-    background-color: #d9d9d9;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 3px solid transparent;
-}
-
-.thumbnail:hover {
-    opacity: 0.8;
-}
-
-.thumbnail.active {
-    border: 3px solid white;
-    box-shadow: 0 0 0 1px #2e6b56;
+    grid-template-columns: 1.1fr 0.9fr;
+    column-gap: 60px;
+    align-items: flex-start;
 }
 
 /* 오른쪽 영역 - 리뷰 정보 */
@@ -723,40 +682,40 @@
 .cancel-btn:hover {
     background-color: #d0d0d0;
 }
-.review-gallery {
-  width: 100%;
-  max-width: 480px;
-}
 
-.main-image {
-  width: 100%;
-  padding-top: 100%;   /* 1:1 비율 박스 */
-  position: relative;
-  background-color: #e5e5e5;   /* 이미지 없을 때 회색 배경 */
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-/* 실제 이미지 */
-.main-image-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;   /* 이미지 꽉 채우되 비율 유지 */
-}
-
-/* 이미지 없을 때만 회색 박스 */
-.main-image.placeholder {
-  background-color: #e5e5e5;
-}
+/* ------------------------------------------------ */
+/* --------------- 공통: 링크 -----------------*/
 
 a {
     text-decoration: none;
 }
 
-.gallery-container {
+/* ========== 리뷰 상세보기 전용 스코프: 이미지 갤러리 ========== */
+
+.review-detail-page .review-gallery {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 이미지 없을 때 박스 */
+.review-detail-page .main-image {
+    width: 100%;
+    padding-top: 100%;
+    position: relative;
+    background-color: #e5e5e5;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.review-detail-page .main-image.placeholder {
+    background-color: #e5e5e5;
+}
+
+.review-detail-page .gallery-container {
     position: relative;
     width: 100%;
     max-width: 500px;
@@ -766,25 +725,25 @@ a {
     border-radius: 12px;
 }
 
-.gallery-track {
+.review-detail-page .gallery-track {
     display: flex;
     width: 100%;
     height: 100%;
     transition: transform 0.6s ease;
 }
 
-.gallery-slide {
+.review-detail-page .gallery-slide {
     min-width: 100%;
     height: 100%;
 }
 
-.gallery-slide img {
+.review-detail-page .gallery-slide img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.gallery-btn {
+.review-detail-page .gallery-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -796,9 +755,24 @@ a {
     cursor: pointer;
 }
 
-.gallery-btn.prev { left: 10px; }
-.gallery-btn.next { right: 10px; }
+.review-detail-page .gallery-btn.prev { left: 10px; }
+.review-detail-page .gallery-btn.next { right: 10px; }
 
-.gallery-btn:hover {
+.review-detail-page .gallery-btn:hover {
     background: white;
+}
+
+/* 리뷰 전체조회 페이지 전체 레이아웃 */
+.review-page {
+    max-width: 1200px;     /* 가운데 폭 맞춤 */
+    margin: 60px auto;     /* 위아래 60px, 좌우 자동 중앙 */
+    padding: 0 40px;       /* 좌우 내부 여백 */
+    box-sizing: border-box;
+}
+/* 리뷰 작성 페이지 전체 레이아웃 */
+.review-reg-page {
+    max-width: 1200px;      /* 내용 최대 너비 */
+    margin: 60px auto 120px;/* 위 60, 아래 120, 좌우 가운데 정렬 */
+    padding: 0 40px;        /* 좌우 여백 */
+    box-sizing: border-box;
 }
