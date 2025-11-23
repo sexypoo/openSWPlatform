@@ -280,8 +280,8 @@
   font-size: 22px;
   font-weight: 700;
   color: #333;
-  margin-bottom: 60px;
-  margin-top: 60px;
+  margin-bottom: 5px;
+  margin-top: 0px;
 }
 
 .products-page .grid {
@@ -751,3 +751,20 @@ a {
     margin-top: 8px;
     font-size: 13px;
 }
+
+/* 상품 총 개수 (리뷰 subtitle 톤과 동일) */
+.products-subtitle{
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  margin-bottom: 50px;
+}
+#product-tags .tag-label {
+    color: #666;
+}
+
+#product-tags .tag-value {
+    color: #2e6b56;
+    font-weight: 600;
+}
+

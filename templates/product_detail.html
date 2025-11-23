@@ -28,7 +28,10 @@
             <div class="seller">판매자: <span id="product-seller">{{ product.seller or '알수없음' }}</span></div>
             <div class="price" id="product-price">₩{{ product.price or 0 }}</div>
             {% if product.tags %}
-            <div class="subnote" id="product-tags">태그: {{ product.tags }}</div>
+            <div class="subnote" id="product-tags">
+             <span class="tag-label">태그:</span>
+             <span class="tag-value">{{ product.tags }}</span>
+            </div>
             {% endif %}
             {% if product.method %}
             <div class="subnote" id="product-method">거래 방법: {{ product.method }}</div>
