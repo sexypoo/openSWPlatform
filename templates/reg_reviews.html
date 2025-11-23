@@ -12,11 +12,11 @@
 {% endif %}
 
 {%block content %}
-<main class="main-content">
+<main class="review-reg-page">
     <h1 class="page-title">리뷰 작성</h1>
 
     <form method="post" enctype="multipart/form-data" action="{{form_action}}">
-        {{ form.hidden_tag() }}
+    {{ form.hidden_tag() }} <!--CSRF 토큰 자동으로 넣어주고, Hidden field 항목들 가져옴-->
     <input type="hidden" name="item_id" value="{{ item_id or '' }}">
     <div class="section">
         <h2 class="section-title">상품 정보</h2>
@@ -27,7 +27,9 @@
             </div>
             <div class="product-field">
                 <label class="input-label" for="seller" value="{{ item.seller if item else review.seller }}">판매자</label>
-                <input type="text" class="text-input" id="seller" name="seller" value="{{ item.seller if item and item.seller else '' }}"placeholder="판매자 아이디를 입력하세요">
+                <input type="text" class="text-input" id="seller" name="seller"
+                value="{{ item.seller if item and item.seller else (review.seller if review and review.seller else '') }}"
+                placeholder="판매자 아이디를 입력하세요">
             </div>
             <div class="product-field">
                 <label class="input-label" for="p_details">상세 정보</label>
@@ -47,7 +49,7 @@
                 <span class="star" data-value="4">★</span>
                 <span class="star" data-value="5">★</span>
             </div>
-            <input type="hidden" id="rating" name="rating" value="1">
+            <input type="hidden" id="rating" name="rating" value="{{ form.rating.data or (review.rating if review else 1) }}">
         </div>
 
         <!-- 리뷰 내용 -->
@@ -56,13 +58,13 @@
             <div class="review-fields">
                 <div class="field-group">
                     <label class="field-label" for="title">제목</label>
-                    <input type="text" class="text-input" id="title" name="title" placeholder="리뷰 제목을 입력하세요">
+                    <input type="text" class="text-input" id="title" name="title" placeholder="리뷰 제목을 입력하세요" value="{{ form.title.data or (review.title if review else '') }}">
                 </div>
 
                 <div class="field-group">
                     <label class="field-label" for="r_details">내용</label>
                     <textarea class="textarea-input large" id="r_details" name="r_details"
-                        placeholder="상품에 대한 솔직한 리뷰를 작성해주세요."></textarea>
+                        placeholder="상품에 대한 솔직한 리뷰를 작성해주세요.">{{ form.r_details.data or (review.review_details if review else '') }}</textarea>
                 </div>
             </div>
         </div>

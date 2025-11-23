@@ -13,9 +13,26 @@ reviews_bp = Blueprint("reviews",__name__)
 # 리뷰 등록 case
 # 1. 상품 상세조회 -> 리뷰작성 통해 리뷰를 등록하는 경우 : 상품 정보 받아옴
 # 2. 일반 작성 : 상품 정보 등록자가 직접 작성
+@reviews_bp.route("/reg_reviews")
+def reg_review():
+    DB = current_app.config["DB"]
+    item_id = request.args.get("item_id")
+    item = DB.get_product(item_id) if item_id else None
+
+    # Flask-WTF는 form이 실행되는 순간 폼 객체 안에 csrf token을 생성해서 넣음
+    form = ReviewForm()
+
+    return render_template(
+        "reg_reviews.html",
+        form=form,
+        review=None,
+        item=item,
+        item_id=item_id,
+        mode="create",
+    )
 
 # 리뷰 작성 페이지 불러오기 - 만약 item(상품정보)가 존재한다면 담아서 보냄
-@reviews_bp.route("/get_product",methods=['GET'])
+@reviews_bp.route("/get_product", methods=['GET'])
 def reg_review_get():
     DB = current_app.config["DB"]
 
@@ -170,14 +187,20 @@ def update_review(review_id):
     if not review or review.get("purchaser") != user_id: # 구매자 정보와 본인 id가 일치해야만 수정 가능 (url 수정 방어)
         flash("수정 권한이 없습니다.")
         return redirect(url_for("reviews.view_review",review_id=review_id))
-    
+
     if request.method == "POST":
-        data = request.form.to_dict() # request.form은 값을 수정하거나 덮어쓸 수 없어, 딕셔너리로 변환
+        form = ReviewForm()
+
+        if not form.validate_on_submit():
+            for field, errors in form.errors.items():
+                for e in errors:
+                    flash(f"{field}: {e}")
+            return redirect(request.referrer or url_for("reviews.update_review", review_id=review_id))
 
         update_fields = {
-            "title": data.get("title"),
-            "review_details": data.get("r_details"),
-            "rating": data.get("rating")
+            "title": form.title.data,
+            "review_details": form.r_details.data,
+            "rating": form.rating.data,
         }
 
         image_file = request.files.get("file")
@@ -194,14 +217,23 @@ def update_review(review_id):
     
     item = None
     item_id = review.get("item_id")
-    if item_id: # 만약 리뷰와 연결된 상품이 있다면 정보 받아오기
-        item = DB.get_product(item_id)
+    item = DB.get_product(item_id) if item_id else None
+
+    form = ReviewForm()
+
+    # 기존 데이터 채워넣기
+    form.title.data = review.get("title")
+    form.r_details.data = review.get("review_details")
+    form.rating.data = review.get("rating")
+    form.item_id.data = item_id
+
     return render_template(
         "reg_reviews.html",
+        form=form,
         review=review,
         review_id=review_id,
         item=item,
-        item_id=item_id, # 필요하면 템플릿에서 새 작성/수정 구분용
+        item_id=item_id
     )
 
 # 리뷰 삭제
@@ -212,10 +244,11 @@ def delete_review(review_id):
 
     review = DB.get_review(review_id)
     if not review or review.get("purchaser") != user_id:
+        
         flash("삭제 권한이 없습니다.")
         return redirect(url_for("reviews.view_review",review_id=review_id))
     
     DB.delete_review(review_id)
-    flash("상품이 삭제되었습니다.")
+    flash("리뷰가 삭제되었습니다.")
     return redirect(url_for("reviews.view_reviews"))
 
