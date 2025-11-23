@@ -23,11 +23,9 @@
         {% if p.quantity == 0 %}
         <div class="soldout-badge">품절</div>
         {% endif %}
-        <div class="meta">
-          <div class="name">{{ p.name }}</div>
-          <div class="price">
-            ₩{{ p.price }}
-          </div>
+        <div class="name">{{ p.name }}</div>
+        <div class="price">
+          ₩{{ p.price }}
         </div>
       </a>
     </div>
@@ -73,67 +71,67 @@
 <script>
 
   document.addEventListener('DOMContentLoaded', () => {
-  let wishlist = [];   // 이제 localStorage 대신 서버에서 받아오기
+    let wishlist = [];   // 이제 localStorage 대신 서버에서 받아오기
 
-  function updateHeartVisual(heart) {
-    const id = heart.dataset.id;   // 문자열로 다루자
-    const icon = heart.querySelector('i');
-    if (!icon) return;
+    function updateHeartVisual(heart) {
+      const id = heart.dataset.id;   // 문자열로 다루자
+      const icon = heart.querySelector('i');
+      if (!icon) return;
 
-    if (wishlist.includes(id)) {
-      heart.classList.add('active');
-      icon.classList.remove('fa-regular');
-      icon.classList.add('fa-solid');
-    } else {
-      heart.classList.remove('active');
-      icon.classList.remove('fa-solid');
-      icon.classList.add('fa-regular');
+      if (wishlist.includes(id)) {
+        heart.classList.add('active');
+        icon.classList.remove('fa-regular');
+        icon.classList.add('fa-solid');
+      } else {
+        heart.classList.remove('active');
+        icon.classList.remove('fa-solid');
+        icon.classList.add('fa-regular');
+      }
     }
   }
 
-  // 1) 페이지 로드 시, 내 위시 목록 먼저 불러오기
-  fetch('{{ url_for("wish.my_hearts") }}')
-    .then(res => res.json())
-    .then(data => {
-      wishlist = (data.hearts || []).map(String);  // 문자열 배열로 맞추기
+    // 1) 페이지 로드 시, 내 위시 목록 먼저 불러오기
+    fetch('{{ url_for("wish.my_hearts") }}')
+      .then(res => res.json())
+      .then(data => {
+        wishlist = (data.hearts || []).map(String);  // 문자열 배열로 맞추기
 
-      document.querySelectorAll('.products-page .heart').forEach(heart => {
-        updateHeartVisual(heart);
-      });
-    });
-
-  // 2) 하트 클릭 시, 백엔드에 like/unlike 요청
-  const productsPage = document.querySelector('.products-page');
-  if (productsPage) {
-    productsPage.addEventListener('click', (e) => {
-      const heart = e.target.closest('.heart');
-      if (!heart) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      const id = heart.dataset.id;
-
-      const isWish = wishlist.includes(id);
-      const url = isWish
-        ? `{{ url_for("wish.unlike", id="__ID__") }}`.replace('__ID__', id)
-        : `{{ url_for("wish.like", id="__ID__") }}`.replace('__ID__', id);
-
-      fetch(url, { method: 'POST' })
-        .then(res => res.json())
-        .then(data => {
-          // 로컬 배열 업데이트
-          if (isWish) {
-            wishlist = wishlist.filter(x => x !== id);
-          } else {
-            wishlist.push(id);
-          }
+        document.querySelectorAll('.products-page .heart').forEach(heart => {
           updateHeartVisual(heart);
         });
-    });
-  }
-});
+      });
+
+    // 2) 하트 클릭 시, 백엔드에 like/unlike 요청
+    const productsPage = document.querySelector('.products-page');
+    if (productsPage) {
+      productsPage.addEventListener('click', (e) => {
+        const heart = e.target.closest('.heart');
+        if (!heart) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const id = heart.dataset.id;
+
+        const isWish = wishlist.includes(id);
+        const url = isWish
+          ? `{{ url_for("wish.unlike", id="__ID__") }}`.replace('__ID__', id)
+          : `{{ url_for("wish.like", id="__ID__") }}`.replace('__ID__', id);
+
+        fetch(url, { method: 'POST' })
+          .then(res => res.json())
+          .then(data => {
+            // 로컬 배열 업데이트
+            if (isWish) {
+              wishlist = wishlist.filter(x => x !== id);
+            } else {
+              wishlist.push(id);
+            }
+            updateHeartVisual(heart);
+          });
+      });
+    }
+  });
 </script>
 {% endblock %}
-
 
