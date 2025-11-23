@@ -260,3 +260,25 @@ footer {
 a {
     text-decoration: none;
 }
+
+/* 품절일 때 이미지 어둡게 */
+.soldout-thumb {
+    position: relative;
+    filter: grayscale(100%) brightness(40%);
+}
+
+/* 품절 배지 */
+.soldout-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    z-index: 10;
+    pointer-events: none;
+}

@@ -365,6 +365,7 @@
     justify-items: center;
     align-items: start;
     margin-top: 10px;/**/
+    align-items: stretch; /* ← 추가! */
 }
 
 /* 🔹 카드 공통 */
@@ -375,6 +376,10 @@
     padding: 16px;
     width: 230px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    display: flex;            /* 카드 내부를 균일하게 유지 */
+    flex-direction: column;   /* 위→아래 배치 */
+    height: 100%;             /* 카드 높이를 grid가 강제로 통일하게 하는 핵심 */
 }
 .product-card:hover, .review-card:hover {
     transform: translateY(-4px);
@@ -384,6 +389,14 @@
 .product-card p {
     margin: 4px 0; /* ✅ 상하 여백 최소화 */
     line-height: 1.4;
+}
+
+.product-card p:nth-of-type(1) {
+    /* 상품설명 부분만 선택됨 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;      /* 딱 2줄까지만 표시해서 상품내용이 길 때 튀어나오는 걸 방지! */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 
@@ -396,12 +409,11 @@
     margin-bottom: 10px;
 }
 
-/* 🔹 더보기 버튼 */
 .more-icon {
-    position: absolute;
-    right: 100px; /* ✅ 카드에서 약간 더 떨어지게 */
-    top: 60%;
-    transform: translateY(-50%);
+    position: relative;     /* HTML 흐름 유지하면서 미세 위치 조정 가능 */
+    top: -10px;             /* 살짝 위로 */
+    left: -20px;            /* 살짝 왼쪽으로 */
+
     width: 80px;
     height: 80px;
     border: 1px solid #ccc;
@@ -720,6 +732,104 @@
     box-shadow: 0 0 4px rgba(46, 107, 86, 0.3);
 }
 
-a {
-    text-decoration: none;
+/* ===========================
+   판매 내역 공통 스타일
+=========================== */
+.sell-section {
+    max-width: 700px;
+    margin-left: 0;
+    transform: translateX(10px);
+}
+
+/* 판매 내역 제목 */
+.sell-title {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* 탭 전체 컨테이너 */
+.sell-nav {
+    display: flex;
+    justify-content: center;
+    gap: 120px;          /* 탭 간 간격 */
+    margin-bottom: 25px;
+    transform: translateX(10px);
+}
+
+/* 탭 내부 구조 */
+.sell-tab {
+    display: flex;
+    flex-direction: column;  /* 숫자 위 / 텍스트 아래 */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    color: #555;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* 숫자만 강조 */
+.sell-tab span {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+/* 선택된 탭 강조 */
+.sell-tab.active,
+.sell-tab.active span {
+    color: #2e6b56;
+    font-weight: 700;
+}
+
+
+/* 리스트 */
+.sell-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.sell-thumb {
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
+    background: #e9e9e9;
+}
+
+.sell-info {
+    flex: 1;
+}
+
+.sell-name {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.sell-detail {
+    color: #777;
+    font-size: 14px;
+    margin: 4px 0;
+}
+
+.sell-price {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.sell-date {
+    font-size: 14px;
+    color: #777;
+    align-self: flex-start;
+    margin-top: 5px;
+}
+
+.sell-card:last-child {
+    border-bottom: none;
 }

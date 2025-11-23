@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_wtf import CSRFProtect
 from database import DBhandler
 
 def create_app():
@@ -7,6 +8,8 @@ def create_app():
 
     app.config["SECRET_KEY"] = "helloosp"
     app.config["ALLOWED_EXTS"] = {"png", "jpg", "jpeg", "gif", "webp"}
+
+    csrf = CSRFProtect(app)
 
     # DB 인스턴스 한 번만 생성해서 공유
     app.config["DB"] = DBhandler()
@@ -16,10 +19,14 @@ def create_app():
     from .auth import auth_bp
     from .items import items_bp
     from .reviews import reviews_bp
+    from .wish import wish_bp
+    from .user import user_bp
 
     app.register_blueprint(pages_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(items_bp)
     app.register_blueprint(reviews_bp)
+    app.register_blueprint(wish_bp)
+    app.register_blueprint(user_bp)
 
     return app

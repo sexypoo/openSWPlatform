@@ -21,7 +21,8 @@ class DBhandler:
             "price": data["price"],
             "quantity": data.get("quantity", 1),
             "method":(data.getlist("method") if hasattr(data, "getlist") else data.get("method",[])),
-            "img_path": img_path
+            "img_path": img_path,
+            "tags": data.get("tag","")
 
             # "addr": data['addr'],
             # "email": data['email'],
@@ -57,6 +58,41 @@ class DBhandler:
 
     def delete_product(self, product_id):
         self.db.child("items").child(product_id).remove()
+
+    # 구매 내역 저장
+    def add_purchase_for_user(self, user_id, product_id, purchase_info):
+        ref = (
+            self.db.child("user")
+            .child(user_id)
+            .child("purchases")
+            .child(product_id)
+            .push(purchase_info)
+        )
+
+        return ref["name"] # name : auto id
+
+    def get_purchases_by_user(self, user_id):
+        data = (
+            self.db.child("user")
+            .child(user_id)
+            .child("purchases")
+            .get().val()
+        ) or {}
+
+        result = []
+
+        for product_id, purchase_map in data.items():
+            if not isinstance(purchase_map, dict):
+                continue
+            for purchase_id, info in purchase_map.items():
+                if not isinstance(info, dict):
+                    continue
+                info["product_id"] = product_id
+                info["purchase_id"] = purchase_id
+                result.append(info)
+
+        result.sort(key=lambda x : x.get("purchased_at",0),reverese=True)
+        return result
 
     # auth 핸들러
 
@@ -95,10 +131,21 @@ class DBhandler:
                 return True
         return False
     
+    def get_uid_by_id(self, user_id:str):
+        snap = self.db.child("user").get().val() or {}
+
+        for uid, info in snap.items():
+            if not isinstance(info, dict):
+                continue
+            if info.get("id") == user_id:
+                return uid
+        
+        return None
+    
     # review 핸들러
     
     # Create
-    def insert_review(self, name, data, img_path, purchaser_id, item_id=None):
+    def insert_review(self, name, data, img_paths, purchaser_id, item_id=None):
         review_info = {
             "name" : name,
             "title" : data['title'],
@@ -107,14 +154,13 @@ class DBhandler:
             "product_details": data['p_details'],
             "review_details": data['r_details'],
             "rating": data['rating'],
-            "img_path": img_path,
+            "images": img_paths,
             "item_id": item_id
         }
 
         res = self.db.child("reviews").push(review_info)
         new_id = res['name']
 
-        print(data, img_path, "new_id=", new_id)
         return new_id
     
     # Read all
@@ -141,3 +187,127 @@ class DBhandler:
     # Delete
     def delete_review(self, review_id):
         self.db.child("reviews").child(review_id).remove()
+
+    def has_purchased_product(self, uid, product_id):
+
+        data = (
+            self.db.child("user")
+            .child(uid)
+            .child("purchases")
+            .child(product_id)
+            .get()
+            .val()
+        )
+        return bool(data)
+
+    # wish 핸들러
+
+    def get_heart_byid(self, uid, id):
+        hearts = self.db.child("heart").child(uid).get()
+        target_value = ""
+        if hearts.val() == None:
+            return target_value
+        
+        for res in hearts.each():
+            key_value = res.key()
+
+            if key_value == id:
+                target_value = res.val()
+
+        return target_value
+    
+    def update_heart(self, uid, isHeart, item):
+        heart_info = {
+            "interested" : isHeart
+        }
+        self.db.child("heart").child(uid).child(item).set(heart_info)
+        return True
+    
+    def get_my_heart_ids(self,uid):
+        mywish = self.db.child("heart").child(uid).get()
+
+        if not mywish.each():
+            return []
+        
+        ids = []
+        for node in mywish.each():
+            data = node.val()
+            if isinstance(data,dict) and data.get("interested") == "Y":
+                ids.append(node.key())
+        return ids
+    
+    def get_products_by_ids(self,id_list):
+        all_products = self.get_products()
+        id_set = set(id_list) # 검색 속도 향상
+        products = [p for p in all_products if p.get("id") in id_set]
+        return products
+    
+    def get_items_by_seller(self,seller_id):
+        sell_items = self.db.child("items").order_by_child("seller").equal_to(seller_id).get()
+        items = []
+
+        for node in (sell_items.each() or []):
+            v = node.val() or {}
+            v["id"] = node.key()
+            items.append(v)
+
+        return items
+    
+    def get_reviews_by_purchaser(self,purchaser_id):
+        review_items = self.db.child("reviews").order_by_child("purchaser").equal_to(purchaser_id).get()
+        reviews = []
+
+        for node in (review_items.each() or []):
+            v = node.val() or {}
+            v["id"] = node.key()
+            reviews.append(v)
+
+        return reviews
+
+
+    # User Handler
+
+    def get_user(self, user_id: str):
+        users = self.db.child("user").get()
+
+        if not users or users.val() is None:
+            return None
+        
+        for res in (users.each() or []):
+            value = res.val() or {}
+            if value.get("id") == user_id:
+                user_data = value.copy()
+                user_data["_key"] = res.key()
+                return user_data
+        
+        return None
+    
+    def update_user_password(self, user_id:str, new_password:str):
+        users = self.db.child("user").get()
+
+        if not users or users.val() is None:
+            return False
+        
+        for res in (users.each() or []):
+            value = res.val() or {}
+            if str(value.get("id")) == str(user_id):
+                key = res.key()
+                self.db.child("user").child(key).update({"pw":new_password})
+                print(new_password)
+
+                return True
+        return False
+    
+    def update_user_email(self, user_id:str, new_email:str):
+        users = self.db.child("user").get()
+
+        if not users or users.val() is None:
+            return False
+        
+        for res in (users.each() or []):
+            value = res.val() or {}
+            if str(value.get("id")) == str(user_id):
+                key = res.key()
+                self.db.child("user").child(key).update({"email":new_email})
+                return True
+        return False

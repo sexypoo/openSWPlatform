@@ -10,15 +10,15 @@
         <!-- 리뷰 제목 -->
         <h2 class="review-title">리뷰 전체 조회</h2>
         <!-- 리뷰 총 개수 텍스트 -->
-        <p class="review-subtitle"> 총 {{ datas|length }}개의 리뷰 </p>
+        <p class="review-subtitle"> 총 {{ total }}개의 리뷰 </p>
 
         <div class="review-grid">
         {% for p in datas %}
         <!-- 카드 전체를 상세보기 링크로 -->
         <a class="review-card" href="{{ url_for('reviews.view_review', review_id=p.id) }}">
             <div class="review-image">
-                {% if p.img_path %}
-                    <img src="{{ url_for('static', filename='images/' ~ p.img_path) }}">
+                {% if p.images %}
+                    <img src="{{ url_for('static', filename='images/' ~ p.images[0]) }}">
                 {% endif %}
             </div>
             <p class="review-text">{{ p.title }}</p>

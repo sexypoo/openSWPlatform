@@ -6,11 +6,6 @@
 {% endblock %}
 
 {% block content %}
-{% with mesg = get_flashed_messages() %}
-{% if mesg != [] %}
-<script>alert("{{mesg[0]}}")</script>
-{% endif %}
-{% endwith %}
 <!-- 로그인 폼 -->
 <main class="login-container">
     <form class="login-box" action="{{ url_for('auth.login_user') }}" method="post">

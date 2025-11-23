@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, current_app
 
+# 엔드포인트별로 페이지 보여줌
 pages_bp = Blueprint("pages",__name__)
 
 @pages_bp.route("/")
@@ -36,12 +37,3 @@ def view_review():
 @pages_bp.route("/reg_items")
 def reg_item():
     return render_template("reg_items.html")
-
-
-@pages_bp.route("/mypage")
-def view_mypage():
-    return render_template("mypage.html");
-
-@pages_bp.route("/mypage/wishlist")
-def view_wishlist():
-    return render_template("wishlist.html");
