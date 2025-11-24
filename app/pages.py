@@ -29,6 +29,6 @@ def view_list():
 def view_review():
     return render_template("review.html")
 
-@pages_bp.route("/reg_items")
+@pages_bp.route("/reg_product")
 def reg_item():
     return render_template("reg_product.html")
