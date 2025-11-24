@@ -17,14 +17,14 @@ def create_app():
     # 블루프린트 등록
     from .pages import pages_bp
     from .auth import auth_bp
-    from .items import items_bp
+    from .products import products_bp
     from .reviews import reviews_bp
     from .wish import wish_bp
     from .user import user_bp
 
     app.register_blueprint(pages_bp)
     app.register_blueprint(auth_bp)
-    app.register_blueprint(items_bp)
+    app.register_blueprint(products_bp)
     app.register_blueprint(reviews_bp)
     app.register_blueprint(wish_bp)
     app.register_blueprint(user_bp)

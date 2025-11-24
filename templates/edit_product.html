@@ -33,8 +33,11 @@
                     <label class="req-dot" for="category">카테고리</label>
                     <select id="cate" name="category" required>
                         <option disabled value="">카테고리</option>
-                        <option value="cloth" {% if product.category=='cloth' %}selected{% endif %}>의류</option>
+                        <option value="clothes" {% if product.category=='clothes' %}selected{% endif %}>의류</option>
                         <option value="book" {% if product.category=='book' %}selected{% endif %}>서적</option>
+                        <option value="fresh_produce" {% if product.category=='fresh_produce' %}selected{% endif %}>농수산물</option>
+                        <option value="eletronics" {% if product.category=='eletronics' %}selected{% endif %}>전자기기</option>
+                        <option value="service" {% if product.category=='service' %}selected{% endif %}>일거리</option>
                         <option value="etc" {% if product.category=='etc' %}selected{% endif %}>잡화</option>
                     </select>
                 </div>

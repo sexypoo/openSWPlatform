@@ -1,16 +1,18 @@
 import os
 import time
+from unicodedata import category
 
 from flask import current_app
+from requests_toolbelt.multipart.encoder import total_len
 from werkzeug.utils import secure_filename
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session, current_app, jsonify
 
 from database import DBhandler
 
-items_bp = Blueprint("items",__name__)
+products_bp = Blueprint("products",__name__)
 
 # 상품 등록 POST
-@items_bp.route("/submit_item_post", methods=['POST'])
+@products_bp.route("/submit_product_post", methods=['POST'])
 def reg_item_submit_post():
 
     # 로그인 상태 확인
@@ -30,19 +32,22 @@ def reg_item_submit_post():
     # 로그인된 유저의 정보를 seller로 넘김
     new_product_id = DB.insert_item(data['name'], data, image_file.filename, seller_id=seller_id)
     
-    return redirect(url_for("items.view_product", product_id=new_product_id, slug=data['name']))
+    return redirect(url_for("products.view_product", product_id=new_product_id, slug=data['name']))
 
 # 상품 전체조회
-@items_bp.route("/products", methods=["GET"])
+@products_bp.route("/products", methods=["GET"])
 def view_products():
     DB = current_app.config["DB"]
-    
+
+    category = request.args.get("category", "").strip()
+    items = DB.get_products()
+
+    if category:
+        items = [p for p in items if p.get("category") == category]
+
     # 페이지네이션 구현
     page = request.args.get("page", 1, type=int)
     per_page = 6 # 한 페이지에 6개씩 볼 수 있음
-
-    # DB에서 전체 item 받아오기
-    items = DB.get_products()
     total = len(items)
 
     start = (page - 1) * per_page
@@ -52,10 +57,10 @@ def view_products():
     from math import ceil
     page_count = max(1, ceil(total / per_page))
 
-    return render_template("products.html", datas=page_items, page=page, page_count=page_count, total=total)
+    return render_template("products.html", datas=page_items, page=page, page_count=page_count, total=total, category=category)
 
 # slug => 과제 요구사항 맞추기 위해 추가 (상품 이름)
-@items_bp.route("/products/<string:product_id>/<slug>", methods=["GET"])
+@products_bp.route("/products/<string:product_id>/<slug>", methods=["GET"])
 def view_product(product_id, slug):
     DB = current_app.config["DB"]
     product = DB.get_product(product_id)
@@ -67,7 +72,7 @@ def view_product(product_id, slug):
     return render_template("product_detail.html", product=product, product_id=product_id, is_owner=is_owner)
 
 
-@items_bp.route("/products/<string:product_id>/<slug>/edit", methods=['GET', 'POST'])
+@products_bp.route("/products/<string:product_id>/<slug>/edit", methods=['GET', 'POST'])
 def edit_product(product_id, slug):
     DB = current_app.config["DB"]
 
@@ -76,7 +81,7 @@ def edit_product(product_id, slug):
 
     if product.get("seller") != current_id: # 이중 체크, fe에서 권한이 없을 경우 버튼이 보이지 않으나 url 접근 막음
         flash("수정 권한이 없습니다")
-        return redirect(url_for("items.view_product", product_id=product_id, slug=slug))
+        return redirect(url_for("products.view_product", product_id=product_id, slug=slug))
     
     if request.method == "GET":
         return render_template("edit_product.html", product=product, product_id=product_id, slug=slug)
@@ -106,10 +111,10 @@ def edit_product(product_id, slug):
     DB.update_product(product_id, update_data)
 
     flash("상품이 수정되었습니다")
-    return redirect(url_for("items.view_product", product_id=product_id, slug=slug))
+    return redirect(url_for("products.view_product", product_id=product_id, slug=slug))
 
 
-@items_bp.route("/products/<string:product_id>/<slug>/delete", methods=['GET', 'POST'])
+@products_bp.route("/products/<string:product_id>/<slug>/delete", methods=['GET', 'POST'])
 def delete_product(product_id, slug):
     DB = current_app.config["DB"]
     product = DB.get_product(product_id)
@@ -117,14 +122,14 @@ def delete_product(product_id, slug):
 
     if product.get("seller") != current_id:
         flash("삭제 권한이 없습니다.")
-        return redirect(url_for("items.view_product", product_id=product_id, slug=slug))
+        return redirect(url_for("products.view_product", product_id=product_id, slug=slug))
 
     DB.delete_product(product_id)
     flash("상품이 삭제 되었습니다")
-    return redirect(url_for("items.view_products"))
+    return redirect(url_for("products.view_products"))
 
 # 상품 구매 로직
-@items_bp.route("/products/<string:product_id>/<slug>/buy",methods=["POST"])
+@products_bp.route("/products/<string:product_id>/<slug>/buy",methods=["POST"])
 def buy_product(product_id, slug):
     DB = current_app.config["DB"]
     # 실제 아이디

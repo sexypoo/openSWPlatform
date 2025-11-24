@@ -10,6 +10,19 @@
   <div class="title">상품 전체 조회</div>
   <p class="products-subtitle">총 {{ total }}개의 상품</p>
 
+  <form method="get" style="margin: 8px 0 20px; display:flex; gap:8px; align-items:center;">
+    <label for="category">카테고리</label>
+    <select id="category" name="category">
+      <option value="">전체</option>
+      <option value="clothes" {% if category == 'clothes' %}selected{% endif %}>의류</option>
+      <option value="book"  {% if category == 'book' %}selected{% endif %}>서적</option>
+      <option value="fresh_produce" {% if category == 'fresh_produce' %}seleted{% endif %}>농수산물</option>
+      <option value="eletronics" {% if category == 'eletronics' %}selected{% endif %}>전자기기</option>
+      <option value="service" {% if category == 'service' %}selected{% endif %}>일거리</option>
+      <option value="etc"   {% if category == 'etc' %}selected{% endif %}>잡화</option>
+    </select>
+    <button type="submit" class="btn">검색</button>
+  </form>
   <!-- 상품 카드 목록 -->
   <section class="grid">
     {% for p in datas %}
@@ -39,7 +52,7 @@
     <nav class="pagination" aria-label="pagination">
       {# 이전 버튼 #}
       {% if page > 1 %}
-      <a href="{{ url_for('items.view_products', page=page-1) }}" class="page-num prev" aria-label="Previous">‹</a>
+      <a href="{{ url_for('items.view_products', page=page-1, category=category) }}" class="page-num prev" aria-label="Previous">‹</a>
       {% else %}
       <span class="page-num prev disabled" aria-label="Previous">‹</span>
       {% endif %}
@@ -49,13 +62,13 @@
       {% if p == page %}
       <span class="page-num active">{{ p }}</span>
       {% else %}
-      <a href="{{ url_for('items.view_products', page=p) }}" class="page-num">{{ p }}</a>
+      <a href="{{ url_for('items.view_products', page=p, category=category) }}" class="page-num">{{ p }}</a>
       {% endif %}
       {% endfor %}
 
 
       {# 다음 버튼 #}
-      {% if page < page_count %} <a href="{{ url_for('items.view_products', page=page+1) }}" class="page-num next"
+      {% if page < page_count %} <a href="{{ url_for('items.view_products', page=page+1, category=category) }}" class="page-num next"
         aria-label="Next">›</a>
         {% else %}
         <span class="page-num next disabled" aria-label="Next">›</span>
@@ -89,7 +102,7 @@
         icon.classList.add('fa-regular');
       }
     }
-  }
+
 
     // 1) 페이지 로드 시, 내 위시 목록 먼저 불러오기
     fetch('{{ url_for("wish.my_hearts") }}')
