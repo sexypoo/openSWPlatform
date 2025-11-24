@@ -139,7 +139,7 @@
             <div class="sell-list" id="completed-list" style="display:none;">
                 {% if sold_list %}
                 {% for p in sold_list %}
-                <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.name) }}" style="text-decoration:none; color:inherit;">
+                <a href="{{ url_for('products.view_product', product_id=p.id, slug=p.name) }}" style="text-decoration:none; color:inherit;">
                 <div class="sell-card">
                     <div class="sell-thumb"
                     {% if p.img_path %}
