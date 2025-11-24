@@ -9,7 +9,7 @@
 <div class="reg-items-page">
 
   <div class="title">상품 등록</div>
-  <form method="POST" enctype="multipart/form-data" action="{{ url_for('items.reg_item_submit_post') }}">
+  <form method="POST" enctype="multipart/form-data" action="{{ url_for('products.reg_item_submit_post') }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="grid">
     <!-- left: upload area -->
@@ -31,8 +31,11 @@
       <label class="req-dot" for="category">카테고리</label>
       <select id="cate" name="category" required="">
         <option disabled="" selected="" value="">카테고리</option>
-        <option value="cloth">의류</option>
+        <option value="clothes">의류</option>
         <option value="book">서적</option>
+        <option value="fresh_produce">농수산물</option>
+        <option value="eletronics">전자기기</option>
+        <option value="service">일거리</option>
         <option value="etc">잡화</option>
       </select>
     </div>
@@ -58,10 +61,10 @@
     <div class="field">
     <label class="req-dot" id="label-method">거래 방법</label>
     <div class="check-grid">
-      <label><input name="method" type="checkbox" value="ftf"/>대면 직거래 가능</label>
-      <label><input name="method" type="checkbox" value="nftf"/>비대면 직거래 가능</label>
-      <label><input name="method" type="checkbox" value="post"/>택배 거래 가능</label>
-      <label><input name="method" type="checkbox" value="personal"/>거래 방법 개인 문의 요함</label>
+      <label><input name="method" type="checkbox" value="대면 직거래 가능"/>대면 직거래 가능</label>
+      <label><input name="method" type="checkbox" value="비대면 직거래 가능"/>비대면 직거래 가능</label>
+      <label><input name="method" type="checkbox" value="택배 거래 가능"/>택배 거래 가능</label>
+      <label><input name="method" type="checkbox" value="거래 방법 개인 문의 요함"/>거래 방법 개인 문의 요함</label>
     </div>
     </div>
     <div class="submit-wrap">
@@ -175,6 +178,30 @@ document.addEventListener("DOMContentLoaded", function() {              // DOM�
   });
 
   checkRequired();                                                      // 페이지 로드 직후 초기 상태 한 번 점검
+});
+document.addEventListener("DOMContentLoaded", function (){
+  const tagInput = document.getElementById("tag");
+  if (!tagInput) return;
+  tagInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();   // 폼 submit 막기
+      // 여기서 굳이 뭐 안 해도 됨. 그냥 줄바꿈 대신 무시.
+    }
+  });
+  tagInput.addEventListener("focus", function (){
+    if (tagInput.value.trim() === "") {
+      tagInput.value = "#";
+      tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
+    }
+  });
+  tagInput.addEventListener("input", function () {
+    let v = tagInput.value;
+    if (!v.endsWith(" ")) return;
+    let tokens = v.trim().split(/\s+/).filter(Boolean);
+    tokens = tokens.map(t => t.startsWith("#") ? t : "#" + t);
+    tagInput.value = tokens.join(" ") + " ";
+    tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
+  });
 });
 </script>
 {% endblock %}

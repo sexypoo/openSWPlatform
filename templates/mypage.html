@@ -87,7 +87,7 @@
                 {% for p in wishlist %}
                 <div class="item-card">
 
-                    <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.name) }}" style="text-decoration:none; color:inherit;">
+                    <a href="{{ url_for('products.view_product', product_id=p.id, slug=p.name) }}" style="text-decoration:none; color:inherit;">
                         <div class="review-content">
                             <div class="thumb-box"
                             aria-label="상품 이미지"

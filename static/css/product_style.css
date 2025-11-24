@@ -101,7 +101,7 @@
   }
 }
 
-/* ===== From product_detail.html ===== */
+/* ===== From itemitem_detail.html ===== */
 .product-detail-page {
   max-width: 1100px;
   margin: 48px auto;
@@ -391,7 +391,7 @@
 }
 
 
-/* ===== From reg_items.html ===== */
+/* ===== From reg_product.html ===== */
 
 .reg-items-page {
   max-width: 1100px;

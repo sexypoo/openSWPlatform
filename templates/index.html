@@ -29,7 +29,7 @@
         {% set price = p.price | default(0) %}
 
         <div class="product-card">
-            <a href="{{ url_for('items.view_product', product_id=p.id, slug=p.name) }}">
+            <a href="{{ url_for('products.view_product', product_id=p.id, slug=p.name) }}">
                 <div class="img-placeholder"
                      {% if img %}
                      style="background-image:url('{{ url_for('static', filename='images/' ~ img) }}'); background-size:cover; background-position:center;"
@@ -45,7 +45,7 @@
         {% else %}
         <p>등록된 상품이 없습니다.</p>
         {% endif %}
-        <div class="more-icon" onclick="location.href='{{ url_for('items.view_products') }}'">
+        <div class="more-icon" onclick="location.href='{{ url_for('products.view_products') }}'">
             <i class="fa-solid fa-arrow-right"></i>
             <p>더보기</p>
         </div>

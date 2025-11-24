@@ -24,16 +24,11 @@ def signup():
 def view_list():
     return render_template("products.html")
 
-# @pages_bp.route("/product/<string:product_id>")
-# def view_product(product_id):
-#     DB = current_app.config["DB"]
-#     product = DB.get_product(product_id)
-#     return render_template("product_detail.html", product=product, product_id=product_id)
 
 @pages_bp.route("/review")
 def view_review():
     return render_template("review.html")
 
-@pages_bp.route("/reg_items")
+@pages_bp.route("/reg_product")
 def reg_item():
-    return render_template("reg_items.html")
+    return render_template("reg_product.html")

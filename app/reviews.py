@@ -49,7 +49,7 @@ def reg_review_get():
         if not DB.has_purchased_product(uid, item_id):
             flash("구매한 상품에만 리뷰를 작성할 수 있습니다.")
             slug = item.get("name", "")
-            return redirect(url_for("items.view_product", product_id=item_id, slug=slug))
+            return redirect(url_for("products.view_product", product_id=item_id, slug=slug))
 
     # Flask-WTF는 form이 실행되는 순간 폼 객체 안에 csrf token을 생성해서 넣음
     form = ReviewForm()
