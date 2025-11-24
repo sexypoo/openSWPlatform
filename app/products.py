@@ -42,7 +42,7 @@ def view_products():
     category = request.args.get("category", "").strip()
     items = DB.get_products()
 
-    if category:
+    if category: # 카테고리 있으면 받아와서 저장
         items = [p for p in items if p.get("category") == category]
 
     # 페이지네이션 구현

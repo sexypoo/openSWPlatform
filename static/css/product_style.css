@@ -768,3 +768,79 @@ a {
     font-weight: 600;
 }
 
+
+/* === 카테고리 필터 (products.html 전용) === */
+.products-page form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  margin: 20px 0 32px;
+}
+
+/* label */
+.products-page form label {
+  font-size: 14px;
+  color: #444;
+  font-weight: 500;
+}
+
+/* select */
+.products-page form select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d7d7d7;
+  background: #fff;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  min-width: 110px;
+}
+
+.products-page form select:focus {
+  border-color: #2e6b56;
+  box-shadow: 0 0 0 3px rgba(46, 107, 86, 0.15);
+}
+
+/* 검색 버튼 */
+.products-page form .btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: #2e6b56;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.products-page form .btn:hover {
+  background: #245545;
+}
+
+.products-page form .btn:active {
+  transform: translateY(1px);
+}
+
+/* 반응형 처리 */
+@media (max-width: 520px) {
+  .products-page form {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .products-page form label {
+    width: 100%;
+    text-align: center;
+  }
+
+  .products-page form select {
+    width: 100%;
+  }
+
+  .products-page form .btn {
+    width: 100%;
+  }
+}

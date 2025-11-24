@@ -52,7 +52,7 @@
     <nav class="pagination" aria-label="pagination">
       {# 이전 버튼 #}
       {% if page > 1 %}
-      <a href="{{ url_for('items.view_products', page=page-1, category=category) }}" class="page-num prev" aria-label="Previous">‹</a>
+      <a href="{{ url_for('products.view_products', page=page-1, category=category) }}" class="page-num prev" aria-label="Previous">‹</a>
       {% else %}
       <span class="page-num prev disabled" aria-label="Previous">‹</span>
       {% endif %}
@@ -62,13 +62,13 @@
       {% if p == page %}
       <span class="page-num active">{{ p }}</span>
       {% else %}
-      <a href="{{ url_for('items.view_products', page=p, category=category) }}" class="page-num">{{ p }}</a>
+      <a href="{{ url_for('products.view_products', page=p, category=category) }}" class="page-num">{{ p }}</a>
       {% endif %}
       {% endfor %}
 
 
       {# 다음 버튼 #}
-      {% if page < page_count %} <a href="{{ url_for('items.view_products', page=page+1, category=category) }}" class="page-num next"
+      {% if page < page_count %} <a href="{{ url_for('products.view_products', page=page+1, category=category) }}" class="page-num next"
         aria-label="Next">›</a>
         {% else %}
         <span class="page-num next disabled" aria-label="Next">›</span>

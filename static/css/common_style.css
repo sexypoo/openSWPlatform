@@ -282,3 +282,24 @@ a {
     z-index: 10;
     pointer-events: none;
 }
+
+/* ============================================= */
+/* 📌 전체 페이지 공통 레이아웃 통일 (클래스명 변경 없음) */
+/* ============================================= */
+
+.page-container,
+.wishlist-page,
+.product-detail-page,
+.products-page,
+.reg-items-page,
+.main-content,
+.review-page,
+.review-detail-page,
+.profile-card,
+.mypage-container {
+    max-width: 1200px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+}

@@ -63,31 +63,32 @@
                 </div>
 
                 <form id="buyForm">
-                <!-- 수량 -->
-                <div class="modal-form-group">
-                    <label for="buy-quantity">수량</label>
-                    <input type="number" id="buy-quantity" name="quantity" min="1" value="1">
-                </div>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <!-- 수량 -->
+                    <div class="modal-form-group">
+                        <label for="buy-quantity">수량</label>
+                        <input type="number" id="buy-quantity" name="quantity" min="1" value="1">
+                    </div>
 
-                <!-- 내 정보 (원하면 기본값을 세션에서 채우는 것도 가능) -->
-                <div class="modal-form-group">
-                    <label for="purchaser-name">이름</label>
-                    <input type="text" id="purchaser-name" name="purchaser_name" placeholder="홍길동" required>
-                </div>
+                    <!-- 내 정보 (원하면 기본값을 세션에서 채우는 것도 가능) -->
+                    <div class="modal-form-group">
+                        <label for="purchaser-name">이름</label>
+                        <input type="text" id="purchaser-name" name="purchaser_name" placeholder="홍길동" required>
+                    </div>
 
-                <div class="modal-form-group">
-                    <label for="purchaser-phone">연락 수단</label>
-                    <input type="text" id="purchaser-contact" name="purchaser-contact" placeholder="SNS, 전화번호 등 연락 가능한 수단을 적어주세요." required>
-                </div>
+                    <div class="modal-form-group">
+                        <label for="purchaser-phone">연락 수단</label>
+                        <input type="text" id="purchaser-contact" name="purchaser-contact" placeholder="SNS, 전화번호 등 연락 가능한 수단을 적어주세요." required>
+                    </div>
 
-                <div class="modal-form-group">
-                    <label for="purchaser-addr">주소</label>
-                    <input type="text" id="purchaser-addr" name="purchaser_addr" placeholder="택배 거래시 주소를 적어주세요">
-                </div>
+                    <div class="modal-form-group">
+                        <label for="purchaser-addr">주소</label>
+                        <input type="text" id="purchaser-addr" name="purchaser_addr" placeholder="택배 거래시 주소를 적어주세요">
+                    </div>
 
-                <div class="modal-actions">
-                    <button type="submit" class="modal-btn-primary">구매 확정</button>
-                </div>
+                    <div class="modal-actions">
+                        <button type="submit" class="modal-btn-primary">구매 확정</button>
+                    </div>
                 </form>
 
                 <p id="buy-message" style="margin-top:10px;"></p>
