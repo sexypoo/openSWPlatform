@@ -1,0 +1,34 @@
+<div class="section-wrapper">
+    <h2 class="section-title">내 리뷰</h2>
+
+    {% if review_list %}
+    <div class="mypage-review-grid">
+        {% for p in review_list %}
+        <div class="mypage-review-card">
+
+            <div class="mypage-review-image">
+                {% if p.images %}
+                <img src="{{ url_for('static', filename='images/' ~ p.images[0]) }}">
+                {% endif %}
+            </div>
+
+            <div class="mypage-review-title">{{ p.title }}</div>
+
+            <div class="mypage-review-stars">
+                {% set r = (p.rating or 0)|int %}
+                {{ '★' * r }}{{ '☆' * (5 - r) }}
+            </div>
+
+            <div class="mypage-review-info">
+                <span>{{ p.name }}</span>
+                <span>{{ p.date }}</span>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="empty-text">등록한 리뷰가 없습니다.</p>
+    {% endif %}
+</div>
+

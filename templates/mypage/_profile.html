@@ -1,0 +1,68 @@
+<div class="section-wrapper">
+
+    <h2 class="section-title">회원정보</h2>
+
+    <div class="profile-card">
+
+        <div id="view-mode">
+            <div class="info-item">
+                <label>아이디</label>
+                <div class="info-display">{{ user.id }}</div>
+            </div>
+
+            <div class="info-item">
+                <label>비밀번호</label>
+                <div class="info-display">********</div>
+            </div>
+
+            <div class="info-item">
+                <label>이메일</label>
+                <div class="info-display">{{ user.email }}</div>
+            </div>
+
+            <button onclick="toggleEditMode()" class="primary-btn">
+                회원정보 수정하기
+            </button>
+        </div>
+
+        <div id="edit-mode" style="display:none;">
+            <form method="post" action="{{ url_for('user.update_profile') }}">
+
+                <div class="info-item">
+                    <label>아이디</label>
+                    <div class="readonly-field">{{ user.id }}</div>
+                </div>
+
+                <div class="info-item">
+                    <label>새 비밀번호 입력</label>
+                    <input type="password" name="password_new" id="edit-password-new">
+                </div>
+
+                <div class="info-item">
+                    <label>이메일</label>
+                    <input type="email" name="email" value="{{ user.email }}">
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="save-btn">저장하기</button>
+                    <button type="button" onclick="cancelEdit()" class="cancel-btn">취소</button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function toggleEditMode() {
+    document.getElementById("view-mode").style.display = "none";
+    document.getElementById("edit-mode").style.display = "block";
+}
+
+function cancelEdit() {
+    document.getElementById("edit-mode").style.display = "none";
+    document.getElementById("view-mode").style.display = "block";
+}
+</script>
