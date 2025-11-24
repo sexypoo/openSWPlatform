@@ -179,5 +179,29 @@ document.addEventListener("DOMContentLoaded", function() {              // DOM�
 
   checkRequired();                                                      // 페이지 로드 직후 초기 상태 한 번 점검
 });
+document.addEventListener("DOMContentLoaded", function (){
+  const tagInput = document.getElementById("tag");
+  if (!tagInput) return;
+  tagInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();   // 폼 submit 막기
+      // 여기서 굳이 뭐 안 해도 됨. 그냥 줄바꿈 대신 무시.
+    }
+  });
+  tagInput.addEventListener("focus", function (){
+    if (tagInput.value.trim() === "") {
+      tagInput.value = "#";
+      tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
+    }
+  });
+  tagInput.addEventListener("input", function () {
+    let v = tagInput.value;
+    if (!v.endsWith(" ")) return;
+    let tokens = v.trim().split(/\s+/).filter(Boolean);
+    tokens = tokens.map(t => t.startsWith("#") ? t : "#" + t);
+    tagInput.value = tokens.join(" ") + " ";
+    tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
+  });
+});
 </script>
 {% endblock %}

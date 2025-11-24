@@ -10,7 +10,8 @@
     <div class="title">Item Edit</div>
     <hr/>
     <form method="POST" enctype="multipart/form-data"
-          action="{{ url_for('items.edit_product', product_id=product_id, slug=slug) }}">
+          action="{{ url_for('products.edit_product', product_id=product_id, slug=slug) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="grid">
 
             <div>
@@ -35,8 +36,11 @@
                         <option disabled value="">카테고리</option>
                         <option value="clothes" {% if product.category=='clothes' %}selected{% endif %}>의류</option>
                         <option value="book" {% if product.category=='book' %}selected{% endif %}>서적</option>
-                        <option value="fresh_produce" {% if product.category=='fresh_produce' %}selected{% endif %}>농수산물</option>
-                        <option value="eletronics" {% if product.category=='eletronics' %}selected{% endif %}>전자기기</option>
+                        <option value="fresh_produce" {% if product.category=='fresh_produce' %}selected{% endif %}>
+                            농수산물
+                        </option>
+                        <option value="eletronics" {% if product.category=='eletronics' %}selected{% endif %}>전자기기
+                        </option>
                         <option value="service" {% if product.category=='service' %}selected{% endif %}>일거리</option>
                         <option value="etc" {% if product.category=='etc' %}selected{% endif %}>잡화</option>
                     </select>
@@ -111,6 +115,30 @@
             const url = URL.createObjectURL(f);
             previewImg.src = url;
             previewImg.hidden = false;
+        });
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        const tagInput = document.getElementById("tag");
+        if (!tagInput) return;
+        tagInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();   // 폼 submit 막기
+                // 여기서 굳이 뭐 안 해도 됨. 그냥 줄바꿈 대신 무시.
+            }
+        });
+        tagInput.addEventListener("focus", function () {
+            if (tagInput.value.trim() === "") {
+                tagInput.value = "#";
+                tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
+            }
+        });
+        tagInput.addEventListener("input", function () {
+            let v = tagInput.value;
+            if (!v.endsWith(" ")) return;
+            let tokens = v.trim().split(/\s+/).filter(Boolean);
+            tokens = tokens.map(t => t.startsWith("#") ? t : "#" + t);
+            tagInput.value = tokens.join(" ") + " ";
+            tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
         });
     });
 </script>
