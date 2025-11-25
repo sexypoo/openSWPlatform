@@ -1,7 +1,9 @@
 {%extends "layout.html"%}
-{% block title %}로그인 | EWHA MARKET{% endblock %}
+{% block title %}회원가입 | EWHA MARKET{% endblock %}
 
 {% block head_extra %}
+<!-- Tailwind CSS CDN 추가 -->
+<script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/userhome_style.css') }}">
 {% endblock %}
 
@@ -10,16 +12,25 @@
     <!-- 회원가입 폼 -->
     <main class="signup-container">
         <form class="signup-box" method="POST" action="{{url_for('auth.register_user')}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <h2>회원가입</h2>
 
             <label for="username">아이디</label>
-            <input type="text" id="username" name="id"placeholder="아이디를 입력하세요" required />
+            <input type="text" id="username" name="id" placeholder="아이디를 입력하세요" required />
 
             <label for="nickname">닉네임</label>
             <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력하세요" required />
 
             <label for="email">이메일</label>
-            <input type="email" id="email" name="email" placeholder="example@ewha.kr" required />
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                placeholder="example@ewha.kr" 
+                class="email-input invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-sky-500"
+                required 
+            />
 
             <label for="password">비밀번호</label>
             <input type="password" id="password" name="pw" placeholder="비밀번호를 입력하세요" required />
@@ -40,3 +51,4 @@
         </form>
     </main>
 {% endblock %}
+
