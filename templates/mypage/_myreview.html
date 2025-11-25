@@ -4,6 +4,8 @@
     {% if review_list %}
     <div class="mypage-review-grid">
         {% for p in review_list %}
+        <a href="{{ url_for('reviews.view_review', review_id=p.id) }}">
+
         <div class="mypage-review-card">
 
             <div class="mypage-review-image">
@@ -25,6 +27,7 @@
             </div>
 
         </div>
+        </a>
         {% endfor %}
     </div>
     {% else %}

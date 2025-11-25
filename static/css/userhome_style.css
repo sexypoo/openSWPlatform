@@ -646,6 +646,13 @@ body {
     margin: 0 auto 60px;
 }
 
+.wishlist-grid a {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
 /* 개별 카드 */
 .wishlist-card {
     width: 100%;
