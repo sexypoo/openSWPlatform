@@ -101,9 +101,8 @@
                 <a href="{{url_for('products.edit_product', product_id=product_id, slug=product.name) }}">
                     <button class="btn btn-edit" id="btn-edit" type="button">수정하기</button>
                 </a>
-                <a href="{{url_for('products.delete_product', product_id=product_id, slug=product.name) }}">
-                    <button class="btn btn-buy" id="btn-delete" type="button">삭제하기</button>
-                </a>
+                <button class="btn btn-buy" id="btn-delete" type="button">삭제하기</button>
+
             </div>
             {% endif %}
         </div>
@@ -119,16 +118,19 @@
 
 {% block script %}
     <script>
-        document.getElementById("btn-delete")?.addEventListener("click", function () {
-        const confirmed = confirm("정말 이 상품을 삭제하시겠습니까?");
-        if (!confirmed) return;  // NO → 취소
+        document.getElementById("btn-delete")?.addEventListener("click", function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            const confirmed = confirm("정말 이 상품을 삭제하시겠습니까?");
 
-        // YES → 실제 삭제 요청 보내기
-        const productId = "{{ product_id }}";
-        const slug = "{{ product.name }}";
+            if (!confirmed) return;  // NO → 취소
 
-        // Flask의 delete 라우트로 이동
-        window.location.href = `/products/${productId}/${slug}/delete`;
+             // YES → 실제 삭제 요청 보내기
+            const productId = "{{ product_id }}";
+            const slug = "{{ product.name }}";
+
+            // Flask의 delete 라우트로 이동
+            window.location.href = `/products/${productId}/${slug}/delete`;
     });
 
     document.addEventListener("DOMContentLoaded", () => {
