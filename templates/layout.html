@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for msg in messages %}
+      <script>
+        alert("{{ msg }}");
+      </script>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EWHA MARKET{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          integrity="sha512-TX8t27EcRE3e/ihU7zmQf1wUjVQ5XJ8lz4I5vDJ0h5K1DqDkgWv4ho5xYl8ZkK6yK2Yk6iMYY6Wf0+8WUGYdg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common_style.css') }}">
+    <!-- 외부 CSS -->
+
+    <!--AJAX 사용-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
+    {% block head_extra %}{% endblock %}
+</head>
+
+<body>
+<!-- 교체된 헤더 -->
+<header>
+    <!-- this part is logo -->
+    <div class="logo">
+        <a href="/" class="logo-link">
+            <div class="ewha">EWHA</div>
+            <div class="market">MARKET</div>
+        </a>
+    </div>
+
+    <!-- this part is the navigation bar-->
+    <nav>
+        <div class="nav-item">
+            <span><a href="/" style="text-decoration: none; color: inherit;">Home</a></span>
+        </div>
+        <div class="nav-item">
+            <span>Products</span>
+            <div class="dropdown">
+                <a href="{{ url_for('products.view_products') }}" class="dropdown-item">모든 상품 보기</a>
+                <a href="/reg_product" class="dropdown-item">상품 등록</a>
+            </div>
+        </div>
+        <div class="nav-item">
+            <span>Reviews</span>
+            <div class="dropdown">
+                <a href="/reviews" class="dropdown-item">모든 리뷰 보기</a>
+                <a href="/reg_reviews" class="dropdown-item">리뷰 작성</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="header-icons">
+        {% if session.get('id') %}
+            <span style="margin-right: 10px"><b>{{ session['id'] }}</b>님 반갑습니다.</span>
+            <button class="login-btn" onclick="location.href='{{ url_for('auth.logout_user') }}'">로그아웃</button>
+        {% else %}
+            <button class="login-btn" onclick="location.href='{{ url_for('pages.login') }}' ">로그인/회원가입</button>
+        {% endif %}
+        <a href="/mypage/wishlist">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682
+                             a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318
+                             a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+        </a>
+
+        <a href="/mypage">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0z
+                             M12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+        </a>
+
+    </div>
+</header>
+
+<!-- 페이지별 내용 -->
+<div>
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-top">
+            <div class="footer-logo logo">
+                <a href="/" class="logo-link">
+                    <span class="ewha">EWHA</span><br><span class="market">MARKET</span>
+                </a>
+            </div>
+
+            <nav class="footer-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/products">Products</a></li>
+                    <li><a href="/reviews">Reviews</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 EWHA MARKET. Designed for educational purposes by Ewha students.
+                Contact: <a href="mailto:support@ewhamarket.kr" style="color:#2e6b56; text-decoration:none;">support@ewhamarket.kr</a>
+            </p>
+        </div>
+    </div>
+</footer>
+{% block script %}{% endblock %}
+</body>
+</html>
+

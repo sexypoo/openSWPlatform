@@ -1,119 +1,29 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인 | EWHA MARKET</title>
+{%extends "layout.html"%}
+{% block title %}로그인 | EWHA MARKET{% endblock %}
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/userhome_style.css') }}">
+{% endblock %}
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" 
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" 
-          integrity="sha512-TX8t27EcRE3e/ihU7zmQf1wUjVQ5XJ8lz4I5vDJ0h5K1DqDkgWv4ho5xYl8ZkK6yK2Yk6iMYY6Wf0+8WUGYdg==" 
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% block content %}
+<!-- 로그인 폼 -->
+<main class="login-container">
+    <form class="login-box" action="{{ url_for('auth.login_user') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-    <!-- 외부 CSS -->
-    <link rel="stylesheet" href="/static/css/userhome_style.css">
-</head>
+        <h2>로그인</h2>
 
-<body>
-    <!-- 교체된 헤더 -->
-    <header>
-        <div class="logo">
-            <a href="index.html" class="logo-link">
-                <div class="ewha">EWHA</div>
-                <div class="market">MARKET</div>
-            </a>
+        <label for="username">아이디</label>
+        <input type="text" id="username" name="id" placeholder="아이디를 입력하세요" required/>
+
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="pw" placeholder="비밀번호를 입력하세요" required/>
+
+        <button type="submit">로그인</button>
+
+        <div class="login-links">
+            <a href="{{ url_for('pages.signup') }}">회원가입</a>
         </div>
-
-        <nav>
-            <div class="nav-item">
-                <span><a href="index.html" style="text-decoration: none; color: inherit;">Home</a></span>
-            </div>
-            <div class="nav-item">
-                <span>Products</span>
-                <div class="dropdown">
-                    <a href="list.html" class="dropdown-item">상품 목록</a>
-                    <a href="reg_items.html" class="dropdown-item">상품 등록 페이지</a>
-                </div>
-            </div>
-            <div class="nav-item">
-                <span>Reviews</span>
-                <div class="dropdown">
-                    <a href="reg_reviews.html" class="dropdown-item">리뷰 작성</a>
-                    <a href="review.html" class="dropdown-item">모든 리뷰 보기</a>
-                </div>
-            </div>
-        </nav>
-
-        <div class="header-icons">
-            <a href="wishlist.html">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682
-                             a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318
-                             a4.5 4.5 0 00-6.364 0z"></path>
-                </svg>
-            </a>
-
-            <a href="mypage.html">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0z
-                             M12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-            </a>
-
-            <button class="login-btn" onclick="location.href='login.html'">로그인/회원가입</button>
-        </div>
-    </header>
-
-    <!-- 로그인 폼 -->
-    <main class="login-container">
-        <form class="login-box">
-            <h2>로그인</h2>
-
-            <label for="username">아이디</label>
-            <input type="text" id="username" placeholder="아이디를 입력하세요" required />
-
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" placeholder="비밀번호를 입력하세요" required />
-
-            <button type="submit">로그인</button>
-
-            <div class="login-links">
-                <a href="../signup.html">회원가입</a>
-            </div>
-        </form>
-    </main>
-
-    <!-- 통일된 footer 추가 -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-top">
-                <div class="footer-logo logo">
-                    <a href="../index.html" class="logo-link">
-                        <span class="ewha">EWHA</span><br><span class="market">MARKET</span>
-                    </a>
-                </div>
-
-                <nav class="footer-nav">
-                    <ul>
-                        <li><a href="#main">Home</a></li>
-                        <li><a href="products.html">Products</a></li>
-                        <li><a href="#review">Reviews</a></li>
-                    </ul>
-                </nav>
-            </div>
-
-            <div class="footer-bottom">
-                <p>© 2025 EWHA MARKET. Designed for educational purposes by Ewha students.
-                Contact: <a href="mailto:support@ewhamarket.kr" style="color:#2e6b56; text-decoration:none;">support@ewhamarket.kr</a></p>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+    </form>
+</main>
+{% endblock %}
