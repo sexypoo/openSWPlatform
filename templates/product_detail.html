@@ -117,36 +117,29 @@
 
 {% block script %}
     <script>
-        document.getElementById("btn-delete")?.addEventListener("click", function () {
-        const confirmed = confirm("정말 이 상품을 삭제하시겠습니까?");
-        if (!confirmed) return;  // NO → 취소
-
-        // YES → 실제 삭제 요청 보내기
-        const productId = "{{ product_id }}";
-        const slug = "{{ product.name }}";
-
-        // Flask의 delete 라우트로 이동
-        window.location.href = `/products/${productId}/${slug}/delete`;
-    });
-
-    document.addEventListener("DOMContentLoaded", () => {
-    const wishBtn = document.getElementById("heart");
-    if (!wishBtn) return;
-
-    // 실제 UI 변경은 applyHeartUI에서 처리
-    const icon = wishBtn.querySelector("i");
-
-    wishBtn.addEventListener("click", () => {
-        // 현재 active 상태에 따라 like / unlike 호출
-        if (wishBtn.classList.contains("active")) {
-            // 이미 눌려있으면 취소
-            unlike();
-        } else {
-            // 안 눌려있으면 등록
-            like();
+        function getCsrfToken() {
+            const meta = document.querySelector('meta[name="csrf-token"]');
+            return meta ? meta.getAttribute('content') : '';
         }
-    });
-});
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const wishBtn = document.getElementById("heart");
+            if (!wishBtn) return;
+
+            // 실제 UI 변경은 applyHeartUI에서 처리
+            const icon = wishBtn.querySelector("i");
+
+            wishBtn.addEventListener("click", () => {
+                // 현재 active 상태에 따라 like / unlike 호출
+                if (wishBtn.classList.contains("active")) {
+                    // 이미 눌려있으면 취소
+                    unlike();
+                } else {
+                    // 안 눌려있으면 등록
+                    like();
+                }
+            });
+        });
 
     // 하트 모양/색 바꾸는 함수
     function applyHeartUI(isOn) {
@@ -190,6 +183,9 @@
 
     function like(){
         $.ajax({
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', getCsrfToken());
+            },
             type:'POST',
             url:'/like/{{ product_id }}/',
             data:{
@@ -204,6 +200,9 @@
 
     function unlike(){
         $.ajax({
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', getCsrfToken());
+            },
             type:'POST',
             url:'/unlike/{{ product_id }}/',
             data:{

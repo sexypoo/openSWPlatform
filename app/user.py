@@ -6,24 +6,48 @@ from .auth import _hash_pw
 
 user_bp = Blueprint("user", __name__)
 
-@user_bp.route("/mypage")
-def mypage():
+@user_bp.route("/mypage/")
+@user_bp.route("/mypage/<string:section>")
+def mypage(section="profile"):
     DB = current_app.config["DB"]
-    user_id = session.get("id")
 
+    user_id = session.get("id")
     if not user_id:
         flash("로그인이 필요합니다.")
         return redirect(url_for("pages.login"))
 
+    # 공통으로 가져올 것 (유저 정보)
     user = DB.get_user(user_id)
 
-    heart_ids = DB.get_my_heart_ids(user_id)
-    wishlist = DB.get_products_by_ids(heart_ids)
+    # 기본 None으로 놓고, 섹션에 따라 필요한 것만 채우기
+    wishlist = None
+    my_reviews = None
+    my_items = None
+    my_buys = None
 
-    my_items = DB.get_items_by_seller(user_id)
-    my_reviews = DB.get_reviews_by_purchaser(user_id)
+    if section == "wishlist":
+        heart_ids = DB.get_my_heart_ids(user_id)
+        wishlist = DB.get_products_by_ids(heart_ids)
+    elif section == "review":
+        my_reviews = DB.get_reviews_by_purchaser(user_id)
+    elif section == "sell":
+        my_items = DB.get_items_by_seller(user_id)
+    elif section == "buy":
+        uid = DB.get_uid_by_id(user_id)
+        my_buys = DB.get_purchases_by_user(uid)
+    else:
+        # 예외 섹션 들어오면 profile로 보내기
+        section = "profile"
 
-    return render_template("mypage.html", user=user, wishlist=wishlist, sold_list=my_items, review_list=my_reviews)
+    return render_template(
+        "mypage.html",
+        user=user,
+        wishlist=wishlist,
+        review_list=my_reviews,
+        sold_list=my_items,
+        buy_list=my_buys,
+        active_section=section,
+    )
 
 # 회원정보 수정
 @user_bp.route("/mypage/update", methods=["POST"])
