@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app
-
+import re
 from .auth import _hash_pw
 
 # 마이페이지의 기능을 다룸
 
 user_bp = Blueprint("user", __name__)
+
+PW_PATTERN = re.compile(r"^(?=.*[A-Za-z])(?=.*\d).{8,64}$")
 
 @user_bp.route("/mypage/")
 @user_bp.route("/mypage/<string:section>")
@@ -64,10 +66,14 @@ def update_profile():
     new_password = request.form.get("password_new")
     new_email = request.form.get("email")
 
-    # 업데이트
     if new_password:
+        if not PW_PATTERN.match(new_password):
+            flash("비밀번호는 8자 이상이어야 하고, 영문과 숫자를 각각 최소 1자 이상 포함해야 합니다.")
+            return redirect(url_for("user.mypage", section="profile"))
+        
         hashed = _hash_pw(new_password) # 암호화 후 전달
         DB.update_user_password(user_id, hashed)
+        
     if new_email:
         DB.update_user_email(user_id, new_email)
 
