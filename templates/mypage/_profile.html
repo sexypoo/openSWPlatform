@@ -36,6 +36,9 @@
                 <div class="info-item">
                     <label>새 비밀번호 입력</label>
                     <input type="password" name="password_new" id="edit-password-new">
+                    <p id="pw-warning" style="color:red; font-size:13px; margin-top:6px; display:none;">
+                    현재 비밀번호와 동일합니다. 
+                    </p> 
                 </div>
 
                 <div class="info-item">
@@ -66,3 +69,39 @@ function cancelEdit() {
     document.getElementById("view-mode").style.display = "block";
 }
 </script>
+
+<script>
+// 기존 edit toggle 기능
+function toggleEditMode() {
+    document.getElementById("view-mode").style.display = "none";
+    document.getElementById("edit-mode").style.display = "block";
+}
+function cancelEdit() {
+    document.getElementById("edit-mode").style.display = "none";
+    document.getElementById("view-mode").style.display = "block";
+}
+
+// 새 비밀번호 검증 기능 
+document.addEventListener("DOMContentLoaded", () => {
+    const newPwInput = document.getElementById("edit-password-new");
+    const warning = document.getElementById("pw-warning");
+
+    if (!newPwInput) return;
+
+    newPwInput.addEventListener("input", () => {
+        const currentPw = "********";  // 화면에 표시되는 placeholder와 비교 방지
+        const typed = newPwInput.value.trim();
+
+        // 현재 비밀번호와 같다고 판단할 기준이 없으므로,
+        // "placeholder 값 그대로"일 경우만 막음
+        if (typed === "" || typed === currentPw) {
+            newPwInput.classList.add("input-error");
+            warning.style.display = "block";
+        } else {
+            newPwInput.classList.remove("input-error");
+            warning.style.display = "none";
+        }
+    });
+});
+</script>
+
