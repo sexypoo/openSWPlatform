@@ -41,9 +41,19 @@ def view_products():
 
     category = request.args.get("category", "").strip()
     items = DB.get_products()
+    tag = request.args.get("tag", "").strip()
 
     if category:
         items = [p for p in items if p.get("category") == category]
+
+    if tag:
+        search_token = "#" + tag
+        filtered = []
+        for p in items:
+            raw_tags = p.get("tags", "") or ""
+            if search_token in raw_tags.split():
+                filtered.append(p)
+            items = filtered
 
     # 페이지네이션 구현
     page = request.args.get("page", 1, type=int)
@@ -57,7 +67,7 @@ def view_products():
     from math import ceil
     page_count = max(1, ceil(total / per_page))
 
-    return render_template("products.html", datas=page_items, page=page, page_count=page_count, total=total, category=category)
+    return render_template("products.html", datas=page_items, page=page, page_count=page_count, total=total, category=category, tag=tag)
 
 # slug => 과제 요구사항 맞추기 위해 추가 (상품 이름)
 @products_bp.route("/products/<string:product_id>/<slug>", methods=["GET"])
@@ -65,11 +75,13 @@ def view_product(product_id, slug):
     DB = current_app.config["DB"]
     product = DB.get_product(product_id)
 
+    raw_tags = product.get("tags", "") or ""
+    tag_list = [t for t in raw_tags.split() if t]
     # 내가 등록한 글인지 확인
     current_id = session.get("id")
     is_owner = (product.get("seller") == current_id)
 
-    return render_template("product_detail.html", product=product, product_id=product_id, is_owner=is_owner)
+    return render_template("product_detail.html", product=product, product_id=product_id, is_owner=is_owner, tag_list=tag_list)
 
 
 @products_bp.route("/products/<string:product_id>/<slug>/edit", methods=['GET', 'POST'])

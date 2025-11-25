@@ -768,3 +768,75 @@ a {
     font-weight: 600;
 }
 
+
+/* === 상품 상세 페이지 태그 칩 === */
+.product-detail-page #product-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+#product-tags .tag-label {
+  color: #666;
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+/* 클릭 가능한 태그 칩 */
+.product-detail-page .tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f3f7f5;
+  color: #2e6b56;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #d7e4dd;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.product-detail-page .tag-chip:hover {
+  background: #2e6b56;
+  color: #fff;
+  border-color: #2e6b56;
+}
+
+/* 태그 검색 결과 뱃지 */
+.tag-result-badge {
+    background: #e6f2ed;           /* 연한 이화그린 배경 */
+    color: #2e6b56;               /* 이화그린 텍스트 */
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-left: 12px;
+}
+
+/* 태그 필터 칩 */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #2e6b56;
+  color: white;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  margin-left: 8px;
+}
+
+.tag-chip-x {
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tag-chip-x:hover {
+  opacity: 0.7;
+}

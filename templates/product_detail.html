@@ -30,7 +30,10 @@
             {% if product.tags %}
             <div class="subnote" id="product-tags">
              <span class="tag-label">태그:</span>
-             <span class="tag-value">{{ product.tags }}</span>
+             {% for t in tag_list %}
+                {% set clean = t.lstrip('#') %}
+                <a class="tag-chip" href="{{ url_for('products.view_products', tag=clean) }}">{{ t }}</a>
+             {% endfor %}
             </div>
             {% endif %}
             {% if product.method %}
