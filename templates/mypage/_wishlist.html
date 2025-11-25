@@ -1,0 +1,29 @@
+<div class="section-wrapper">
+
+    <h2 class="section-title">관심 상품</h2>
+
+    {% if wishlist %}
+    <div class="wishlist-grid">
+        {% for p in wishlist %}
+        <div class="wishlist-card">
+
+            <!-- 이미지 -->
+            <div class="wishlist-thumb"
+                {% if p.img_path %}
+                style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');"
+                {% endif %}>
+            </div>
+
+            <!-- 텍스트 -->
+            <div class="wishlist-name">{{ p.name }}</div>
+            <div class="wishlist-price">₩{{ p.price }}</div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <p class="empty-text">관심 상품이 없습니다.</p>
+    {% endif %}
+
+</div>

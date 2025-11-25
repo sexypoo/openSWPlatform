@@ -43,7 +43,7 @@ def view_products():
     items = DB.get_products()
     tag = request.args.get("tag", "").strip()
 
-    if category:
+    if category: # 카테고리 있으면 받아와서 저장
         items = [p for p in items if p.get("category") == category]
 
     if tag:

@@ -8,6 +8,8 @@ auth_bp = Blueprint("auth", __name__)
 # 아이디 정규식: 3~20자의 영문/숫자/밑줄
 ID_PATTERN = re.compile(r"^[A-Za-z0-9_]{3,20}$")
 
+# 비밀번호 정규식: 8~64자, 영문 1자 이상 + 숫자 1자 이상
+PW_PATTERN = re.compile(r"^(?=.*[A-Za-z])(?=.*\d).{8,64}$")
 
 def _hash_pw(pw: str) -> str:
     return hashlib.sha256(pw.encode("utf-8")).hexdigest()
@@ -29,6 +31,11 @@ def register_user():
     # 2) 아이디 형식 체크
     if not ID_PATTERN.match(user_id):
         flash("아이디는 3~20자 사이의 영문, 숫자, 밑줄(_)만 사용할 수 있습니다.")
+        return redirect(url_for("pages.signup"))
+    
+    # 3) 비밀번호 형식 체크
+    if not PW_PATTERN.match(pw):
+        flash("비밀번호는 8자 이상이어야 하고, 영문과 숫자를 각각 최소 1자 이상 포함해야 합니다.")
         return redirect(url_for("pages.signup"))
 
     pw_hash = _hash_pw(pw)
