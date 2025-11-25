@@ -769,78 +769,74 @@ a {
 }
 
 
-/* === 카테고리 필터 (products.html 전용) === */
-.products-page form {
+/* === 상품 상세 페이지 태그 칩 === */
+.product-detail-page #product-tags {
   display: flex;
-  gap: 10px;
   align-items: center;
-  font-size: 14px;
-  margin: 20px 0 32px;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
 }
 
-/* label */
-.products-page form label {
-  font-size: 14px;
-  color: #444;
+#product-tags .tag-label {
+  color: #666;
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+/* 클릭 가능한 태그 칩 */
+.product-detail-page .tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f3f7f5;
+  color: #2e6b56;
+  font-size: 12px;
   font-weight: 500;
-}
-
-/* select */
-.products-page form select {
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #d7d7d7;
-  background: #fff;
-  font-size: 14px;
-  color: #333;
+  border: 1px solid #d7e4dd;
   cursor: pointer;
-  min-width: 110px;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.products-page form select:focus {
-  border-color: #2e6b56;
-  box-shadow: 0 0 0 3px rgba(46, 107, 86, 0.15);
-}
-
-/* 검색 버튼 */
-.products-page form .btn {
-  padding: 8px 14px;
-  border-radius: 6px;
+.product-detail-page .tag-chip:hover {
   background: #2e6b56;
   color: #fff;
-  border: none;
+  border-color: #2e6b56;
+}
+
+/* 태그 검색 결과 뱃지 */
+.tag-result-badge {
+    background: #e6f2ed;           /* 연한 이화그린 배경 */
+    color: #2e6b56;               /* 이화그린 텍스트 */
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-left: 12px;
+}
+
+/* 태그 필터 칩 */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #2e6b56;
+  color: white;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  margin-left: 8px;
+}
+
+.tag-chip-x {
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: background 0.2s ease;
 }
 
-.products-page form .btn:hover {
-  background: #245545;
-}
-
-.products-page form .btn:active {
-  transform: translateY(1px);
-}
-
-/* 반응형 처리 */
-@media (max-width: 520px) {
-  .products-page form {
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-  }
-
-  .products-page form label {
-    width: 100%;
-    text-align: center;
-  }
-
-  .products-page form select {
-    width: 100%;
-  }
-
-  .products-page form .btn {
-    width: 100%;
-  }
+.tag-chip-x:hover {
+  opacity: 0.7;
 }

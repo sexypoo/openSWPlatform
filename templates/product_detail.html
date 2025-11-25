@@ -30,7 +30,10 @@
             {% if product.tags %}
             <div class="subnote" id="product-tags">
              <span class="tag-label">태그:</span>
-             <span class="tag-value">{{ product.tags }}</span>
+             {% for t in tag_list %}
+                {% set clean = t.lstrip('#') %}
+                <a class="tag-chip" href="{{ url_for('products.view_products', tag=clean) }}">{{ t }}</a>
+             {% endfor %}
             </div>
             {% endif %}
             {% if product.method %}
@@ -99,9 +102,8 @@
                 <a href="{{url_for('products.edit_product', product_id=product_id, slug=product.name) }}">
                     <button class="btn btn-edit" id="btn-edit" type="button">수정하기</button>
                 </a>
-                <a href="{{url_for('products.delete_product', product_id=product_id, slug=product.name) }}">
-                    <button class="btn btn-buy" id="btn-delete" type="button">삭제하기</button>
-                </a>
+                <button class="btn btn-buy" id="btn-delete" type="button">삭제하기</button>
+
             </div>
             {% endif %}
         </div>
@@ -117,6 +119,36 @@
 
 {% block script %}
     <script>
+        document.getElementById("btn-delete")?.addEventListener("click", function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            const confirmed = confirm("정말 이 상품을 삭제하시겠습니까?");
+
+            if (!confirmed) return;  // NO → 취소
+
+             // YES → 실제 삭제 요청 보내기
+            const productId = "{{ product_id }}";
+            const slug = "{{ product.name }}";
+
+            // Flask의 delete 라우트로 이동
+            window.location.href = `/products/${productId}/${slug}/delete`;
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+    const wishBtn = document.getElementById("heart");
+    if (!wishBtn) return;
+
+    // 실제 UI 변경은 applyHeartUI에서 처리
+    const icon = wishBtn.querySelector("i");
+
+    wishBtn.addEventListener("click", () => {
+        // 현재 active 상태에 따라 like / unlike 호출
+        if (wishBtn.classList.contains("active")) {
+            // 이미 눌려있으면 취소
+            unlike();
+        } else {
+            // 안 눌려있으면 등록
+            like();
         function getCsrfToken() {
             const meta = document.querySelector('meta[name="csrf-token"]');
             return meta ? meta.getAttribute('content') : '';
