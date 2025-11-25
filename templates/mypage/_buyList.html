@@ -2,37 +2,40 @@
 
     <h2 class="section-title">구매 내역</h2>
 
-    {% if buy_list %}
-        {% for p in buy_list %}
+    <div class="buy-section">
+        {% if buy_list %}
+            {% for p in buy_list %}
 
-        {% set pid = p.product_id %}
-        {% set slug = p.name %}
+            {% set pid = p.product_id %}
+            {% set is_deleted = (p.name is none) %}
+            {% set slug = p.name %}
 
-        <a href="/products/{{ pid }}/{{ slug }}" style="text-decoration:none; color:inherit;">
-            <div class="buy-card">
+            {% if not is_deleted %}
+            <a href="/products/{{ pid }}/{{ slug }}" style="display:block; text-decoration:none; color:inherit;">
+            {% endif %}
+                
+                <div class="buy-card">
+                    <div class="buy-thumb"
+                        {% if not is_deleted and p.img_path %}
+                        style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');"
+                        {% endif %}>
+                    </div>
 
-                <div class="buy-thumb"
-                    {% if p.img_path %}
-                    style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');"
-                    {% endif %}>
+                    <div class="buy-info">
+                        <div class="buy-name">{% if is_deleted %}-삭제된 상품입니다-{% else %}{{ p.name }}{% endif %}</div>
+                        {% if not is_deleted %}<div class="buy-detail">{{ p.details }}</div>{% endif %}
+                        {% if not is_deleted %}<div class="buy-price">₩{{ p.price }}</div>{% endif %}
+                        <div class="buy-detail">구매 수량: {{ p.quantity }}</div>
+
+                        {% if p.purchase_time %}
+                        <div class="buy-detail">구매일: {{ p.purchase_time }}</div>
+                        {% endif %}
+                    </div>
                 </div>
-
-                <div class="buy-info">
-                    <div class="buy-name">{{ p.name }}</div>
-                    <div class="buy-detail">{{ p.details }}</div>
-                    <div class="buy-price">₩{{ p.price }}</div>
-                    <div class="buy-detail">구매 수량: {{ p.quantity }}</div>
-
-                    {% if p.purchase_time %}
-                    <div class="buy-detail">구매일: {{ p.purchase_time }}</div>
-                    {% endif %}
-                </div>
-
-            </div>
-        </a>
-        {% endfor %}
-    {% else %}
-        <p class="buy-empty-text">구매한 상품이 아직 없습니다.</p>
-    {% endif %}
-
-</div>
+                
+            {% if not is_deleted %}</a>{% endif %}
+            {% endfor %}
+        {% else %}
+            <p class="buy-empty-text">구매한 상품이 아직 없습니다.</p>
+        {% endif %}
+    </div> </div>

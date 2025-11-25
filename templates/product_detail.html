@@ -53,9 +53,10 @@
                 </a>
             </div>
 
-            <button type="button" id="buy-now-btn" class="btn btn-primary">
-            바로 구매
-            </button>
+                <button type="button" id="buy-now-btn" class="btn btn-primary">
+                    바로 구매
+                </button>
+            
 
             <!-- 구매 모달 -->
             <div id="buyModal" class="modal" style="display:none;">
@@ -134,95 +135,52 @@
             window.location.href = `/products/${productId}/${slug}/delete`;
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-    const wishBtn = document.getElementById("heart");
-    if (!wishBtn) return;
-
-    // 실제 UI 변경은 applyHeartUI에서 처리
-    const icon = wishBtn.querySelector("i");
-
-    wishBtn.addEventListener("click", () => {
-        // 현재 active 상태에 따라 like / unlike 호출
-        if (wishBtn.classList.contains("active")) {
-            // 이미 눌려있으면 취소
-            unlike();
-        } else {
-            // 안 눌려있으면 등록
-            like();
         function getCsrfToken() {
-            const meta = document.querySelector('meta[name="csrf-token"]');
-            return meta ? meta.getAttribute('content') : '';
-        }
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        return meta ? meta.getAttribute('content') : '';
+    }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const wishBtn = document.getElementById("heart");
-            if (!wishBtn) return;
-
-            // 실제 UI 변경은 applyHeartUI에서 처리
-            const icon = wishBtn.querySelector("i");
-
-            wishBtn.addEventListener("click", () => {
-                // 현재 active 상태에 따라 like / unlike 호출
-                if (wishBtn.classList.contains("active")) {
-                    // 이미 눌려있으면 취소
-                    unlike();
-                } else {
-                    // 안 눌려있으면 등록
-                    like();
-                }
-            });
-        });
-
-    // 하트 모양/색 바꾸는 함수
+    // 하트 UI 바꾸기
     function applyHeartUI(isOn) {
         const heart = document.getElementById("heart");
         if (!heart) return;
 
         const icon = heart.querySelector("i");
+
         if (isOn) {
             heart.classList.add("active");
-            heart.style.color = "#2e6b56";  // 이화 그린
-            if (icon) {
-                icon.classList.remove("fa-regular");
-                icon.classList.add("fa-solid");
-            }
+            heart.style.color = "#2e6b56";
+            icon.classList.remove("fa-regular");
+            icon.classList.add("fa-solid");
         } else {
             heart.classList.remove("active");
             heart.style.color = "#aaa";
-            if (icon) {
-                icon.classList.remove("fa-solid");
-                icon.classList.add("fa-regular");
-            }
+            icon.classList.remove("fa-solid");
+            icon.classList.add("fa-regular");
         }
     }
 
-    function showHeart(){
+    // 현재 하트 상태 불러오기
+    function showHeart() {
         $.ajax({
-            type:'GET',
-            url:'/show_heart/{{ product_id }}/',
-            data: {},
-            success: function(response){
-                let my_heart = response['my_heart'] || {};
-                if(my_heart['interested'] === 'Y'){
-                    applyHeartUI(true);
-                }
-                else{
-                    applyHeartUI(false);
-                }
+            type: 'GET',
+            url: '/show_heart/{{ product_id }}/',
+            success: function (response) {
+                const my_heart = response['my_heart'] || {};
+                applyHeartUI(my_heart['interested'] === 'Y');
             }
         });
     }
 
-    function like(){
+    // 하트 등록
+    function like() {
         $.ajax({
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('X-CSRFToken', getCsrfToken());
             },
             type:'POST',
             url:'/like/{{ product_id }}/',
-            data:{
-                interested:"Y"
-            },
+            data:{ interested:"Y" },
             success:function(response){
                 alert(response['msg']);
                 applyHeartUI(true);
@@ -230,24 +188,34 @@
         });
     }
 
-    function unlike(){
+    // 하트 취소
+    function unlike() {
         $.ajax({
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('X-CSRFToken', getCsrfToken());
             },
             type:'POST',
             url:'/unlike/{{ product_id }}/',
-            data:{
-                interested:"N"
-            },
-            success: function(response){
+            data:{ interested:"N" },
+            success:function(response){
                 alert(response['msg']);
                 applyHeartUI(false);
             }
         });
     }
 
-    $(document).ready(function(){
+    document.addEventListener("DOMContentLoaded", () => {
+        const wishBtn = document.getElementById("heart");
+        if (wishBtn) {
+            wishBtn.addEventListener("click", () => {
+                if (wishBtn.classList.contains("active")) {
+                    unlike();
+                } else {
+                    like();
+                }
+            });
+        }
+
         showHeart();
     });
 

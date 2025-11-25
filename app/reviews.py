@@ -1,4 +1,5 @@
 import os
+import uuid
 from flask import current_app
 from werkzeug.utils import secure_filename
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session, current_app
@@ -203,12 +204,30 @@ def update_review(review_id):
             "rating": form.rating.data,
         }
 
-        image_file = request.files.get("file")
+        files = request.files.getlist("file")
 
-        if image_file and image_file.filename:
-            img_filename = image_file.filename
-            image_file.save(f"static/images/{img_filename}")
-            update_fields["img_path"] = img_filename
+        # Load existing images list (default empty list)
+        existing_images = review.get("images", [])
+        new_images = []
+
+        # Process newly uploaded files (multiple)
+        for image_file in files:
+            if not image_file or not image_file.filename:
+                continue
+            original = secure_filename(image_file.filename)
+            name, ext = os.path.splitext(original)
+            unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
+            image_file.save(f"static/images/{unique_name}")
+            new_images.append(unique_name)
+
+        # Merge existing + new images
+        merged = existing_images + new_images
+
+        # Keep only last 3 images (remove from front)
+        if len(merged) > 3:
+            merged = merged[-3:]
+
+        update_fields["images"] = merged
 
         DB.update_review(review_id, update_fields)
 
