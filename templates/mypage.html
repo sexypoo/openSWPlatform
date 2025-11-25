@@ -1,81 +1,56 @@
 {% extends "layout.html" %}
 {% block title %}마이페이지 | EWHA MARKET{% endblock %}
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>마이페이지 | EWHA MARKET</title>
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/userhome_style.css') }}">
+{% endblock %}
 
 {% block content %}
 <main class="mypage-container">
 
-    <!-- ⭐ 사이드바 -->
-    <aside class="sidebar">
-        <ul>
-            <li data-section="profile" class="active">회원정보</li>
-            <li data-section="wishlist">관심 상품</li>
-            <li data-section="review">내 리뷰</li>
-            <li class="disabled">구매 내역</li>
-            <li data-section="sell">판매 내역</li>
-        </ul>
-    </aside>
+  <!-- 사이드바 -->
+  <aside class="sidebar">
+    <ul>
+      <li class="{% if active_section == 'profile' %}active{% endif %}">
+        <a href="{{ url_for('user.mypage', section='profile') }}">회원정보</a>
+      </li>
+      <li class="{% if active_section == 'wishlist' %}active{% endif %}">
+        <a href="{{ url_for('user.mypage', section='wishlist') }}">관심 상품</a>
+      </li>
+      <li class="{% if active_section == 'review' %}active{% endif %}">
+        <a href="{{ url_for('user.mypage', section='review') }}">내 리뷰</a>
+      </li>
+      <li class="{% if active_section == 'buy' %}active{% endif %}">
+        <a href="{{ url_for('user.mypage', section='buy') }}">구매 내역</a>
+      </li>
+      <li class="{% if active_section == 'sell' %}active{% endif %}">
+        <a href="{{ url_for('user.mypage', section='sell') }}">판매 내역</a>
+      </li>
+    </ul>
+  </aside>
 
-    <!-- ⭐ 오른쪽 콘텐츠 -->
-    <section class="content-area">
+  <!-- 오른쪽 콘텐츠 -->
+  <section class="content-area">
 
-        <!-- 회원정보 -->
-        <div id="section-profile" class="section-wrapper">
-            {% include 'mypage/_profile.html' %}
-        </div>
+    {% if active_section == 'profile' %}
+      {% include 'mypage/_profile.html' %}
+    {% elif active_section == 'wishlist' %}
+      {% include 'mypage/_wishlist.html' %}
+    {% elif active_section == 'review' %}
+      {% include 'mypage/_myreview.html' %}
+    {% elif active_section == 'sell' %}
+      {% include 'mypage/_sellList.html' %}
+    {% elif active_section == 'buy' %}
+      {% include 'mypage/_buyList.html' %}
+    {% endif %}
+    
 
-        <!-- 관심상품 -->
-        <div id="section-wishlist" class="section-wrapper" style="display:none;">
-            {% include 'mypage/_wishlist.html' %}
-        </div>
-
-        <!-- 내 리뷰 -->
-        <div id="section-review" class="section-wrapper" style="display:none;">
-            {% include 'mypage/_myreview.html' %}
-        </div>
-
-        <!-- 판매내역 -->
-        <div id="section-sell" class="section-wrapper" style="display:none;">
-            {% include 'mypage/_sellList.html' %}
-        </div>
-
-    </section>
+  </section>
 
 </main>
 {% endblock %}
 
 {% block script %}
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const menuItems = document.querySelectorAll(".sidebar li[data-section]");
-
-    const sections = {
-        profile: document.getElementById("section-profile"),
-        wishlist: document.getElementById("section-wishlist"),
-        review: document.getElementById("section-review"),
-        sell: document.getElementById("section-sell")
-    };
-
-    // 사이드바 클릭 → 섹션 전환
-    menuItems.forEach(item => {
-        item.addEventListener("click", () => {
-            const key = item.dataset.section;
-
-            // active 스타일 변경
-            menuItems.forEach(li => li.classList.remove("active"));
-            item.classList.add("active");
-
-            // 모든 섹션 숨기기
-            Object.values(sections).forEach(sec => sec.style.display = "none");
-
-            // 선택한 섹션만 표시
-            sections[key].style.display = "block";
-        });
-    });
-});
-</script>
+{# 탭 전환용 JS는 이제 필요 없음. 
+   회원정보 수정용 함수 같은 것만 각 partial에서 쓰면 됨. #}
 {% endblock %}

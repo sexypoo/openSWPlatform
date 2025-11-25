@@ -1,0 +1,38 @@
+<div class="section-wrapper">
+
+    <h2 class="sell-title">구매 내역</h2>
+
+    {% if buy_list %}
+        {% for p in buy_list %}
+
+        {% set pid = p.product_id %}
+        {% set slug = p.name %}
+
+        <a href="/products/{{ pid }}/{{ slug }}" style="text-decoration:none; color:inherit;">
+            <div class="sell-card">
+
+                <div class="sell-thumb"
+                    {% if p.img_path %}
+                    style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');"
+                    {% endif %}>
+                </div>
+
+                <div class="sell-info">
+                    <div class="sell-name">{{ p.name }}</div>
+                    <div class="sell-detail">{{ p.details }}</div>
+                    <div class="sell-price">₩{{ p.price }}</div>
+                    <div class="sell-detail">구매 수량: {{ p.quantity }}</div>
+
+                    {% if p.purchase_time %}
+                    <div class="sell-detail">구매일: {{ p.purchase_time }}</div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </a>
+        {% endfor %}
+    {% else %}
+        <p class="empty-text">구매한 상품이 아직 없습니다.</p>
+    {% endif %}
+
+</div>

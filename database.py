@@ -70,29 +70,46 @@ class DBhandler:
         )
 
         return ref["name"] # name : auto id
-
-    def get_purchases_by_user(self, user_id):
-        data = (
+    
+    # 구매 내역 불러오기
+    def get_purchases_by_user(self, uid):
+        raw = (
             self.db.child("user")
-            .child(user_id)
+            .child(uid)
             .child("purchases")
             .get().val()
         ) or {}
 
-        result = []
+        results = []
 
-        for product_id, purchase_map in data.items():
+        for product_id, purchase_map in raw.items():
             if not isinstance(purchase_map, dict):
                 continue
+            
+            # 상품 정보 먼저 가져오기
+            product = self.get_product(product_id) or {}
+
             for purchase_id, info in purchase_map.items():
                 if not isinstance(info, dict):
                     continue
-                info["product_id"] = product_id
-                info["purchase_id"] = purchase_id
-                result.append(info)
 
-        result.sort(key=lambda x : x.get("purchased_at",0),reverese=True)
-        return result
+                merged = {
+                    # 구매 정보
+                    "purchase_id": purchase_id,
+                    "quantity": info.get("quantity"),
+                    "purchase_time": info.get("purchase_time"),
+
+                    # 상품 정보
+                    "product_id": product_id,
+                    "name": product.get("name"),
+                    "price": product.get("price"),
+                    "details": product.get("details"),
+                    "img_path": product.get("img_path"),
+                }
+
+                results.append(merged)
+
+        return results
 
     # auth 핸들러
 

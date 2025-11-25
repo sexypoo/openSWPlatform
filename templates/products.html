@@ -85,6 +85,11 @@
 <script>
 
   document.addEventListener('DOMContentLoaded', () => {
+    function getCsrfToken() {
+      const meta = document.querySelector('meta[name="csrf-token"]');
+      return meta ? meta.getAttribute('content') : '';
+    }
+
     let wishlist = [];   // 이제 localStorage 대신 서버에서 받아오기
 
     function updateHeartVisual(heart) {
@@ -132,8 +137,23 @@
           ? `{{ url_for("wish.unlike", id="__ID__") }}`.replace('__ID__', id)
           : `{{ url_for("wish.like", id="__ID__") }}`.replace('__ID__', id);
 
-        fetch(url, { method: 'POST' })
-          .then(res => res.json())
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCsrfToken(),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        })
+          .then(res => {
+            if (!res.ok) {
+              return res.text().then(text => {
+                console.error('Wish API error:', text);
+                throw new Error('Wish API failed');
+              });
+            }
+            return res.json();
+          })
           .then(data => {
             // 로컬 배열 업데이트
             if (isWish) {
@@ -142,10 +162,12 @@
               wishlist.push(id);
             }
             updateHeartVisual(heart);
+          })
+          .catch(err => {
+            console.error(err);
           });
       });
     }
   });
 </script>
 {% endblock %}
-
