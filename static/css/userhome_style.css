@@ -463,6 +463,7 @@ body {
         transform: none;
     }
 }
+
 /* 마이페이지 전용 스타일 */
 .mypage-container {
     display: flex;
@@ -473,6 +474,8 @@ body {
     margin-top: 10px;
 }
 
+
+
 .sidebar {
     width: 180px;
 }
@@ -482,6 +485,35 @@ body {
     padding-left: 0;
 }
 
+/* 기본 (not visited + visited 모두 검정) */
+.sidebar li a:link,
+.sidebar li a:visited {
+    color: #333;
+    text-decoration: none;
+}
+
+/* hover */
+.sidebar li:hover > a {
+    color: #2e6b56;
+    font-weight: 600;
+}
+
+/* active */
+.sidebar li.active > a {
+    color: #2e6b56;
+    font-weight: 600;
+}
+
+/* 간격/스타일 */
+.sidebar li a {
+    display: block;
+    padding: 12px 0;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+
+/*
 .sidebar li {
     padding: 10px 0;
     font-size: 16px;
@@ -499,6 +531,7 @@ body {
     color: #333;
     cursor: pointer;
 }
+*/
 
 .content-area {
     flex: 1;
@@ -508,6 +541,161 @@ body {
 
 /* ===========================
    공통 중심축 설정
+=========================== */
+:root {
+    --mypage-shift: -125px;   /* Products 기준 중앙 보정값 */
+}
+
+.content-area {
+    padding-top: 10px;
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* 중심 기준을 content-area 가운데로 잡음 */
+}
+
+
+.section-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* 섹션 중앙 정렬 */
+    width: 100%;
+}
+
+
+.section-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    margin-top: 0;
+
+    transform: translateX(var(--mypage-shift));
+}
+
+
+/* 내 리뷰 스타일 */
+.mypage-review-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px; /*35*/
+    justify-items: center;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    /*transform: translateX(var(--mypage-shift));*/
+}
+
+/* 개별 카드 */
+.mypage-review-card {
+    width: 100%; /*90*/
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: 0.2s;
+    /*max-width: 280px;*/
+}
+
+.mypage-review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+/* 이미지 영역 */
+.mypage-review-image {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #eaeaea;
+    margin-bottom: 14px;
+}
+
+.mypage-review-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 별점 */
+.mypage-review-stars {
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+/* 날짜 + 작성자 */
+.mypage-review-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #777;
+}
+
+
+/* =============================
+   관심상품 — 내 리뷰와 동일한 3열 그리드
+============================= */
+
+/* 그리드 전체 */
+.wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3열 */
+    gap: 40px;
+    justify-items: center;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+}
+
+/* 개별 카드 */
+.wishlist-card {
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: 0.2s;
+}
+
+.wishlist-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+/* 이미지 */
+.wishlist-thumb {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #eaeaea;
+    margin-bottom: 14px;
+    background-size: cover;
+    background-position: center;
+}
+
+/* 상품명 */
+.wishlist-name {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* 가격 */
+.wishlist-price {
+    font-size: 14px;
+    color: #555;
+}
+
+
+/*회원정보*/
+.profile-card {
+    max-width: 450px;
+    width: 450px;
+    margin: 0 auto;
+
+    transform: translateX(var(--mypage-shift));
+}
+
 
 /* 각 정보 항목 */
 .profile-card .info-item {
@@ -715,4 +903,77 @@ body {
     color: #333;
     margin-top: 20px;
     transform: translateX(var(--mypage-shift));
+}
+
+/* ===========================
+   구매 내역 공통 스타일
+=========================== */
+
+.buy-section {
+    max-width: 700px;
+    margin-left: 0;
+    transform: translateX(10px);
+}
+
+/* 리스트 */
+.buy-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.buy-thumb {
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
+    background: #e9e9e9;
+}
+
+.buy-info {
+    flex: 1;
+}
+
+.buy-name {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.buy-detail {
+    color: #777;
+    font-size: 14px;
+    margin: 4px 0;
+}
+
+.buy-price {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.buy-date {
+    font-size: 14px;
+    color: #777;
+    align-self: flex-start;
+    margin-top: 5px;
+}
+
+.buy-card:last-child {
+    border-bottom: none;
+}
+
+/* 구매 내역 비었을 때 */
+.buy-empty-text {
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+    margin-top: 20px;
+    transform: translateX(var(--mypage-shift));
+}
+
+/*tailwind 회원정보 수정에 적용 css*/
+.input-error {
+    border: 1px solid red !important;
+    background-color: #fff5f5;
 }
