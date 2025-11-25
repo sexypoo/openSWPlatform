@@ -2,6 +2,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'); /* 아이콘 정상 표시용 */
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #333;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ==============================
+   헤더 영역
 
 /* 기존 나머지 로그인 & 회원가입 페이지 스타일 유지 */
 /*로그인 페이지*/
@@ -184,7 +201,7 @@
 
 /* 인증번호 줄 위로 살짝 당기기 */
 .verify-section {
-  margin-top: 6px; 
+  margin-top: -4px; /* 위쪽 여백만 살짝 줄임 (겹치지 않게 최소한만) */
   margin-bottom: 18px; /* 나머지 폼 아래 간격 그대로 */
 }
 
@@ -365,7 +382,6 @@
     justify-items: center;
     align-items: start;
     margin-top: 10px;/**/
-    align-items: stretch; /* ← 추가! */
 }
 
 /* 🔹 카드 공통 */
@@ -376,10 +392,6 @@
     padding: 16px;
     width: 230px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    display: flex;            /* 카드 내부를 균일하게 유지 */
-    flex-direction: column;   /* 위→아래 배치 */
-    height: 100%;             /* 카드 높이를 grid가 강제로 통일하게 하는 핵심 */
 }
 .product-card:hover, .review-card:hover {
     transform: translateY(-4px);
@@ -389,14 +401,6 @@
 .product-card p {
     margin: 4px 0; /* ✅ 상하 여백 최소화 */
     line-height: 1.4;
-}
-
-.product-card p:nth-of-type(1) {
-    /* 상품설명 부분만 선택됨 */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;      /* 딱 2줄까지만 표시해서 상품내용이 길 때 튀어나오는 걸 방지! */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
 
@@ -409,11 +413,12 @@
     margin-bottom: 10px;
 }
 
+/* 🔹 더보기 버튼 */
 .more-icon {
-    position: relative;     /* HTML 흐름 유지하면서 미세 위치 조정 가능 */
-    top: -10px;             /* 살짝 위로 */
-    left: -20px;            /* 살짝 왼쪽으로 */
-
+    position: absolute;
+    right: 100px; /* ✅ 카드에서 약간 더 떨어지게 */
+    top: 60%;
+    transform: translateY(-50%);
     width: 80px;
     height: 80px;
     border: 1px solid #ccc;
@@ -500,134 +505,9 @@
     padding-top: 10px;
 }
 
-/* 내 리뷰 스타일 */
-.review-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-left: 40px;
-}
 
-.review-container h2 {
-    font-size: 22px;
-    margin-bottom: 20px;
-}
-
-.item-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    max-width: 600px;
-    background-color: #fafafa;
-    margin-left: 60px;
-    margin-bottom: 25px;
-}
-
-.item-card p {
-    margin: 6px 0;
-}
-
-.item-card small {
-    color: #777;
-    font-size: 13px;
-}
-
-.review-content {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-}
-
-.review-img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-}
-
-.review-text p {
-    margin: 4px 0;
-    line-height: 1.4;
-}
-
-.review-text small {
-    color: #777;
-    font-size: 13px;
-}
-
-.review-title {
-    font-size: 22px;
-    font-weight: 700;
-    text-align: center;
-    width: 600px;
-    margin-left: 60px;
-    margin-bottom: 20px;
-}
-
-
-/*관심상품 부분*/
-.wishlist-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-left: 0;
-    /* 리뷰 카드와 정렬 맞춤 */
-    margin-bottom: 30px;
-    align-items: center;
-}
-
-.wishlist-container .item-card {
-    max-width: 600px;
-}
-
-
-.thumb-box {
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    background: #e9e9e9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    color: #999;
-}
-
-
-.wishlist-title {
-    font-size: 22px;
-    margin-bottom: 20px;
-    text-align: center;
-    width: 600px;
-    margin-left: 60px;
-}
-
-
-
-/*회원정보 부분*/
-.profile-card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px 40px;
-    max-width: 600px;
-    margin: -20px auto 0 60px;
-    background: none;
-    box-shadow: none;
-    border: none;
-}
-
-/* 회원정보 제목 */
-.profile-card h2 {
-    font-size: 22px;
-    font-weight: 700;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 25px;
-}
+/* ===========================
+   공통 중심축 설정
 
 /* 각 정보 항목 */
 .profile-card .info-item {
@@ -741,13 +621,8 @@
     transform: translateX(10px);
 }
 
-/* 판매 내역 제목 */
-.sell-title {
-    font-size: 22px;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 25px;
-}
+
+
 
 /* 탭 전체 컨테이너 */
 .sell-nav {
@@ -832,4 +707,12 @@
 
 .sell-card:last-child {
     border-bottom: none;
+}
+
+.empty-text {
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+    margin-top: 20px;
+    transform: translateX(var(--mypage-shift));
 }
