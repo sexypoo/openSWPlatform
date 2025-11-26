@@ -145,6 +145,7 @@
     // 파일 업로드 처리 (최대 3장)
     let selectedFiles = [];
     const maxFiles = 3;
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
     const existingImages = {{ review.images|tojson if review else '[]' }};
     let existing = [...existingImages];
@@ -159,7 +160,15 @@
         }
 
         files.forEach(file => {
-            if (selectedFiles.length < maxFiles) {
+            const fileName = file.name;
+            const fileExt = fileName.split('.').pop().toLowerCase(); // 파일명에서 확장자 추출 및 소문자 변환
+
+            if (!allowedExtensions.includes(fileExt)) {
+                alert(`'${fileName}'은(는) 업로드할 수 없는 파일 형식입니다.\n(jpg, jpeg, png, gif만 가능)`);
+                return; // 이 파일은 건너뜀
+            }
+
+            if (selectedFiles.length + existing.length < maxFiles) {
                 selectedFiles.push(file);
                 displayPreview(file);
             }
