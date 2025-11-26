@@ -3,8 +3,10 @@
 
     {% if review_list %}
     <div class="mypage-review-grid">
+
         {% for p in review_list %}
-        <div class="mypage-review-card">
+        <a class="mypage-review-card" 
+           href="{{ url_for('reviews.view_review', review_id=p.id) }}">
 
             <div class="mypage-review-image">
                 {% if p.images %}
@@ -24,11 +26,12 @@
                 <span>{{ p.date }}</span>
             </div>
 
-        </div>
+        </a>
         {% endfor %}
+
     </div>
+
     {% else %}
         <p class="empty-text">등록한 리뷰가 없습니다.</p>
     {% endif %}
 </div>
-
