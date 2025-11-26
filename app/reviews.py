@@ -1,4 +1,5 @@
 import os
+import uuid
 from flask import current_app
 from werkzeug.utils import secure_filename
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session, current_app
@@ -86,11 +87,16 @@ def reg_review_submit_post():
         if not image_file or not image_file.filename:
             continue
 
-        filename = secure_filename(image_file.filename)
-        save_path = f"static/images/{filename}"
+        # secure_filename 사용 시 한글 깨짐 및 중복 방지를 위해 UUID 적용
+        original = secure_filename(image_file.filename)
+        name, ext = os.path.splitext(original)
+        
+        # 파일명 + 랜덤값(8자리) + 확장자 조합 (예: myphoto_a1b2c3d4.jpg)
+        unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
+        save_path = f"static/images/{unique_name}"
 
         image_file.save(save_path)
-        img_filenames.append(filename)
+        img_filenames.append(unique_name)
         
     # 폼 데이터 저장
 
@@ -203,12 +209,30 @@ def update_review(review_id):
             "rating": form.rating.data,
         }
 
-        image_file = request.files.get("file")
+        files = request.files.getlist("file")
 
-        if image_file and image_file.filename:
-            img_filename = image_file.filename
-            image_file.save(f"static/images/{img_filename}")
-            update_fields["img_path"] = img_filename
+        # Load existing images list (default empty list)
+        existing_images = review.get("images", [])
+        new_images = []
+
+        # Process newly uploaded files (multiple)
+        for image_file in files:
+            if not image_file or not image_file.filename:
+                continue
+            original = secure_filename(image_file.filename)
+            name, ext = os.path.splitext(original)
+            unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
+            image_file.save(f"static/images/{unique_name}")
+            new_images.append(unique_name)
+
+        # Merge existing + new images
+        merged = existing_images + new_images
+
+        # Keep only last 3 images (remove from front)
+        if len(merged) > 3:
+            merged = merged[-3:]
+
+        update_fields["images"] = merged
 
         DB.update_review(review_id, update_fields)
 

@@ -27,6 +27,7 @@
 
         <div id="edit-mode" style="display:none;">
             <form method="post" action="{{ url_for('user.update_profile') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <div class="info-item">
                     <label>아이디</label>
