@@ -403,6 +403,19 @@ body {
     line-height: 1.4;
 }
 
+/* 🔹 카드 내부 링크 색상 */
+.product-card a,
+.review-card a {
+    color: #333;
+    text-decoration: none;
+}
+
+.product-card a:hover,
+.review-card a:hover {
+    color: #111; /* hover 시 더 진하게 */
+}
+
+
 
 /* 🔹 이미지 */
 .img-placeholder {
@@ -596,6 +609,13 @@ body {
     /*max-width: 280px;*/
 }
 
+.mypage-review-grid a:link,
+.mypage-review-grid a:visited {
+    color: #333;        /* 검정으로 통일 */
+    text-decoration: none;
+}
+
+
 .mypage-review-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.1);
@@ -646,6 +666,13 @@ body {
     margin: 0 auto 60px;
 }
 
+.wishlist-grid a {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
 /* 개별 카드 */
 .wishlist-card {
     width: 100%;
@@ -654,6 +681,8 @@ body {
     padding: 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     transition: 0.2s;
+
+    min-width: 270px; /* 카드 크기 달라지는 거 방지 */
 }
 
 .wishlist-card:hover {
@@ -801,179 +830,105 @@ body {
 }
 
 /* ===========================
-   판매 내역 공통 스타일
+   판매/구매 내역 공통 스타일 (수정됨)
 =========================== */
-.sell-section {
-    max-width: 700px;
-    margin-left: 0;
-    transform: translateX(10px);
-}
 
-
-
-
-/* 탭 전체 컨테이너 */
-.sell-nav {
+/* 섹션 레이아웃 잡기 */
+.sell-section,
+.buy-section {
+    width: 100%;             /* 전체 너비 사용 */
+    max-width: 800px;        /* 너무 넓어지지 않게 제한 (700 -> 800으로 살짝 늘림) */
+    margin: 0 auto;          /* 중앙 정렬 */
     display: flex;
-    justify-content: center;
-    gap: 120px;          /* 탭 간 간격 */
-    margin-bottom: 25px;
-    transform: translateX(10px);
+    flex-direction: column;  /* 리스트 세로 정렬 */
 }
 
-/* 탭 내부 구조 */
-.sell-tab {
+/* 링크 태그가 박스 전체를 채우도록 설정 */
+.sell-section a,
+.buy-section a {
+    display: block;          /* 블록 요소로 변경 */
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+}
+
+/* 리스트 카드 디자인 */
+.sell-card,
+.buy-card {
     display: flex;
-    flex-direction: column;  /* 숫자 위 / 텍스트 아래 */
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    cursor: pointer;
-    color: #555;
-    font-size: 15px;
-    font-weight: 500;
-}
-
-/* 숫자만 강조 */
-.sell-tab span {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-/* 선택된 탭 강조 */
-.sell-tab.active,
-.sell-tab.active span {
-    color: #2e6b56;
-    font-weight: 700;
-}
-
-
-/* 리스트 */
-.sell-card {
-    display: flex;
-    align-items: center;
+    align-items: center;     /* 세로 중앙 정렬 */
     gap: 20px;
-    padding: 20px 10px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
+    padding: 20px;           /* 여백 조금 더 넉넉하게 */
+    border-bottom: 1px solid #eee;
+    background-color: #fff;  /* 배경색 명시 */
+    transition: background-color 0.2s; /* 호버 효과 부드럽게 */
+    width: 100%;             /* 너비 꽉 채우기 */
+    box-sizing: border-box;  /* 패딩 포함 너비 계산 */
 }
 
-.sell-thumb {
-    width: 90px;
-    height: 90px;
-    border-radius: 8px;
-    background: #e9e9e9;
+.sell-card:hover,
+.buy-card:hover {
+    background-color: #f9f9f9; /* 마우스 올렸을 때 살짝 회색 */
 }
 
-.sell-info {
-    flex: 1;
-}
-
-.sell-name {
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.sell-detail {
-    color: #777;
-    font-size: 14px;
-    margin: 4px 0;
-}
-
-.sell-price {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.sell-date {
-    font-size: 14px;
-    color: #777;
-    align-self: flex-start;
-    margin-top: 5px;
-}
-
-.sell-card:last-child {
-    border-bottom: none;
-}
-
-.empty-text {
+.empty-text,.buy-empty-text {
     text-align: center;
     font-size: 16px;
     color: #333;
     margin-top: 20px;
     transform: translateX(var(--mypage-shift));
-}
+} /*구매내역, 판매내역 문구 코드가 사라져서 다시 추가*/
 
-/* ===========================
-   구매 내역 공통 스타일
-=========================== */
-
-.buy-section {
-    max-width: 700px;
-    margin-left: 0;
-    transform: translateX(10px);
-}
-
-/* 리스트 */
-.buy-card {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 20px 10px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-}
-
+/* 이미지 썸네일 (핵심 수정 부분) */
+.sell-thumb,
 .buy-thumb {
     width: 90px;
     height: 90px;
     border-radius: 8px;
-    background: #e9e9e9;
+    background-color: #e9e9e9;
+    
+    /* 이미지가 박스에 꽉 차고 중앙에 오도록 설정 */
+    background-size: cover;  
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    flex-shrink: 0; /* 텍스트가 길어져도 이미지 크기가 줄어들지 않도록 고정 */
 }
 
+/* 텍스트 정보 영역 */
+.sell-info,
 .buy-info {
-    flex: 1;
+    flex: 1;                /* 남은 공간 모두 차지 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;       /* 내용 넘침 방지 */
 }
 
+.sell-name,
 .buy-name {
     font-size: 18px;
     font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
 }
 
+.sell-detail,
 .buy-detail {
-    color: #777;
+    color: #888;
     font-size: 14px;
-    margin: 4px 0;
+    margin-bottom: 4px;
+    
+    /* 긴 텍스트 말줄임표 처리 (...) */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
+.sell-price,
 .buy-price {
     font-size: 16px;
-    font-weight: 600;
-}
-
-.buy-date {
-    font-size: 14px;
-    color: #777;
-    align-self: flex-start;
-    margin-top: 5px;
-}
-
-.buy-card:last-child {
-    border-bottom: none;
-}
-
-/* 구매 내역 비었을 때 */
-.buy-empty-text {
-    text-align: center;
-    font-size: 16px;
+    font-weight: 700;
     color: #333;
-    margin-top: 20px;
-    transform: translateX(var(--mypage-shift));
-}
-
-/*tailwind 회원정보 수정에 적용 css*/
-.input-error {
-    border: 1px solid red !important;
-    background-color: #fff5f5;
+    margin-top: 4px;
 }
