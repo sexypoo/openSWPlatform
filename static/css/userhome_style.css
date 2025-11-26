@@ -403,6 +403,19 @@ body {
     line-height: 1.4;
 }
 
+/* 🔹 카드 내부 링크 색상 */
+.product-card a,
+.review-card a {
+    color: #333;
+    text-decoration: none;
+}
+
+.product-card a:hover,
+.review-card a:hover {
+    color: #111; /* hover 시 더 진하게 */
+}
+
+
 
 /* 🔹 이미지 */
 .img-placeholder {
@@ -596,6 +609,13 @@ body {
     /*max-width: 280px;*/
 }
 
+.mypage-review-grid a:link,
+.mypage-review-grid a:visited {
+    color: #333;        /* 검정으로 통일 */
+    text-decoration: none;
+}
+
+
 .mypage-review-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.1);
@@ -661,6 +681,8 @@ body {
     padding: 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     transition: 0.2s;
+
+    min-width: 270px; /* 카드 크기 달라지는 거 방지 */
 }
 
 .wishlist-card:hover {
@@ -848,6 +870,14 @@ body {
 .buy-card:hover {
     background-color: #f9f9f9; /* 마우스 올렸을 때 살짝 회색 */
 }
+
+.empty-text,.buy-empty-text {
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+    margin-top: 20px;
+    transform: translateX(var(--mypage-shift));
+} /*구매내역, 판매내역 문구 코드가 사라져서 다시 추가*/
 
 /* 이미지 썸네일 (핵심 수정 부분) */
 .sell-thumb,
