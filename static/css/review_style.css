@@ -776,3 +776,8 @@ a {
     padding: 0 40px;        /* 좌우 여백 */
     box-sizing: border-box;
 }
+.review-date {
+    margin-left: 10px;
+    color: #888;
+    font-size: 0.9rem;
+}

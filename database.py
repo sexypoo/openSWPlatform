@@ -3,6 +3,8 @@ from operator import truediv
 import pyrebase
 import json
 
+import time
+
 class DBhandler:
     def __init__(self):
         with open('./authentication/firebase_auth.json') as f:
@@ -172,7 +174,8 @@ class DBhandler:
             "review_details": data['r_details'],
             "rating": data['rating'],
             "images": img_paths,
-            "item_id": item_id
+            "item_id": item_id,
+            "created_at":int(time.time())
         }
 
         res = self.db.child("reviews").push(review_info)
@@ -199,6 +202,10 @@ class DBhandler:
     
     # Update
     def update_review(self, review_id, data):
+
+        if "create_at" in data:
+            del data["created_at"]
+
         self.db.child("reviews").child(review_id).update(data)
 
     # Delete

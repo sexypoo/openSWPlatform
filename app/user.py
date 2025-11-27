@@ -32,6 +32,7 @@ def mypage(section="profile"):
         wishlist = DB.get_products_by_ids(heart_ids)
     elif section == "review":
         my_reviews = DB.get_reviews_by_purchaser(user_id)
+        my_reviews = sorted(my_reviews, key=lambda r: r.get("created_at",0),reverse=True)
     elif section == "sell":
         my_items = DB.get_items_by_seller(user_id)
     elif section == "buy":
