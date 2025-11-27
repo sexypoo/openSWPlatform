@@ -52,6 +52,8 @@
             <!-- 작성자 아이디 및 수정/삭제 버튼 -->
             <div class="review-meta-with-actions">
                 <span class="review-author">{{ review.purchaser or '알수없음' }}</span>
+                <span class="review-author">{{ review.created_at_str or '' }}</span>
+
                 <div class="action-buttons">
                     <a href="{{ url_for('reviews.update_review', review_id=review.id) }}" class="btn btn-edit">수정</a>
                     <span class="action-divider">|</span>

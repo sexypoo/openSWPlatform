@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session, current_app
 from flask import current_app
 # from flask import sys
+import datetime
 from database import DBhandler
 
 from .ReviewForm import ReviewForm
@@ -174,6 +175,9 @@ def view_reviews():
 def view_review(review_id):
     DB = current_app.config["DB"]
     review = DB.get_review(review_id)
+
+    if "created_at" in review:
+        review["created_at_str"] = datetime.datetime.fromtimestamp(review["created_at"]).strftime("%Y-%m-%d %H:%M")
 
     # 별점을 정수로 변환
     if review['rating'] is not None:
