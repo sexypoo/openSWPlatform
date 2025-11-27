@@ -89,6 +89,7 @@ def reg_review_submit_post():
 
         # secure_filename 사용 시 한글 깨짐 및 중복 방지를 위해 UUID 적용
         original = secure_filename(image_file.filename)
+        # 확장자 분리
         name, ext = os.path.splitext(original)
         
         # 파일명 + 랜덤값(8자리) + 확장자 조합 (예: myphoto_a1b2c3d4.jpg)
@@ -139,6 +140,7 @@ def reg_review_submit_post():
         item_id=item_id,
     )
     
+    flash("리뷰가 성공적으로 등록되었습니다.")
     return redirect(url_for("reviews.view_review", review_id=new_review_id))
 
 # 리뷰 전체조회
