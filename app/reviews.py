@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session, current_app
 from flask import current_app
 # from flask import sys
+import datetime
 from database import DBhandler
 
 from .ReviewForm import ReviewForm
@@ -87,11 +88,17 @@ def reg_review_submit_post():
         if not image_file or not image_file.filename:
             continue
 
-        filename = secure_filename(image_file.filename)
-        save_path = f"static/images/{filename}"
+        # secure_filename 사용 시 한글 깨짐 및 중복 방지를 위해 UUID 적용
+        original = secure_filename(image_file.filename)
+        # 확장자 분리
+        name, ext = os.path.splitext(original)
+        
+        # 파일명 + 랜덤값(8자리) + 확장자 조합 (예: myphoto_a1b2c3d4.jpg)
+        unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
+        save_path = f"static/images/{unique_name}"
 
         image_file.save(save_path)
-        img_filenames.append(filename)
+        img_filenames.append(unique_name)
         
     # 폼 데이터 저장
 
@@ -134,6 +141,7 @@ def reg_review_submit_post():
         item_id=item_id,
     )
     
+    flash("리뷰가 성공적으로 등록되었습니다.")
     return redirect(url_for("reviews.view_review", review_id=new_review_id))
 
 # 리뷰 전체조회
@@ -167,6 +175,9 @@ def view_reviews():
 def view_review(review_id):
     DB = current_app.config["DB"]
     review = DB.get_review(review_id)
+
+    if "created_at" in review:
+        review["created_at_str"] = datetime.datetime.fromtimestamp(review["created_at"]).strftime("%Y-%m-%d %H:%M")
 
     # 별점을 정수로 변환
     if review['rating'] is not None:

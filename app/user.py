@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app, jsonify
 import re
 from .auth import _hash_pw
 
@@ -32,6 +32,7 @@ def mypage(section="profile"):
         wishlist = DB.get_products_by_ids(heart_ids)
     elif section == "review":
         my_reviews = DB.get_reviews_by_purchaser(user_id)
+        my_reviews = sorted(my_reviews, key=lambda r: r.get("created_at",0),reverse=True)
     elif section == "sell":
         my_items = DB.get_items_by_seller(user_id)
     elif section == "buy":
@@ -80,3 +81,30 @@ def update_profile():
     flash("회원정보가 수정되었습니다.")
     return redirect(url_for("user.mypage"))
 
+@user_bp.route("/check_password_match", methods=["POST"])
+def check_password_match():
+    data = request.get_json()
+    input_password = data.get("password")
+    
+    user_id = session.get("id")
+    if not user_id or not input_password:
+        return jsonify({"match": False}) # 로그인 안됐거나 입력 없으면 불일치 처리
+
+    DB = current_app.config["DB"]
+    
+    # 1. DB에서 현재 유저 정보 가져오기
+    current_user = DB.get_user(user_id)
+    if not current_user:
+        return jsonify({"match": False})
+
+    # 2. 입력된 비밀번호 암호화 (기존 _hash_pw 함수 사용)
+    # user.py 상단에 from .auth import _hash_pw 가 되어있어야 함
+    hashed_input = _hash_pw(input_password)
+    
+    # 3. DB 비밀번호와 비교
+    current_db_password = current_user.get("pw")
+    
+    if hashed_input == current_db_password:
+        return jsonify({"match": True})  # "똑같습니다!"
+    else:
+        return jsonify({"match": False}) # "다릅니다!"

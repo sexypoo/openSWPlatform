@@ -1,47 +1,79 @@
 import os
 import time
 import json
-from unicodedata import category
-
+import uuid
 from flask import current_app
-from requests_toolbelt.multipart.encoder import total_len
 from werkzeug.utils import secure_filename
-from flask import Blueprint, request, render_template, flash, redirect, url_for, session, current_app, jsonify
+from flask import Blueprint, request, render_template, flash, redirect, url_for, session, jsonify
 
-from database import DBhandler
+from .ProductForm import ProductForm
 
-products_bp = Blueprint("products",__name__)
+products_bp = Blueprint("products", __name__)
 
-# 상품 등록 POST
+@products_bp.route("/reg_product")
+def reg_item():
+    form = ProductForm()
+    return render_template("reg_product.html", form=form)
+
 @products_bp.route("/submit_product_post", methods=['POST'])
 def reg_item_submit_post():
-
     # 로그인 상태 확인
     seller_id = session.get("id")
     if not seller_id:
         flash("로그인 후에만 상품을 등록할 수 있습니다.")
         return redirect(url_for("pages.login"))
 
-    # 이미지 파일 저장
-    # 여러 장 파일 받기
+    form = ProductForm()
+
+    # 유효성 검사 및 CSRF 토큰 확인
+    if not form.validate_on_submit():
+        for field, errors in form.errors.items():
+            for e in errors:
+                flash(f"[{field}] {e}")
+        return redirect(request.referrer or url_for('products.view_products'))
+
+    img_filename = None
+
+    # 이미지 파일 처리 (여러 장 파일을 받을 때와 단일 파일을 받을 때를 모두 처리)
     files = request.files.getlist("files")
     filenames = []
 
-    for f in files:
-        if f and f.filename:
-            filename = secure_filename(f.filename)
-            f.save(os.path.join("static/images", filename))
-            filenames.append(filename)
+    if files:  # 여러 파일 처리
+        for f in files:
+            if f and f.filename:
+                filename = secure_filename(f.filename)
+                f.save(os.path.join("static/images", filename))
+                filenames.append(filename)
+        img_filename = json.dumps(filenames)  # 이미지 리스트를 JSON 문자열로 저장
+    else:  # 단일 파일 처리
+        image_file = form.file.data
+        if image_file and image_file.filename:
+            original = secure_filename(image_file.filename)
+            name, ext = os.path.splitext(original)
+            unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
+            save_path = os.path.join("static/images", unique_name)
+            image_file.save(save_path)
+            img_filename = unique_name
 
-    
-    # 폼 데이터 저장
-    data=request.form
-    DB = current_app.config["DB"] # 현재 앱에서 생성된 DB를 가져와서 사용
-    
-    # 로그인된 유저의 정보를 seller로 넘김
-    import json
-    new_product_id = DB.insert_item(data['name'], data, json.dumps(filenames), seller_id=seller_id)
-    
+    # 폼 데이터
+    data = form.data.copy()
+
+    if 'csrf_token' in data:
+        del data['csrf_token']
+    if 'file' in data:
+        del data['file']
+
+    data['tags'] = form.tag.data
+
+    DB = current_app.config["DB"]
+    new_product_id = DB.insert_item(
+        name=form.name.data,
+        data=data,
+        img_path=img_filename,
+        seller_id=seller_id
+    )
+
+    flash("상품이 성공적으로 등록되었습니다.")
     return redirect(url_for("products.view_product", product_id=new_product_id, slug=data['name']))
 
 # 상품 전체조회
@@ -111,7 +143,7 @@ def view_product(product_id, slug):
     DB = current_app.config["DB"]
     product = DB.get_product(product_id)
 
-    # 🔹 1) 이미지 여러 장 처리
+    # 1) 이미지 여러 장 처리
     img_raw = product.get("img_path", "")
 
     try:
@@ -127,15 +159,15 @@ def view_product(product_id, slug):
     # 템플릿에서 product.images 로 쓸 수 있게 세팅
     product["images"] = images
 
-    # 🔹 2) 태그 처리 (원래 있던 코드 그대로)
+    # 2) 태그 처리 (원래 있던 코드 그대로)
     raw_tags = product.get("tags", "") or ""
     tag_list = [t for t in raw_tags.split() if t]
 
-    # 🔹 3) 내가 등록한 글인지 확인 (원래 있던 코드 그대로)
+    # 3) 내가 등록한 글인지 확인 (원래 있던 코드 그대로)
     current_id = session.get("id")
     is_owner = (product.get("seller") == current_id)
 
-    # 🔹 4) 템플릿 렌더 (원래 있던 구조 유지)
+    # 4) 템플릿 렌더 (원래 있던 구조 유지)
     return render_template(
         "product_detail.html",
         product=product,
@@ -151,33 +183,75 @@ def edit_product(product_id, slug):
     product = DB.get_product(product_id)
     current_id = session.get("id")
 
+    # 권한 체크
     if product.get("seller") != current_id: # 이중 체크, fe에서 권한이 없을 경우 버튼이 보이지 않으나 url 접근 막음
         flash("수정 권한이 없습니다")
         return redirect(url_for("products.view_product", product_id=product_id, slug=slug))
     
+    form = ProductForm()
+
+    # GET 요청 : 기존 데이터로 폼 채우기
+    
     if request.method == "GET":
-        return render_template("edit_product.html", product=product, product_id=product_id, slug=slug)
+        form.name.data = product.get("name")
+        form.category.data = product.get("category")
+        form.price.data = int(product.get("price", 0))
+        form.quantity.data = int(product.get("quantity", 1))
+        form.details.data = product.get("details")
+        form.tag.data = product.get("tags")
 
-    # if method == POST
-    data = request.form
-    image_file = request.files.get("file")
-    file_name = product.get("img_path")
+        methods = product.get("method")
+        
+        # 리스트가 아니라 문자열이면 리스트로 감싸기 (가장 단순한 처리)
+        if methods and isinstance(methods, str):
+            # 혹시 "['...']" 처럼 저장된 문자열이라면 대괄호/따옴표 제거 (ast 없이 단순 문자열 처리)
+            cleaned = methods.replace("[", "").replace("]", "").replace("'", "").replace('"', "")
+            # 콤마로 구분되어 있으면 쪼개기
+            if "," in cleaned:
+                methods = [m.strip() for m in cleaned.split(",")]
+            else:
+                methods = [cleaned.strip()]
+        elif methods is None:
+            methods = []
+            
+        form.method.data = methods
+        
+        return render_template("edit_product.html", product=product, product_id=product_id, slug=slug, form=form)
 
+    # if method == POST 유효성 검사 및 업데이트
+
+    if not form.validate_on_submit():
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f"[{field}] {error}")
+        return render_template("edit_product.html", product=product, product_id=product_id, slug=slug, form=form)
+
+    img_filename = product.get("img_path")
+
+    # 새 이미지가 업로드 되었는지 확인
+    image_file = form.file.data
     if image_file and image_file.filename:
-        file_name = secure_filename(image_file.filename)
-        image_file.save("static/images/{}".format(image_file.filename))
+        # UUID 파일명 생성 로직 적용
+        original = secure_filename(image_file.filename)
+        name, ext = os.path.splitext(original)
+        unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
+        
+        save_path = os.path.join("static/images", unique_name)
+        image_file.save(save_path)
+        
+        img_filename = unique_name # 파일명 교체
 
-    methods = data.getlist("method") if hasattr(data, "getlist") else data.get("method", [])
+    # 데이터 업데이트
     update_data = {
-        "name": data["name"],
-        "category": data["category"],
-        "details": data["details"],
-        "price": data["price"],
-        "quantity": data["quantity"],
-        "method": methods,
-        "img_path": file_name,
+        "name": form.name.data,
+        "category": form.category.data,
+        "details": form.details.data,
+        "price": form.price.data,
+        "quantity": form.quantity.data,
+        "method": form.method.data, 
+        "img_path": img_filename,
         "seller": product.get("seller"),
-        "tags": data.get("tag", "")
+        "tags": form.tag.data
     }
 
     DB.update_product(product_id, update_data)

@@ -10,7 +10,8 @@
 
   <div class="title">상품 등록</div>
   <form method="POST" enctype="multipart/form-data" action="{{ url_for('products.reg_item_submit_post') }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {{ form.hidden_tag() }} <!--CSRF 토큰 자동으로 넣어주고, Hidden field 항목들 가져옴-->
+    
     <div class="grid">
     <!-- left: upload area -->
       <div>
