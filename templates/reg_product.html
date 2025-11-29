@@ -19,7 +19,12 @@
         <small>사진</small>
         <img alt="" class="preview" hidden="" id="previewImg"/>
         <div class="hint">클릭하여 파일을 선택하세요</div>
-        <input accept="image/*" id="file" name="files" type="file" multiple required/>
+        {{ form.files(
+          id="file",
+          multiple=True,
+          accept="image/*",
+          required=True
+      ) }}
       </label>
       <div id="photoPreview" class="photo-preview-container"></div>
 
@@ -248,5 +253,42 @@ document.addEventListener("DOMContentLoaded", function (){
     tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
   });
 });
+
+// 허용할 확장자 목록
+const allowedExt = ["jpg", "jpeg", "png", "gif"];
+
+document.getElementById("file").addEventListener("change", function (event) {
+
+  const files = event.target.files;
+  const previewContainer = document.getElementById("photoPreview");
+
+  // 기존 미리보기 초기화
+  previewContainer.innerHTML = "";
+
+  for (const file of files) {
+    const ext = file.name.split(".").pop().toLowerCase();
+
+    // 허용되지 않은 확장자면 → 경고 + 파일 선택 초기화
+    if (!allowedExt.includes(ext)) {
+      alert("허용된 파일만 업로드 가능합니다 (jpg, jpeg, png, gif)");
+      event.target.value = "";        // 파일 선택 즉시 초기화
+      previewContainer.innerHTML = ""; // 미리보기 비우기
+      return;
+    }
+  }
+
+  // 통과한 파일들만 미리보기 생성
+  for (const file of files) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const img = document.createElement("img");
+      img.src = e.target.result;
+      img.className = "preview-thumb";
+      previewContainer.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
 </script>
 {% endblock %}

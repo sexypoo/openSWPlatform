@@ -35,16 +35,19 @@ def reg_item_submit_post():
     img_filename = None
 
     # 이미지 파일 처리 (여러 장 파일을 받을 때와 단일 파일을 받을 때를 모두 처리)
-    files = request.files.getlist("files")
     filenames = []
+    files = form.files.data
 
     if files:  # 여러 파일 처리
         for f in files:
             if f and f.filename:
-                filename = secure_filename(f.filename)
-                f.save(os.path.join("static/images", filename))
-                filenames.append(filename)
-        img_filename = json.dumps(filenames)  # 이미지 리스트를 JSON 문자열로 저장
+                original = secure_filename(f.filename)
+                name, ext = os.path.splitext(original)
+                unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
+                save_path = os.path.join("static/images", unique_name)
+                f.save(save_path)
+                filenames.append(unique_name)
+        img_filename = json.dumps(filenames)  # ["img1_uuid.jpg","img2_uuid.jpg"]
     else:  # 단일 파일 처리
         image_file = form.file.data
         if image_file and image_file.filename:
@@ -105,32 +108,19 @@ def view_products():
     start = (page - 1) * per_page
     end = start + per_page
     page_items = items[start:end]
-    for p in page_items:
-        img_raw = p.get("img_path", "")  # ← 이 줄에서 img_raw를 정의합니다
-
-        try:
-            # img_path에 ["a.jpg","b.jpg"] 같은 JSON 문자열이 들어있는 경우
-            images = json.loads(img_raw) if img_raw else []
-            if isinstance(images, str):   # 단일 문자열인 경우 보정
-                images = [images]
-        except Exception:
-            # JSON 형식이 아니면 예전 데이터(단일 문자열)로 취급
-            images = [img_raw] if img_raw else []
-
-        # products.html 썸네일에서는 첫 번째 이미지 한 장만 사용
-        p["img_path"] = images[0] if images else None
 
     for p in page_items:
         img_raw = p.get("img_path", "")
 
         try:
-            images = json.loads(img_raw) if img_raw else []  # JSON → 리스트
-            if isinstance(images, str):      # 문자열 하나인 경우 보정
+            images = json.loads(img_raw) if img_raw else []
+            if isinstance(images, str):
                 images = [images]
         except Exception:
             images = [img_raw] if img_raw else []
 
-        p["img_path"] = images[0] if images else None  
+        p["img_path"] = images[0] if images else None
+
 
     from math import ceil
     page_count = max(1, ceil(total / per_page))
@@ -292,6 +282,10 @@ def buy_product(product_id, slug):
     # 상품 정보 조회
     product = DB.get_product(product_id)
     
+    # 만약 본인이 판매자라면
+    if user_id == product.get("seller",""):
+        return jsonify({"success":False,"message":"자신이 등록한 상품은 구매할 수 없습니다."}),400
+
     # 폼 데이터 받기
     quantity = request.form.get("quantity","1")
     purchaser_name = request.form.get("purchaser_name", "")

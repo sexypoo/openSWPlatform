@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired, FileAllowed
+from flask_wtf.file import MultipleFileField, FileAllowed
 from wtforms import StringField, TextAreaField, IntegerField, SelectMultipleField
 from wtforms.validators import DataRequired, Optional, Length, NumberRange
 
@@ -17,6 +17,9 @@ class ProductForm(FlaskForm):
                                ])
     details = TextAreaField(validators=[DataRequired(), Length(max=5000)])
     tag = StringField(validators=[Optional()])
-    file = FileField( validators=[
-        FileAllowed(['jpg', 'png', 'jpeg', 'gif'], '이미지 파일만 업로드 가능합니다.')
-    ])
+    files = MultipleFileField(
+        "이미지",
+        validators=[
+            FileAllowed(["jpg", "jpeg", "png", "gif"], "허용된 파일만 업로드 가능합니다.")
+        ],
+    )
