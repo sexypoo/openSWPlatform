@@ -282,6 +282,10 @@ def buy_product(product_id, slug):
     # 상품 정보 조회
     product = DB.get_product(product_id)
     
+    # 만약 본인이 판매자라면
+    if user_id == product.get("seller",""):
+        return jsonify({"success":False,"message":"자신이 등록한 상품은 구매할 수 없습니다."}),400
+
     # 폼 데이터 받기
     quantity = request.form.get("quantity","1")
     purchaser_name = request.form.get("purchaser_name", "")
