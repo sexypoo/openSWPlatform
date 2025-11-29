@@ -85,7 +85,11 @@ def view_products():
     DB = current_app.config["DB"]
 
     category = request.args.get("category", "").strip()
+
+    # 전체 상품 받아오기 + 정렬
     items = DB.get_products()
+    items.sort(key=lambda p: p["id"], reverse=True)
+
     tag = request.args.get("tag", "").strip()
 
     if category: # 카테고리 있으면 받아와서 저장
