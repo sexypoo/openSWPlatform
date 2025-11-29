@@ -27,7 +27,7 @@
                 {{ '★' * r }}{{ '☆' * (5 - r) }}
             </div>
             <div class="review-info">
-                <span>{{ p.created_at or '' }}</span>
+                <span>{{ p.created_at_str or '' }}</span>
                 <span>{{ p.purchaser or '' }}</span>
             </div>
         </a>

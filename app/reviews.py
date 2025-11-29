@@ -157,6 +157,12 @@ def view_reviews():
     reviews = DB.get_reviews()
     reviews.sort(key=lambda r:r["id"], reverse=True)
 
+    for r in reviews:
+        if "created_at" in r:
+            r["created_at_str"] = datetime.datetime.fromtimestamp(
+                r["created_at"]
+            ).strftime("%Y-%m-%d %H:%M")
+
     total = len(reviews)
 
     # 슬라이싱
