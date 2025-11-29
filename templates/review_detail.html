@@ -36,29 +36,30 @@
 
         <!-- 오른쪽 영역: 리뷰 정보 -->
         <div class="review-detail-info">
-            <!-- 별점 -->
-            <div class="review-rating">
-                <div class="review-stars-large">
-                    {% set rating = review.rating or 0 %}
-                    {{ '★' * rating }}{{ '☆' * (5 - rating) }}
+            <!-- 별점과 수정/삭제 버튼 -->
+            <div class="review-rating-actions">
+                <div class="rating-group">
+                    <div class="review-stars-large">
+                        {% set rating = review.rating or 0 %}
+                        {{ '★' * rating }}{{ '☆' * (5 - rating) }}
+                    </div>
+                    <div class="review-score">{{ rating }} / 5 </div>
                 </div>
-                <div class="review-score">{{ rating }} / 5 </div>
+                <div class="action-buttons">
+                    <a href="{{ url_for('reviews.update_review', review_id=review.id) }}" class="btn btn-edit">수정</a>
+                    <span class="action-divider">|</span>
+                    <a href="{{ url_for('reviews.delete_review', review_id=review.id) }}" class="btn btn-delete">삭제</a>
+                </div>
             </div>
 
             <!-- 리뷰 제목 -->
             <h3 class="review-main-title">{{ review.title or '제목 없음'}}</h3>
 
 
-            <!-- 작성자 아이디 및 수정/삭제 버튼 -->
-            <div class="review-meta-with-actions">
+            <!-- 작성자 아이디 및 작성 날짜 -->
+            <div class="review-author-date">
                 <span class="review-author">{{ review.purchaser or '알수없음' }}</span>
-                <span class="review-author">{{ review.created_at_str or '' }}</span>
-
-                <div class="action-buttons">
-                    <a href="{{ url_for('reviews.update_review', review_id=review.id) }}" class="btn btn-edit">수정</a>
-                    <span class="action-divider">|</span>
-                    <a href="{{ url_for('reviews.delete_review', review_id=review.id) }}" class="btn btn-delete">삭제</a>
-                </div>
+                <span class="review-date">{{ review.created_at_str or '' }}</span>
             </div>
 
             <!-- 구분선 -->
