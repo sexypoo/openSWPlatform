@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app, jsonify
 import re
+import json
 from .auth import _hash_pw
 
 # 마이페이지의 기능을 다룸
@@ -35,9 +36,35 @@ def mypage(section="profile"):
         my_reviews = sorted(my_reviews, key=lambda r: r.get("created_at",0),reverse=True)
     elif section == "sell":
         my_items = DB.get_items_by_seller(user_id)
+
+        for p in my_items:
+            img_raw = p.get("img_path", "")
+
+            try:
+                images = json.loads(img_raw) if img_raw else []
+                if isinstance(images, str):
+                    images = [images]
+            except Exception:
+                images = [img_raw] if img_raw else []
+
+            p["img_path"] = images[0] if images else None
+
     elif section == "buy":
         uid = DB.get_uid_by_id(user_id)
         my_buys = DB.get_purchases_by_user(uid)
+
+        for p in my_buys:
+            img_raw = p.get("img_path", "")
+
+            try:
+                images = json.loads(img_raw) if img_raw else []
+                if isinstance(images, str):
+                    images = [images]
+            except Exception:
+                images = [img_raw] if img_raw else []
+
+            p["img_path"] = images[0] if images else None
+            
     else:
         # 예외 섹션 들어오면 profile로 보내기
         section = "profile"
