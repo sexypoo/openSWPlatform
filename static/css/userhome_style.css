@@ -597,6 +597,10 @@ body {
     margin: 0 auto 60px;
     /*transform: translateX(var(--mypage-shift));*/
 }
+.mypage-review-grid a {
+    display: block;
+    width: 100%;
+}
 
 /* 개별 카드 */
 .mypage-review-card {
@@ -629,12 +633,15 @@ body {
     overflow: hidden;
     background-color: #eaeaea;
     margin-bottom: 14px;
+
 }
 
 .mypage-review-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+
+  
 }
 
 /* 별점 */
