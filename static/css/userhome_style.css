@@ -633,15 +633,15 @@ body {
     overflow: hidden;
     background-color: #eaeaea;
     margin-bottom: 14px;
-
+    height: 280px;
+    min-height: 280px; /*리뷰 사진 수정 시 내 리뷰 카드 모양 깨짐 때문에 추가*/
 }
 
 .mypage-review-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-
-  
+    display: block; /*리뷰 사진 수정 시 내 리뷰 카드 모양 깨짐 때문에 추가*/
 }
 
 /* 별점 */
