@@ -18,7 +18,7 @@
                 <div class="gallery-track" id="galleryTrack">
                     {% for img in review.images %}
                     <div class="gallery-slide">
-                        <img src="{{ url_for('static', filename='images/' ~ img) }}">
+                        <img src="{{ img }}">
                     </div>
                     {% endfor %}
                 </div>

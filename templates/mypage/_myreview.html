@@ -10,7 +10,7 @@
 
             <div class="mypage-review-image">
                 {% if p.images %}
-                <img src="{{ url_for('static', filename='images/' ~ p.images[0]) }}">
+                <img src="{{ p.images[0] }}">
                 {% endif %}
             </div>
 

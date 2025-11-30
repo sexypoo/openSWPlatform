@@ -100,7 +100,7 @@ class DBhandler:
                     # 구매 정보
                     "purchase_id": purchase_id,
                     "quantity": info.get("quantity"),
-                    "purchase_time": info.get("purchase_time"),
+                    "purchased_at": info.get("purchased_at"),
 
                     # 상품 정보
                     "product_id": product_id,
@@ -336,3 +336,7 @@ class DBhandler:
                 self.db.child("user").child(key).update({"email":new_email})
                 return True
         return False
+    
+    def delete_purchase_for_user(self, uid, product_id, purchase_id):
+        path=f"user/{uid}/purchases/{product_id}/{purchase_id}"
+        self.db.child(path).remove()

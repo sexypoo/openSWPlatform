@@ -932,3 +932,28 @@ body {
     color: #333;
     margin-top: 4px;
 }
+
+.buy-delete-btn {
+    border: none;
+    background: transparent;
+    color: #bbb;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.buy-delete-btn:hover {
+    color: #888;
+}
+.buy-meta {
+  display: flex;
+  justify-content: space-between;  /* 왼쪽/오른쪽으로 벌리기 */
+  align-items: center;
+  margin-top: 4px;
+  font-size: 13px;
+  color: #888;
+}
+
+.buy-card > form {
+  margin-left: 8px;
+}

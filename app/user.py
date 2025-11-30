@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app, jsonify
 import re
 import json
+from datetime import datetime
 from .auth import _hash_pw
 
 # 마이페이지의 기능을 다룸
@@ -64,6 +65,16 @@ def mypage(section="profile"):
                 images = [img_raw] if img_raw else []
 
             p["img_path"] = images[0] if images else None
+
+            time = p.get("purchased_at")
+            if time:
+                p["purchase_time"] = datetime.fromtimestamp(time).strftime("%Y-%m-%d %H:%M")
+
+        my_buys = sorted(
+            my_buys,
+            key=lambda p: p.get("purchased_at", ""), 
+            reverse=True
+        )
             
     else:
         # 예외 섹션 들어오면 profile로 보내기
@@ -135,3 +146,19 @@ def check_password_match():
         return jsonify({"match": True})  # "똑같습니다!"
     else:
         return jsonify({"match": False}) # "다릅니다!"
+    
+@user_bp.route("/mypage/buy/delete/<string:product_id>/<string:purchase_id>", methods=["POST"])
+def delete_purchase(product_id, purchase_id):
+    DB = current_app.config["DB"]
+    user_id = session.get("id")
+
+    if not user_id:
+        flash("로그인이 필요합니다.")
+        return redirect(url_for("pages.login"))
+
+    uid = DB.get_uid_by_id(user_id)
+
+    DB.delete_purchase_for_user(uid, product_id, purchase_id)
+    flash("구매 내역이 삭제되었습니다.")
+
+    return redirect(url_for("user.mypage", section="buy"))

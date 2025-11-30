@@ -81,6 +81,9 @@ def reg_review_submit_post():
         return redirect(request.referrer)
 
     # 이미지 파일 저장 : 총 3장 저장 가능
+    DB = current_app.config["DB"]
+    STORAGE = DB.storage
+
     files = request.files.getlist("file")
     img_filenames = []
 
@@ -88,17 +91,15 @@ def reg_review_submit_post():
         if not image_file or not image_file.filename:
             continue
 
-        # secure_filename 사용 시 한글 깨짐 및 중복 방지를 위해 UUID 적용
         original = secure_filename(image_file.filename)
-        # 확장자 분리
         name, ext = os.path.splitext(original)
-        
-        # 파일명 + 랜덤값(8자리) + 확장자 조합 (예: myphoto_a1b2c3d4.jpg)
         unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
-        save_path = f"static/images/{unique_name}"
 
-        image_file.save(save_path)
-        img_filenames.append(unique_name)
+        save_path = f"reviews/{unique_name}"
+        STORAGE.child(save_path).put(image_file)
+        url = STORAGE.child(save_path).get_url(None)
+
+        img_filenames.append(url)
         
     # 폼 데이터 저장
 
@@ -106,7 +107,7 @@ def reg_review_submit_post():
     data = form.data.copy()
     data.pop('csrf_token', None) # csrf 토큰은 삭제
 
-    DB = current_app.config["DB"] # 현재 앱에서 생성된 DB를 가져와서 사용
+    # DB = current_app.config["DB"] # 현재 앱에서 생성된 DB를 가져와서 사용
     
     # 상품 id 받아오기
     item_id = data.get("item_id") or None
@@ -189,6 +190,17 @@ def view_review(review_id):
     if review['rating'] is not None:
         review['rating'] = int(review['rating'])
 
+    raw = review.get("images")
+
+    if isinstance(raw, list):
+        images = raw
+    elif isinstance(raw, str) and raw:  # 혹시 문자열 하나만 들어있는 경우
+        images = [raw]
+    else:
+        images = []
+
+    review["images"] = images
+
     # 내가 등록한 리뷰인지 확인
     current_id = session.get("id")
     is_owner = (review.get("purchaser") == current_id)
@@ -221,6 +233,9 @@ def update_review(review_id):
             "rating": form.rating.data,
         }
 
+        DB = current_app.config["DB"]
+        STORAGE = DB.storage
+
         files = request.files.getlist("file")
 
         # Load existing images list (default empty list)
@@ -234,8 +249,12 @@ def update_review(review_id):
             original = secure_filename(image_file.filename)
             name, ext = os.path.splitext(original)
             unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
-            image_file.save(f"static/images/{unique_name}")
-            new_images.append(unique_name)
+
+            save_path = f"reviews/{unique_name}"
+            STORAGE.child(save_path).put(image_file)
+            url = STORAGE.child(save_path).get_url(None)
+
+            new_images.append(url)
 
         # Merge existing + new images
         merged = existing_images + new_images
