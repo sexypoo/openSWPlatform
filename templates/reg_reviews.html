@@ -85,7 +85,7 @@
                     {% if review and review.images %}
                         {% for img in review.images %}
                             <div class="photo-preview-item existing" data-name="{{ img }}">
-                                <img src="{{ url_for('static', filename='images/' ~ img) }}" class="preview-image">
+                                <img src="{{ img }}" class="preview-image">
                                 <button type="button" class="delete-photo-btn">×</button>
                             </div>
                         {% endfor %}
@@ -147,8 +147,8 @@
     const maxFiles = 3;
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
-    const existingImages = {{ review.images|tojson if review else '[]' }};
-    let existing = [...existingImages];
+    const existingImages = {{ (review.images if review and review.images else []) | tojson }};
+    let existing = Array.isArray(existingImages) ? [...existingImages] : [];
 
     document.getElementById('fileInput').addEventListener('change', function (e) {
         const files = Array.from(e.target.files);
@@ -227,5 +227,7 @@
         input.value = JSON.stringify(existing);
         this.appendChild(input);
     });
+
+    updateCount();
 </script>
 {% endblock %}

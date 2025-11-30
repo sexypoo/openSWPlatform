@@ -210,6 +210,7 @@ def view_review(review_id):
 # 리뷰 수정
 @reviews_bp.route("/reviews/update/<string:review_id>", methods=["GET","POST"])
 def update_review(review_id):
+
     DB = current_app.config["DB"]
     user_id = session.get("id")
 
@@ -217,6 +218,9 @@ def update_review(review_id):
     if not review or review.get("purchaser") != user_id: # 구매자 정보와 본인 id가 일치해야만 수정 가능 (url 수정 방어)
         flash("수정 권한이 없습니다.")
         return redirect(url_for("reviews.view_review",review_id=review_id))
+
+    if not review.get("images"):
+        review["images"] = []
 
     if request.method == "POST":
         form = ReviewForm()
@@ -239,7 +243,7 @@ def update_review(review_id):
         files = request.files.getlist("file")
 
         # Load existing images list (default empty list)
-        existing_images = review.get("images", [])
+        existing_images = review.get("images") or []
         new_images = []
 
         # Process newly uploaded files (multiple)
