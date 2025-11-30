@@ -3,6 +3,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
 
+:root {
+  --ewha-green: #2e6b56;
+  --ewha-green-dark: #245444;
+  --btn-text: #ffffff;
+}
+
 /* ===== From wishlist.html ===== */
 
 .wishlist-page {
@@ -227,10 +233,19 @@
   font-size: 15px;
 }
 
+.product-detail-page .btn-primary,
+.product-detail-page .btn-edit,
 .product-detail-page .btn-cart,
 .product-detail-page .btn-buy {
-  background: #333;
-  color: #fff;
+  background: var(--ewha-green);
+  color: var(--btn-text);
+}
+
+.product-detail-page .btn-primary:hover,
+.product-detail-page .btn-edit:hover,
+.product-detail-page .btn-cart:hover,
+.product-detail-page .btn-buy:hover {
+  background: var(--ewha-green-dark);
 }
 
 .product-detail-page .btn-chat {
@@ -543,8 +558,8 @@
   padding: 16px;
   border: none;
   border-radius: 4px;
-  background: #000;
-  color: #fff;
+  background: var(--ewha-green);
+  color: var(--btn-text);
   font-size: 16px;
   cursor: pointer;
   margin-bottom: 60px;
@@ -735,8 +750,8 @@ a {
     padding: 8px 16px;
     border-radius: 999px;
     border: none;
-    background: #2e6b56;       /* 이화 그린 */
-    color: #fff;
+    background: var(--ewha-green);       /* 이화 그린 */
+    color: var(--btn-text);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -943,8 +958,8 @@ a {
 
 /* 이화그린 버튼 */
 .category-btn {
-  background: #2e6b56; /* EWHA GREEN */
-  color: white;
+  background: var(--ewha-green); /* EWHA GREEN */
+  color: var(--btn-text);
   border: none;
   padding: 10px 22px;
   border-radius: 10px;
@@ -955,7 +970,33 @@ a {
 }
 
 .category-btn:hover {
-  background: #245444;  /* 조금 어둡게 */
+  background: var(--ewha-green-dark);  /* 조금 어둡게 */
   transform: translateY(-1px);
+}
+
+
+/* ===== Force EWHA green buttons (override other CSS) ===== */
+.product-detail-page button.btn-primary,
+.product-detail-page button.btn-edit,
+.product-detail-page button.btn-buy,
+.product-detail-page button.btn-cart {
+  background-color: var(--ewha-green) !important;
+  color: var(--btn-text) !important;
+}
+
+.product-detail-page button.btn-primary:hover,
+.product-detail-page button.btn-edit:hover,
+.product-detail-page button.btn-buy:hover,
+.product-detail-page button.btn-cart:hover {
+  background-color: var(--ewha-green-dark) !important;
+}
+
+.reg-items-page button.btn {
+  background-color: var(--ewha-green) !important;
+  color: var(--btn-text) !important;
+}
+
+.reg-items-page button.btn:hover {
+  background-color: var(--ewha-green-dark) !important;
 }
 
