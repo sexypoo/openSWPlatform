@@ -11,6 +11,7 @@ class DBhandler:
             config = json.load(f)
         firebase = pyrebase.initialize_app(config)
         self.db = firebase.database()
+        self.storage = firebase.storage()
 
     # item 핸들러
 

@@ -41,7 +41,7 @@
     <div class="card">
       <a href="{{ url_for('products.view_product', product_id=p.id, slug=p.name) }}">
         <div class="thumb {% if p.quantity == 0 %}soldout-thumb{% endif %}" aria-label="상품 이미지" {% if p.img_path %}
-          style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');" {% endif %}>
+          style="background-image:url('{{p.img_path}}');" {% endif %}>
           <span class="heart wish-heart" data-id="{{ p.id }}">
             <i class="fa-regular fa-heart"></i>
           </span>

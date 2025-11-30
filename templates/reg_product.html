@@ -95,11 +95,20 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentURL     = null;
   const maxFiles     = 5;
 
-  // ✅ 지금까지 선택한 파일들을 누적 저장할 배열
+  // 지금까지 선택한 파일들을 누적 저장할 배열
   let allFiles = [];
 
   fileInput.addEventListener("change", () => {
     const newlySelected = Array.from(fileInput.files || []);
+    const allowedExt = ["jpg", "jpeg", "png", "gif"];
+    for (const f of newlySelected) {
+      const ext = f.name.split(".").pop().toLowerCase();
+      if (!allowedExt.includes(ext)) {
+        alert("허용된 파일만 업로드 가능합니다 (jpg, jpeg, png, gif)");
+        fileInput.value = "";
+        return;
+      }
+    }
 
     // 새로 선택한 것도 이미지인지 체크
     if (newlySelected.some(f => !f.type.startsWith("image/"))) {
@@ -254,41 +263,7 @@ document.addEventListener("DOMContentLoaded", function (){
   });
 });
 
-// 허용할 확장자 목록
-const allowedExt = ["jpg", "jpeg", "png", "gif"];
 
-document.getElementById("file").addEventListener("change", function (event) {
-
-  const files = event.target.files;
-  const previewContainer = document.getElementById("photoPreview");
-
-  // 기존 미리보기 초기화
-  previewContainer.innerHTML = "";
-
-  for (const file of files) {
-    const ext = file.name.split(".").pop().toLowerCase();
-
-    // 허용되지 않은 확장자면 → 경고 + 파일 선택 초기화
-    if (!allowedExt.includes(ext)) {
-      alert("허용된 파일만 업로드 가능합니다 (jpg, jpeg, png, gif)");
-      event.target.value = "";        // 파일 선택 즉시 초기화
-      previewContainer.innerHTML = ""; // 미리보기 비우기
-      return;
-    }
-  }
-
-  // 통과한 파일들만 미리보기 생성
-  for (const file of files) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const img = document.createElement("img");
-      img.src = e.target.result;
-      img.className = "preview-thumb";
-      previewContainer.appendChild(img);
-    };
-    reader.readAsDataURL(file);
-  }
-});
 
 </script>
 {% endblock %}
