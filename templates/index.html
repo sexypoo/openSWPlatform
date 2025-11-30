@@ -32,7 +32,7 @@
             <a href="{{ url_for('products.view_product', product_id=p.id, slug=p.name) }}">
                 <div class="img-placeholder"
                      {% if img %}
-                     style="background-image:url('{{ url_for('static', filename='images/' ~ img) }}'); background-size:cover; background-position:center;"
+                     style="background-image:url('{{ img }}'); background-size:cover; background-position:center;"
                      {% endif %}>
                 </div>
                 <h3>{{ name }}</h3>
@@ -72,7 +72,7 @@
             <a href="{{ url_for('reviews.view_review', review_id=r.id, slug=r.name) }}">
                 <div class="img-placeholder"
                      {% if img %}
-                     style="background-image:url('{{ url_for('static', filename='images/' ~ img) }}'); background-size:cover; background-position:center;"
+                     style="background-image:url('{{ img }}'); background-size:cover; background-position:center;"
                      {% endif %}>
                 </div>
                 <h3>{{ name }}</h3>
