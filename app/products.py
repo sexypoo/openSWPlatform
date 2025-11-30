@@ -196,6 +196,7 @@ def view_product(product_id, slug):
 @products_bp.route("/products/<string:product_id>/<slug>/edit", methods=['GET', 'POST'])
 def edit_product(product_id, slug):
     DB = current_app.config["DB"]
+    STORAGE = DB.storage
 
     product = DB.get_product(product_id)
     current_id = session.get("id")
@@ -243,20 +244,42 @@ def edit_product(product_id, slug):
                 flash(f"[{field}] {error}")
         return render_template("edit_product.html", product=product, product_id=product_id, slug=slug, form=form)
 
-    img_filename = product.get("img_path")
+    existing_images = []
+    img_raw = product.get("img_path")
 
-    # 새 이미지가 업로드 되었는지 확인
-    image_file = form.file.data
-    if image_file and image_file.filename:
-        # UUID 파일명 생성 로직 적용
-        original = secure_filename(image_file.filename)
+    if isinstance(img_raw, list):
+        existing_images = img_raw
+    elif isinstance(img_raw, str):
+        try:
+            loaded = json.loads(img_raw)
+            if isinstance(loaded, list):
+                existing_images = loaded
+            else:
+                existing_images = [img_raw]
+        except:
+            existing_images = [img_raw]
+    else:
+        existing_images = []
+
+    new_images = []
+    files = request.files.getlist("files")
+
+    for f in files:
+        if not f or not f.filename:
+            continue
+
+        original = secure_filename(f.filename)
         name, ext = os.path.splitext(original)
         unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
-        
-        save_path = os.path.join("static/images", unique_name)
-        image_file.save(save_path)
-        
-        img_filename = unique_name # 파일명 교체
+
+        save_path = f"products/{unique_name}"
+        STORAGE.child(save_path).put(f)
+
+        url = STORAGE.child(save_path).get_url(None)
+        new_images.append(url)
+
+    final_images = existing_images + new_images if new_images else existing_images
+
 
     # 데이터 업데이트
     update_data = {
@@ -266,7 +289,7 @@ def edit_product(product_id, slug):
         "price": form.price.data,
         "quantity": form.quantity.data,
         "method": form.method.data, 
-        "img_path": img_filename,
+        "img_path": json.dumps(final_images),
         "seller": product.get("seller"),
         "tags": form.tag.data
     }
