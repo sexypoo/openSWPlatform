@@ -27,6 +27,7 @@
 
         <div id="edit-mode" style="display:none;">
             <form method="post" action="{{ url_for('user.update_profile') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <div class="info-item">
                     <label>아이디</label>
@@ -47,7 +48,7 @@
                 </div>
 
                 <div class="button-group">
-                    <button type="submit" class="save-btn">저장하기</button>
+                    <button type="submit" class="save-btn" id="save-btn">저장하기</button>
                     <button type="button" onclick="cancelEdit()" class="cancel-btn">취소</button>
                 </div>
 
@@ -58,50 +59,120 @@
 
 </div>
 
+<div style="display: none;" class="!border-red-500 !text-red-900 !focus:border-red-500 !focus:ring-red-500 !placeholder-red-300"></div>
+
+{% block script %}
 <script>
-function toggleEditMode() {
-    document.getElementById("view-mode").style.display = "none";
-    document.getElementById("edit-mode").style.display = "block";
-}
+    // 1. 토글 및 취소 함수
+    function toggleEditMode() {
+        const viewMode = document.getElementById("view-mode");
+        const editMode = document.getElementById("edit-mode");
+        if (viewMode && editMode) {
+            viewMode.style.display = "none";
+            editMode.style.display = "block";
+        }
+    }
 
-function cancelEdit() {
-    document.getElementById("edit-mode").style.display = "none";
-    document.getElementById("view-mode").style.display = "block";
-}
-</script>
+    function cancelEdit() {
+        const viewMode = document.getElementById("view-mode");
+        const editMode = document.getElementById("edit-mode");
+        const pwInput = document.getElementById("edit-password-new");
+        const saveBtn = document.getElementById("save-btn");
 
-<script>
-// 기존 edit toggle 기능
-function toggleEditMode() {
-    document.getElementById("view-mode").style.display = "none";
-    document.getElementById("edit-mode").style.display = "block";
-}
-function cancelEdit() {
-    document.getElementById("edit-mode").style.display = "none";
-    document.getElementById("view-mode").style.display = "block";
-}
+        if (viewMode && editMode) {
+            editMode.style.display = "none";
+            viewMode.style.display = "block";
+        }
 
-// 새 비밀번호 검증 기능 
-document.addEventListener("DOMContentLoaded", () => {
-    const newPwInput = document.getElementById("edit-password-new");
-    const warning = document.getElementById("pw-warning");
+        if (pwInput) {
+            pwInput.value = "";
+            resetStyle(); 
+        }
+    }
 
-    if (!newPwInput) return;
+    // 2. 실시간 감지 로직
+    document.addEventListener("DOMContentLoaded", () => {
+        const newPwInput = document.getElementById("edit-password-new");
+        const warning = document.getElementById("pw-warning");
+        const saveBtn = document.getElementById("save-btn");
 
-    newPwInput.addEventListener("input", () => {
-        const currentPw = "********";  // 화면에 표시되는 placeholder와 비교 방지
-        const typed = newPwInput.value.trim();
+        if (!newPwInput || !warning || !saveBtn) return;
 
-        // 현재 비밀번호와 같다고 판단할 기준이 없으므로,
-        // "placeholder 값 그대로"일 경우만 막음
-        if (typed === "" || typed === currentPw) {
-            newPwInput.classList.add("input-error");
+        // [정상 상태] 기존 초록색 클래스 (remove용)
+        // 혹시 작성자님 HTML에 ring-green-500 같은게 있다면 그것도 여기 적어주세요.
+        const normalClasses = [
+            "border-gray-300", 
+            "focus:border-green-500"
+        ];
+
+        // [에러 상태] Tailwind 강제 적용(!) 클래스
+        // 아까 1단계에서 투명 태그에 적어둔 것과 똑같아야 합니다.
+        const errorClasses = [
+            "!border-red-500",        // 강제 빨간 테두리
+            "!focus:border-red-500",  // 클릭해도 강제 빨간 테두리
+            "!focus:ring-red-500",    // 클릭 링도 강제 빨강
+            "!text-red-900",          // 글자색 강제 빨강
+            "!placeholder-red-300"    // 안내문구 강제 연빨강
+        ];
+
+        newPwInput.addEventListener("keyup", async () => {
+            const typed = newPwInput.value;
+
+            if (typed.length < 1) {
+                resetStyle();
+                return;
+            }
+
+            try {
+                const tokenTag = document.querySelector('meta[name="csrf-token"]');
+                const csrfToken = tokenTag ? tokenTag.getAttribute('content') : '';
+
+                const response = await fetch("/check_password_match", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken
+                    },
+                    body: JSON.stringify({ password: typed })
+                });
+
+                if (!response.ok) throw new Error(`Error: ${response.status}`);
+                const data = await response.json();
+
+                if (data.match === true) {
+                    showError(); 
+                } else {
+                    resetStyle(); 
+                }
+
+            } catch (error) {
+                console.error("오류:", error);
+            }
+        });
+
+        function showError() {
+            newPwInput.classList.remove(...normalClasses);
+            newPwInput.classList.add(...errorClasses);
+            
             warning.style.display = "block";
-        } else {
-            newPwInput.classList.remove("input-error");
+            warning.classList.remove("hidden");
+            
+            saveBtn.disabled = true;
+            saveBtn.style.opacity = "0.5";
+            saveBtn.style.cursor = "not-allowed";
+        }
+
+        function resetStyle() {
+            newPwInput.classList.remove(...errorClasses);
+            newPwInput.classList.add(...normalClasses);
+            
             warning.style.display = "none";
+            warning.classList.add("hidden");
+            
+            saveBtn.disabled = false;
+            saveBtn.style.opacity = "1";
+            saveBtn.style.cursor = "pointer";
         }
     });
-});
 </script>
-
+{% endblock %}

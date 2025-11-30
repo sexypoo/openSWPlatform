@@ -2,27 +2,26 @@
 
     <h2 class="section-title">판매 내역</h2>
 
-    {% if sold_list %}
-        {% for item in sold_list %}
+    <div class="sell-section"> 
+        {% if sold_list %}
+            {% for p in sold_list %}
 
-        <div class="sell-card">
+            <a href="{{ url_for('products.view_product', product_id=p.id, slug=p.name) }}">
+                <div class="sell-card">
+                    <div class="sell-thumb"
+                        {% if p.img_path %}
+                        style="background-image:url('{{ p.img_path }}');"
+                        {% endif %}></div>
 
-            <div class="sell-thumb"
-                {% if item.img_path %}
-                style="background-image:url('{{ url_for('static', filename='images/' ~ item.img_path) }}');"
-                {% endif %}></div>
-
-            <div class="sell-info">
-                <div class="sell-name">{{ item.name }}</div>
-                <div class="sell-detail">{{ item.details }}</div>
-                <div class="sell-price">₩{{ item.price }}</div>
-            </div>
-
-        </div>
-
-        {% endfor %}
-    {% else %}
-        <p class="empty-text">등록한 상품이 없습니다.</p>
-    {% endif %}
-
-</div>
+                    <div class="sell-info">
+                        <div class="sell-name">{{ p.name }}</div>
+                        <div class="sell-detail">{{ p.details }}</div>
+                        <div class="sell-price">₩{{ p.price }}</div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <p class="empty-text">등록한 상품이 없습니다.</p>
+        {% endif %}
+    </div> </div>

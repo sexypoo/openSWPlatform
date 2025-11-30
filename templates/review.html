@@ -18,7 +18,7 @@
         <a class="review-card" href="{{ url_for('reviews.view_review', review_id=p.id) }}">
             <div class="review-image">
                 {% if p.images %}
-                    <img src="{{ url_for('static', filename='images/' ~ p.images[0]) }}">
+                    <img src="{{ p.images[0] }}">
                 {% endif %}
             </div>
             <p class="review-text">{{ p.title }}</p>
@@ -27,7 +27,7 @@
                 {{ '★' * r }}{{ '☆' * (5 - r) }}
             </div>
             <div class="review-info">
-                <span>{{ p.created_at or '' }}</span>
+                <span>{{ p.created_at_str or '' }}</span>
                 <span>{{ p.purchaser or '' }}</span>
             </div>
         </a>

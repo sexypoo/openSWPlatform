@@ -386,7 +386,14 @@
     gap: 30px;
 }
 
-.review-rating {
+/* 별점과 수정/삭제 버튼을 한 줄에 배치 */
+.review-rating-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rating-group {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -406,6 +413,13 @@
     color: #333;
 }
 
+/* 수정/삭제 버튼 */
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 /* 리뷰 제목 */
 .review-main-title {
     font-size: 24px;
@@ -414,8 +428,8 @@
     line-height: 1.4;
 }
 
-/* 작성자와 수정/삭제 버튼을 한 줄에 배치 */
-.review-meta-with-actions {
+/* 작성자와 작성 날짜를 한 줄에 배치 */
+.review-author-date {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -427,11 +441,10 @@
     color: #666;
 }
 
-/* 수정/삭제 버튼 */
-.action-buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+/* 작성 날짜 */
+.review-date {
+    font-size: 14px;
+    color: #666;
 }
 
 .btn-edit, .btn-delete {
@@ -775,4 +788,9 @@ a {
     margin: 60px auto 120px;/* 위 60, 아래 120, 좌우 가운데 정렬 */
     padding: 0 40px;        /* 좌우 여백 */
     box-sizing: border-box;
+}
+.review-date {
+    margin-left: 10px;
+    color: #888;
+    font-size: 0.9rem;
 }

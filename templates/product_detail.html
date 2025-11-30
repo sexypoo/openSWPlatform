@@ -10,17 +10,32 @@
     <div class="title">상품 상세 내용</div>
     <section class="detail">
         <!-- 왼쪽: 상품 이미지 -->
-        <div class="thumb-lg {% if product.quantity == 0 %}soldout{% endif %}">
-            {% if product.img_path %}
-            <img alt="상품 이미지" id="product-image"
-                 src="{{ url_for('static', filename='images/' ~ product.img_path) }}">
-            {% if product.quantity == 0 %}
-            <div class="soldout-badge">품절</div>
-            {% endif %}
+        <div class="product-gallery">
+            {% set image_list = product.images if product.images else [] %}
+
+            {% if image_list and image_list|length > 0 %}
+            <div class="gallery-container {% if product.quantity == 0 %}soldout-gallery{% endif %}">
+                <div class="gallery-track" id="galleryTrack">
+                {% for img in image_list %}
+                    <div class="gallery-slide">
+                        <img src="{{ img if img.startswith('http') else url_for('static', filename='images/' ~ img) }}">
+                    </div>
+                {% endfor %}
+                </div>
+                <button class="gallery-btn prev" id="galleryPrev">❮</button>
+                <button class="gallery-btn next" id="galleryNext">❯</button>
+
+                {% if product.quantity == 0 %}
+                <div class="soldout-badge">품절</div>
+                {% endif %}
+            </div>
             {% else %}
             <div class="thumb-lg placeholder" aria-label="이미지 없음"></div>
             {% endif %}
         </div>
+
+
+
         <!-- 오른쪽: 상품 정보 -->
         <div class="info">
             <div class="badge" id="product-category">{{ product.category or '기타' }}</div>
@@ -53,9 +68,10 @@
                 </a>
             </div>
 
-            <button type="button" id="buy-now-btn" class="btn btn-primary">
-            바로 구매
-            </button>
+                <button type="button" id="buy-now-btn" class="btn btn-primary">
+                    바로 구매
+                </button>
+            
 
             <!-- 구매 모달 -->
             <div id="buyModal" class="modal" style="display:none;">
@@ -134,95 +150,52 @@
             window.location.href = `/products/${productId}/${slug}/delete`;
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-    const wishBtn = document.getElementById("heart");
-    if (!wishBtn) return;
-
-    // 실제 UI 변경은 applyHeartUI에서 처리
-    const icon = wishBtn.querySelector("i");
-
-    wishBtn.addEventListener("click", () => {
-        // 현재 active 상태에 따라 like / unlike 호출
-        if (wishBtn.classList.contains("active")) {
-            // 이미 눌려있으면 취소
-            unlike();
-        } else {
-            // 안 눌려있으면 등록
-            like();
         function getCsrfToken() {
-            const meta = document.querySelector('meta[name="csrf-token"]');
-            return meta ? meta.getAttribute('content') : '';
-        }
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        return meta ? meta.getAttribute('content') : '';
+    }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const wishBtn = document.getElementById("heart");
-            if (!wishBtn) return;
-
-            // 실제 UI 변경은 applyHeartUI에서 처리
-            const icon = wishBtn.querySelector("i");
-
-            wishBtn.addEventListener("click", () => {
-                // 현재 active 상태에 따라 like / unlike 호출
-                if (wishBtn.classList.contains("active")) {
-                    // 이미 눌려있으면 취소
-                    unlike();
-                } else {
-                    // 안 눌려있으면 등록
-                    like();
-                }
-            });
-        });
-
-    // 하트 모양/색 바꾸는 함수
+    // 하트 UI 바꾸기
     function applyHeartUI(isOn) {
         const heart = document.getElementById("heart");
         if (!heart) return;
 
         const icon = heart.querySelector("i");
+
         if (isOn) {
             heart.classList.add("active");
-            heart.style.color = "#2e6b56";  // 이화 그린
-            if (icon) {
-                icon.classList.remove("fa-regular");
-                icon.classList.add("fa-solid");
-            }
+            heart.style.color = "#2e6b56";
+            icon.classList.remove("fa-regular");
+            icon.classList.add("fa-solid");
         } else {
             heart.classList.remove("active");
             heart.style.color = "#aaa";
-            if (icon) {
-                icon.classList.remove("fa-solid");
-                icon.classList.add("fa-regular");
-            }
+            icon.classList.remove("fa-solid");
+            icon.classList.add("fa-regular");
         }
     }
 
-    function showHeart(){
+    // 현재 하트 상태 불러오기
+    function showHeart() {
         $.ajax({
-            type:'GET',
-            url:'/show_heart/{{ product_id }}/',
-            data: {},
-            success: function(response){
-                let my_heart = response['my_heart'] || {};
-                if(my_heart['interested'] === 'Y'){
-                    applyHeartUI(true);
-                }
-                else{
-                    applyHeartUI(false);
-                }
+            type: 'GET',
+            url: '/show_heart/{{ product_id }}/',
+            success: function (response) {
+                const my_heart = response['my_heart'] || {};
+                applyHeartUI(my_heart['interested'] === 'Y');
             }
         });
     }
 
-    function like(){
+    // 하트 등록
+    function like() {
         $.ajax({
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('X-CSRFToken', getCsrfToken());
             },
             type:'POST',
             url:'/like/{{ product_id }}/',
-            data:{
-                interested:"Y"
-            },
+            data:{ interested:"Y" },
             success:function(response){
                 alert(response['msg']);
                 applyHeartUI(true);
@@ -230,24 +203,34 @@
         });
     }
 
-    function unlike(){
+    // 하트 취소
+    function unlike() {
         $.ajax({
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('X-CSRFToken', getCsrfToken());
             },
             type:'POST',
             url:'/unlike/{{ product_id }}/',
-            data:{
-                interested:"N"
-            },
-            success: function(response){
+            data:{ interested:"N" },
+            success:function(response){
                 alert(response['msg']);
                 applyHeartUI(false);
             }
         });
     }
 
-    $(document).ready(function(){
+    document.addEventListener("DOMContentLoaded", () => {
+        const wishBtn = document.getElementById("heart");
+        if (wishBtn) {
+            wishBtn.addEventListener("click", () => {
+                if (wishBtn.classList.contains("active")) {
+                    unlike();
+                } else {
+                    like();
+                }
+            });
+        }
+
         showHeart();
     });
 
@@ -313,6 +296,54 @@
         buyMessage.textContent = '네트워크 오류가 발생했습니다.';
         }
     });
+      const track = document.getElementById("galleryTrack");
+  const prevBtn = document.getElementById("galleryPrev");
+  const nextBtn = document.getElementById("galleryNext");
+
+  if (track && prevBtn && nextBtn) {
+    const slides = document.querySelectorAll(".gallery-slide");
+    const totalSlides = slides.length;
+
+    let index = 0;
+    let autoSlideInterval;
+
+    function updateSlide() {
+      track.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    function nextSlide() {
+      index = (index + 1) % totalSlides;
+      updateSlide();
+    }
+
+    function prevSlide() {
+      index = (index - 1 + totalSlides) % totalSlides;
+      updateSlide();
+    }
+
+    function startAutoSlide() {
+      if (totalSlides <= 1) return;
+      autoSlideInterval = setInterval(nextSlide, 3000);
+    }
+
+    function stopAutoSlide() {
+      clearInterval(autoSlideInterval);
+    }
+
+    prevBtn.addEventListener("click", () => {
+      stopAutoSlide();
+      prevSlide();
+      startAutoSlide();
+    });
+
+    nextBtn.addEventListener("click", () => {
+      stopAutoSlide();
+      nextSlide();
+      startAutoSlide();
+    });
+
+    if (totalSlides > 1) startAutoSlide();
+  }
 
   </script>
 {% endblock %}

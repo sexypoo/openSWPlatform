@@ -3,12 +3,15 @@ from operator import truediv
 import pyrebase
 import json
 
+import time
+
 class DBhandler:
     def __init__(self):
         with open('./authentication/firebase_auth.json') as f:
             config = json.load(f)
         firebase = pyrebase.initialize_app(config)
         self.db = firebase.database()
+        self.storage = firebase.storage()
 
     # item 핸들러
 
@@ -97,7 +100,7 @@ class DBhandler:
                     # 구매 정보
                     "purchase_id": purchase_id,
                     "quantity": info.get("quantity"),
-                    "purchase_time": info.get("purchase_time"),
+                    "purchased_at": info.get("purchased_at"),
 
                     # 상품 정보
                     "product_id": product_id,
@@ -172,7 +175,8 @@ class DBhandler:
             "review_details": data['r_details'],
             "rating": data['rating'],
             "images": img_paths,
-            "item_id": item_id
+            "item_id": item_id,
+            "created_at":int(time.time())
         }
 
         res = self.db.child("reviews").push(review_info)
@@ -199,6 +203,10 @@ class DBhandler:
     
     # Update
     def update_review(self, review_id, data):
+
+        if "create_at" in data:
+            del data["created_at"]
+
         self.db.child("reviews").child(review_id).update(data)
 
     # Delete
@@ -328,3 +336,7 @@ class DBhandler:
                 self.db.child("user").child(key).update({"email":new_email})
                 return True
         return False
+    
+    def delete_purchase_for_user(self, uid, product_id, purchase_id):
+        path=f"user/{uid}/purchases/{product_id}/{purchase_id}"
+        self.db.child(path).remove()

@@ -43,7 +43,7 @@ def unlike(id):
     DB.update_heart(session['id'], 'N', id)
     return jsonify({'msg': '위시 등록 해제'})
 
-# 내 위시리스트 목록 받아오기 - mypage와 함께 사용
+# 내 위시리스트 목록 받아오기
 @wish_bp.route('/my_hearts')
 def my_hearts():
     DB = current_app.config["DB"]

@@ -10,7 +10,8 @@
 
   <div class="title">상품 등록</div>
   <form method="POST" enctype="multipart/form-data" action="{{ url_for('products.reg_item_submit_post') }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {{ form.hidden_tag() }} <!--CSRF 토큰 자동으로 넣어주고, Hidden field 항목들 가져옴-->
+    
     <div class="grid">
     <!-- left: upload area -->
       <div>
@@ -18,8 +19,15 @@
         <small>사진</small>
         <img alt="" class="preview" hidden="" id="previewImg"/>
         <div class="hint">클릭하여 파일을 선택하세요</div>
-        <input accept="image/*" id="file" name="file" type="file" required/>
+        {{ form.files(
+          id="file",
+          multiple=True,
+          accept="image/*",
+          required=True
+      ) }}
       </label>
+      <div id="photoPreview" class="photo-preview-container"></div>
+
     </div>
     <!-- right: form -->
   <div>
@@ -79,41 +87,92 @@
 
 {% block script %}
 <script>
-//사진 파일을 넣으면 미리보기로 사진이 등록 창에 올라가도록 하기 
 document.addEventListener("DOMContentLoaded", function () {
-  const fileInput = document.getElementById("file");
-  const hint = document.querySelector(".upload-card .hint");
-  const previewImg = document.getElementById("previewImg");
-  let currentURL = null;
+  const fileInput    = document.getElementById("file");
+  const hint         = document.querySelector(".upload-card .hint");
+  const previewImg   = document.getElementById("previewImg");
+  const previewStrip = document.getElementById("photoPreview");
+  let currentURL     = null;
+  const maxFiles     = 5;
 
-  fileInput.addEventListener("change", () => {//사용자가 새로 파일을 선택할 때 시행되는 함수
-    const f = fileInput.files && fileInput.files[0];//선택한 것 중 첫 번째 파일을 f에 넣음. 
+  // 지금까지 선택한 파일들을 누적 저장할 배열
+  let allFiles = [];
 
-    if (!f) {//파일을 선택하지 않고 선택창을 닫았을 때, 다시 '사진', * 띄움.
+  fileInput.addEventListener("change", () => {
+    const newlySelected = Array.from(fileInput.files || []);
+    const allowedExt = ["jpg", "jpeg", "png", "gif"];
+    for (const f of newlySelected) {
+      const ext = f.name.split(".").pop().toLowerCase();
+      if (!allowedExt.includes(ext)) {
+        alert("허용된 파일만 업로드 가능합니다 (jpg, jpeg, png, gif)");
+        fileInput.value = "";
+        return;
+      }
+    }
+
+    // 새로 선택한 것도 이미지인지 체크
+    if (newlySelected.some(f => !f.type.startsWith("image/"))) {
+      alert("이미지 파일만 선택할 수 있습니다.");
+      fileInput.value = "";
+      return;
+    }
+
+    // 누적 갯수 체크
+    if (allFiles.length + newlySelected.length > maxFiles) {
+      alert(`최대 ${maxFiles}장까지만 업로드 가능합니다.\n(현재 ${allFiles.length}장 선택되어 있음)`);
+      fileInput.value = "";
+      return;
+    }
+
+    // ✅ 지금까지의 파일들에 새로 선택한 파일들 누적
+    allFiles = allFiles.concat(newlySelected);
+
+    // ✅ 실제 input.files에도 누적된 목록을 다시 넣어주기 (서버로 전송용)
+    const dataTransfer = new DataTransfer();
+    allFiles.forEach(f => dataTransfer.items.add(f));
+    fileInput.files = dataTransfer.files;
+
+    // ❌ 아무것도 없으면 초기화
+    if (!allFiles.length) {
       if (currentURL) { URL.revokeObjectURL(currentURL); currentURL = null; }
       previewImg.hidden = true;
       previewImg.removeAttribute("src");
       hint.style.display = "";
+      previewStrip.innerHTML = "";
       return;
     }
 
-    if (currentURL) { URL.revokeObjectURL(currentURL); currentURL = null; }
+    // ✅ 메인 큰 박스: 첫 번째 이미지
+    if (currentURL) { URL.revokeObjectURL(currentURL); }
+    const mainUrl = URL.createObjectURL(allFiles[0]);
+    currentURL = mainUrl;
+    previewImg.src = mainUrl;
+    previewImg.hidden = false;
+    hint.style.display = "none";
 
-    if (!f.type.startsWith("image/")) {//이미지가 아닌 다른 파일을 넣을 때, 경고 + 입력창 리셋
-      alert("이미지 파일을 선택하세요.");
-      fileInput.value = "";
-      previewImg.hidden = true;
-      previewImg.removeAttribute("src");
-      hint.style.display = "";
-      return;
-    }
+    // ✅ 아래 썸네일 strip 다시 그림 (지금까지 선택한 전체 allFiles 기준)
+    previewStrip.innerHTML = "";
 
-    const url = URL.createObjectURL(f);//선택한 파일을 임시로 브라우저에서 미리 볼 수 있는 URL로 바꿈. 
-    currentURL = url;
+    allFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "photo-preview-item";
 
-    previewImg.src = url;
-    previewImg.hidden = false;//이미지가 화면에 보이도록 설정
-    hint.style.display = "none";//힌트는 숨김.
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.className = "preview-image";
+
+        // 썸네일 클릭 시 큰 박스로 띄우기
+        img.addEventListener("click", () => {
+          previewImg.src = e.target.result;
+        });
+
+        wrapper.appendChild(img);
+        previewStrip.appendChild(wrapper);
+      };
+      reader.readAsDataURL(file);
+    });
   });
 });
 
@@ -203,5 +262,8 @@ document.addEventListener("DOMContentLoaded", function (){
     tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
   });
 });
+
+
+
 </script>
 {% endblock %}

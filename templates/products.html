@@ -15,30 +15,33 @@
     <span class="tag-chip-big">#{{ tag }}</span>
   </div>
 {% endif %}
-  <form method="get" style="margin: 8px 0 20px; display:flex; gap:8px; align-items:center;">
-    <label for="category">카테고리</label>
-    <select id="category" name="category">
-      <option value="">전체</option>
-      <option value="clothes" {% if category == 'clothes' %}selected{% endif %}>의류</option>
-      <option value="book"  {% if category == 'book' %}selected{% endif %}>서적</option>
-      <option value="fresh_produce" {% if category == 'fresh_produce' %}seleted{% endif %}>농수산물</option>
-      <option value="eletronics" {% if category == 'eletronics' %}selected{% endif %}>전자기기</option>
-      <option value="service" {% if category == 'service' %}selected{% endif %}>일거리</option>
-      <option value="etc"   {% if category == 'etc' %}selected{% endif %}>잡화</option>
-    </select>
-    <button type="submit" class="btn">검색</button>
+ <form method="get" class="category-search-bar">
+  <select id="category" name="category" class="category-select">
+    <option value="">전체</option>
+    <option value="clothes" {% if category == 'clothes' %}selected{% endif %}>의류</option>
+    <option value="book" {% if category == 'book' %}selected{% endif %}>서적</option>
+    <option value="fresh_produce" {% if category == 'fresh_produce' %}selected{% endif %}>농수산물</option>
+    <option value="eletronics" {% if category == 'eletronics' %}selected{% endif %}>전자기기</option>
+    <option value="service" {% if category == 'service' %}selected{% endif %}>일거리</option>
+    <option value="etc" {% if category == 'etc' %}selected{% endif %}>잡화</option>
+  </select>
 
-    {% if tag %}
-    <span class="tag-chip">#{{ tag }}<a href="{{ url_for('products.view_products', category=category) }}" class="tag-chip-x">x</a></span>
-    {% endif %}
-  </form>
+  <button type="submit" class="category-btn">검색</button>
+
+  {% if tag %}
+    <span class="tag-chip">#{{ tag }}
+      <a href="{{ url_for('products.view_products', category=category) }}" class="tag-chip-x">x</a>
+    </span>
+  {% endif %}
+</form>
+
   <!-- 상품 카드 목록 -->
   <section class="grid">
     {% for p in datas %}
     <div class="card">
       <a href="{{ url_for('products.view_product', product_id=p.id, slug=p.name) }}">
         <div class="thumb {% if p.quantity == 0 %}soldout-thumb{% endif %}" aria-label="상품 이미지" {% if p.img_path %}
-          style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');" {% endif %}>
+          style="background-image:url('{{p.img_path}}');" {% endif %}>
           <span class="heart wish-heart" data-id="{{ p.id }}">
             <i class="fa-regular fa-heart"></i>
           </span>

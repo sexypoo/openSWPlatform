@@ -1,9 +1,11 @@
 import os
+import uuid
 from flask import current_app
 from werkzeug.utils import secure_filename
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session, current_app
 from flask import current_app
 # from flask import sys
+import datetime
 from database import DBhandler
 
 from .ReviewForm import ReviewForm
@@ -79,6 +81,9 @@ def reg_review_submit_post():
         return redirect(request.referrer)
 
     # 이미지 파일 저장 : 총 3장 저장 가능
+    DB = current_app.config["DB"]
+    STORAGE = DB.storage
+
     files = request.files.getlist("file")
     img_filenames = []
 
@@ -86,11 +91,15 @@ def reg_review_submit_post():
         if not image_file or not image_file.filename:
             continue
 
-        filename = secure_filename(image_file.filename)
-        save_path = f"static/images/{filename}"
+        original = secure_filename(image_file.filename)
+        name, ext = os.path.splitext(original)
+        unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
 
-        image_file.save(save_path)
-        img_filenames.append(filename)
+        save_path = f"reviews/{unique_name}"
+        STORAGE.child(save_path).put(image_file)
+        url = STORAGE.child(save_path).get_url(None)
+
+        img_filenames.append(url)
         
     # 폼 데이터 저장
 
@@ -98,7 +107,7 @@ def reg_review_submit_post():
     data = form.data.copy()
     data.pop('csrf_token', None) # csrf 토큰은 삭제
 
-    DB = current_app.config["DB"] # 현재 앱에서 생성된 DB를 가져와서 사용
+    # DB = current_app.config["DB"] # 현재 앱에서 생성된 DB를 가져와서 사용
     
     # 상품 id 받아오기
     item_id = data.get("item_id") or None
@@ -133,6 +142,7 @@ def reg_review_submit_post():
         item_id=item_id,
     )
     
+    flash("리뷰가 성공적으로 등록되었습니다.")
     return redirect(url_for("reviews.view_review", review_id=new_review_id))
 
 # 리뷰 전체조회
@@ -147,6 +157,12 @@ def view_reviews():
     # 전체 리뷰 받아오기 + 정렬
     reviews = DB.get_reviews()
     reviews.sort(key=lambda r:r["id"], reverse=True)
+
+    for r in reviews:
+        if "created_at" in r:
+            r["created_at_str"] = datetime.datetime.fromtimestamp(
+                r["created_at"]
+            ).strftime("%Y-%m-%d %H:%M")
 
     total = len(reviews)
 
@@ -167,9 +183,23 @@ def view_review(review_id):
     DB = current_app.config["DB"]
     review = DB.get_review(review_id)
 
+    if "created_at" in review:
+        review["created_at_str"] = datetime.datetime.fromtimestamp(review["created_at"]).strftime("%Y-%m-%d %H:%M")
+
     # 별점을 정수로 변환
     if review['rating'] is not None:
         review['rating'] = int(review['rating'])
+
+    raw = review.get("images")
+
+    if isinstance(raw, list):
+        images = raw
+    elif isinstance(raw, str) and raw:  # 혹시 문자열 하나만 들어있는 경우
+        images = [raw]
+    else:
+        images = []
+
+    review["images"] = images
 
     # 내가 등록한 리뷰인지 확인
     current_id = session.get("id")
@@ -180,6 +210,7 @@ def view_review(review_id):
 # 리뷰 수정
 @reviews_bp.route("/reviews/update/<string:review_id>", methods=["GET","POST"])
 def update_review(review_id):
+
     DB = current_app.config["DB"]
     user_id = session.get("id")
 
@@ -187,6 +218,9 @@ def update_review(review_id):
     if not review or review.get("purchaser") != user_id: # 구매자 정보와 본인 id가 일치해야만 수정 가능 (url 수정 방어)
         flash("수정 권한이 없습니다.")
         return redirect(url_for("reviews.view_review",review_id=review_id))
+
+    if not review.get("images"):
+        review["images"] = []
 
     if request.method == "POST":
         form = ReviewForm()
@@ -203,12 +237,37 @@ def update_review(review_id):
             "rating": form.rating.data,
         }
 
-        image_file = request.files.get("file")
+        DB = current_app.config["DB"]
+        STORAGE = DB.storage
 
-        if image_file and image_file.filename:
-            img_filename = image_file.filename
-            image_file.save(f"static/images/{img_filename}")
-            update_fields["img_path"] = img_filename
+        files = request.files.getlist("file")
+
+        # Load existing images list (default empty list)
+        existing_images = review.get("images") or []
+        new_images = []
+
+        # Process newly uploaded files (multiple)
+        for image_file in files:
+            if not image_file or not image_file.filename:
+                continue
+            original = secure_filename(image_file.filename)
+            name, ext = os.path.splitext(original)
+            unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
+
+            save_path = f"reviews/{unique_name}"
+            STORAGE.child(save_path).put(image_file)
+            url = STORAGE.child(save_path).get_url(None)
+
+            new_images.append(url)
+
+        # Merge existing + new images
+        merged = existing_images + new_images
+
+        # Keep only last 3 images (remove from front)
+        if len(merged) > 3:
+            merged = merged[-3:]
+
+        update_fields["images"] = merged
 
         DB.update_review(review_id, update_fields)
 
