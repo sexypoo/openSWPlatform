@@ -17,6 +17,9 @@ def reg_item():
 
 @products_bp.route("/submit_product_post", methods=['POST'])
 def reg_item_submit_post():
+    DB = current_app.config["DB"]
+    STORAGE = DB.storage
+
     # 로그인 상태 확인
     seller_id = session.get("id")
     if not seller_id:
@@ -44,9 +47,12 @@ def reg_item_submit_post():
                 original = secure_filename(f.filename)
                 name, ext = os.path.splitext(original)
                 unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
-                save_path = os.path.join("static/images", unique_name)
-                f.save(save_path)
-                filenames.append(unique_name)
+                
+                save_path = f"products/{unique_name}"
+                STORAGE.child(save_path).put(f)
+
+                url = STORAGE.child(save_path).get_url(None)
+                filenames.append(url)
         img_filename = json.dumps(filenames)  # ["img1_uuid.jpg","img2_uuid.jpg"]
     else:  # 단일 파일 처리
         image_file = form.file.data
@@ -54,9 +60,12 @@ def reg_item_submit_post():
             original = secure_filename(image_file.filename)
             name, ext = os.path.splitext(original)
             unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
-            save_path = os.path.join("static/images", unique_name)
-            image_file.save(save_path)
-            img_filename = unique_name
+
+            save_path = f"products/{unique_name}"
+            STORAGE.child(save_path).put(image_file)
+
+            url = STORAGE.child(save_path).get_url(None)
+            img_filename = url
 
     # 폼 데이터
     data = form.data.copy()
@@ -68,7 +77,6 @@ def reg_item_submit_post():
 
     data['tags'] = form.tag.data
 
-    DB = current_app.config["DB"]
     new_product_id = DB.insert_item(
         name=form.name.data,
         data=data,
@@ -137,20 +145,35 @@ def view_product(product_id, slug):
     DB = current_app.config["DB"]
     product = DB.get_product(product_id)
 
-    # 1) 이미지 여러 장 처리
-    img_raw = product.get("img_path", "")
+    img_raw = product.get("img_path")
 
-    try:
-        # img_path에 ["a.jpg","b.jpg"] 같은 JSON 문자열이 들어 있는 경우
-        images = json.loads(img_raw) if img_raw else []
-        # 혹시 단일 문자열이 들어있는 경우 (예: "a.jpg")
-        if isinstance(images, str):
-            images = [images]
-    except Exception:
-        # JSON 형식이 아니면 그냥 한 장으로 취급
-        images = [img_raw] if img_raw else []
+    images = []
 
-    # 템플릿에서 product.images 로 쓸 수 있게 세팅
+    # 1) 이미 리스트라면 그대로
+    if isinstance(img_raw, list):
+        images = img_raw
+
+    # 2) 문자열인 경우 → JSON 리스트인지 검사
+    elif isinstance(img_raw, str):
+        # ["a.jpg","b.jpg"] 형태라면
+        if img_raw.strip().startswith("["):
+            try:
+                loaded = json.loads(img_raw)
+                if isinstance(loaded, list):
+                    images = loaded
+                else:
+                    images = [img_raw]
+            except:
+                images = [img_raw]
+        else:
+            # 순수한 "a.jpg" 형태
+            images = [img_raw]
+
+    # 3) None인 경우
+    else:
+        images = []
+
+    # 최종 리스트 세팅
     product["images"] = images
 
     # 2) 태그 처리 (원래 있던 코드 그대로)
@@ -173,6 +196,7 @@ def view_product(product_id, slug):
 @products_bp.route("/products/<string:product_id>/<slug>/edit", methods=['GET', 'POST'])
 def edit_product(product_id, slug):
     DB = current_app.config["DB"]
+    STORAGE = DB.storage
 
     product = DB.get_product(product_id)
     current_id = session.get("id")
@@ -220,20 +244,42 @@ def edit_product(product_id, slug):
                 flash(f"[{field}] {error}")
         return render_template("edit_product.html", product=product, product_id=product_id, slug=slug, form=form)
 
-    img_filename = product.get("img_path")
+    existing_images = []
+    img_raw = product.get("img_path")
 
-    # 새 이미지가 업로드 되었는지 확인
-    image_file = form.file.data
-    if image_file and image_file.filename:
-        # UUID 파일명 생성 로직 적용
-        original = secure_filename(image_file.filename)
+    if isinstance(img_raw, list):
+        existing_images = img_raw
+    elif isinstance(img_raw, str):
+        try:
+            loaded = json.loads(img_raw)
+            if isinstance(loaded, list):
+                existing_images = loaded
+            else:
+                existing_images = [img_raw]
+        except:
+            existing_images = [img_raw]
+    else:
+        existing_images = []
+
+    new_images = []
+    files = request.files.getlist("files")
+
+    for f in files:
+        if not f or not f.filename:
+            continue
+
+        original = secure_filename(f.filename)
         name, ext = os.path.splitext(original)
         unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
-        
-        save_path = os.path.join("static/images", unique_name)
-        image_file.save(save_path)
-        
-        img_filename = unique_name # 파일명 교체
+
+        save_path = f"products/{unique_name}"
+        STORAGE.child(save_path).put(f)
+
+        url = STORAGE.child(save_path).get_url(None)
+        new_images.append(url)
+
+    final_images = existing_images + new_images if new_images else existing_images
+
 
     # 데이터 업데이트
     update_data = {
@@ -243,7 +289,7 @@ def edit_product(product_id, slug):
         "price": form.price.data,
         "quantity": form.quantity.data,
         "method": form.method.data, 
-        "img_path": img_filename,
+        "img_path": json.dumps(final_images),
         "seller": product.get("seller"),
         "tags": form.tag.data
     }
