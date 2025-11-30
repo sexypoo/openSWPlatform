@@ -32,6 +32,19 @@ def mypage(section="profile"):
     if section == "wishlist":
         heart_ids = DB.get_my_heart_ids(user_id)
         wishlist = DB.get_products_by_ids(heart_ids)
+
+        for p in wishlist:
+            img_raw = p.get("img_path", "")
+
+            try:
+                images = json.loads(img_raw) if img_raw else []
+                if isinstance(images, str):
+                    images = [images]
+            except Exception:
+                images = [img_raw] if img_raw else []
+
+            p["img_path"] = images[0] if images else None
+
     elif section == "review":
         my_reviews = DB.get_reviews_by_purchaser(user_id)
         my_reviews = sorted(my_reviews, key=lambda r: r.get("created_at",0),reverse=True)
