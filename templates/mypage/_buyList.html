@@ -17,7 +17,7 @@
                 <div class="buy-card">
                     <div class="buy-thumb"
                         {% if not is_deleted and p.img_path %}
-                        style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');"
+                        style="background-image:url('{{ p.img_path }}');"
                         {% endif %}>
                     </div>
 

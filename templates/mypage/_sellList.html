@@ -10,7 +10,7 @@
                 <div class="sell-card">
                     <div class="sell-thumb"
                         {% if p.img_path %}
-                        style="background-image:url('{{ url_for('static', filename='images/' ~ p.img_path) }}');"
+                        style="background-image:url('{{ p.img_path }}');"
                         {% endif %}></div>
 
                     <div class="sell-info">
