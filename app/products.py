@@ -244,23 +244,40 @@ def edit_product(product_id, slug):
                 flash(f"[{field}] {error}")
         return render_template("edit_product.html", product=product, product_id=product_id, slug=slug, form=form)
 
-    existing_images = []
-    img_raw = product.get("img_path")
+        # 이미지 처리 ---------------------------
+    existing_images_field = request.form.get("existing_images", "").strip()
 
-    if isinstance(img_raw, list):
-        existing_images = img_raw
-    elif isinstance(img_raw, str):
+    if existing_images_field:
+        # 프론트에서 넘어온 "삭제 후 남아 있는 기존 이미지" 목록 사용
         try:
-            loaded = json.loads(img_raw)
+            loaded = json.loads(existing_images_field)
             if isinstance(loaded, list):
                 existing_images = loaded
+            elif isinstance(loaded, str):
+                existing_images = [loaded]
             else:
-                existing_images = [img_raw]
-        except:
-            existing_images = [img_raw]
+                existing_images = []
+        except Exception:
+            existing_images = []
     else:
-        existing_images = []
+        # hidden 값이 비어 있으면 DB에 저장된 원래 img_path 사용
+        img_raw = product.get("img_path")
 
+        if isinstance(img_raw, list):
+            existing_images = img_raw
+        elif isinstance(img_raw, str):
+            try:
+                loaded = json.loads(img_raw)
+                if isinstance(loaded, list):
+                    existing_images = loaded
+                else:
+                    existing_images = [img_raw]
+            except Exception:
+                existing_images = [img_raw]
+        else:
+            existing_images = []
+
+    # 새로 업로드된 이미지 처리 (기존 코드 그대로)
     new_images = []
     files = request.files.getlist("files")
 
@@ -278,7 +295,9 @@ def edit_product(product_id, slug):
         url = STORAGE.child(save_path).get_url(None)
         new_images.append(url)
 
+    # 최종 이미지 리스트 = (남아 있는 기존 이미지) + (새로 업로드한 이미지)
     final_images = existing_images + new_images if new_images else existing_images
+
 
 
     # 데이터 업데이트

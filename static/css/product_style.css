@@ -973,6 +973,68 @@ a {
   background: var(--ewha-green-dark);  /* 조금 어둡게 */
   transform: translateY(-1px);
 }
+.photo-preview-item {
+    position: relative;
+    display: inline-block;
+    margin: 6px;
+    overflow: visible !important;   /* 🔹 안 잘리게 */
+}
+
+.photo-preview-item .remove-btn {
+    position: absolute;
+    top: 4px;       /* 🔹 살짝 안쪽으로 */
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    /* 이화그린 */
+    background-color: #006747;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 3px rgba(0,0,0,0.25);
+    z-index: 10;    /* 🔹 이미지 위로 올라오게 */
+}
+
+/* 상세 페이지 품절 처리 (갤러리용) */
+.product-gallery .soldout-gallery {
+  position: relative;
+}
+
+/* 이미지 회색 톤 + 어둡게 */
+.product-gallery .soldout-gallery .gallery-slide img {
+  filter: grayscale(100%) brightness(45%);
+}
+
+/* 살짝 어두운 반투명 오버레이 한 겹 */
+.product-gallery .soldout-gallery::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+/* 상세페이지 품절 배지 (목록과 느낌 통일) */
+.product-gallery .soldout-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 2;
+}
 
 
 /* ===== Force EWHA green buttons (override other CSS) ===== */

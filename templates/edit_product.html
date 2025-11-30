@@ -17,17 +17,18 @@
             <div>
                 <label class="upload-card req-dot">
                     <small>사진</small>
-                    <img alt="" class="preview" id="previewImg"
-                         src="{{ url_for('static', filename='images/' ~ product.img_path) }}">
-                    <div class="hint" style="display:none;">클릭하여 파일을 선택하세요</div>
+                    <img alt="" class="preview" id="previewImg" hidden>
+                    <div class="hint">클릭하여 파일을 선택하세요</div>
                     {{ form.files(
                         id="file",
                         multiple=True,
                         accept="image/*"
                     ) }}
                 </label>
-            </div>
 
+                <input type="hidden" id="existing_images_input" name="existing_images">
+                <div id="photoPreview" class="photo-preview-container"></div>
+            </div>
             <div>
                 <div class="field">
                     <label class="req-dot" for="name">상품명</label>
@@ -104,46 +105,209 @@
 
 {% block script %}
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const fileInput = document.getElementById("file");
-        const previewImg = document.getElementById("previewImg");
+document.addEventListener("DOMContentLoaded", function () {
+    const fileInput    = document.getElementById("file");
+    const previewImg   = document.getElementById("previewImg");
+    const hint         = document.querySelector(".upload-card .hint");
+    const previewStrip = document.getElementById("photoPreview");
+    const existingInput = document.getElementById("existing_images_input");
 
-        fileInput.addEventListener("change", () => {
-            const f = fileInput.files && fileInput.files[0];
-            if (!f) return;
-            if (!f.type.startsWith("image/")) {
-                alert("이미지 파일을 선택하세요.");
+    const maxFiles = 5;
+    let newFiles = [];
+    let currentObjectURL = null;
+
+    // 🔹 서버에서 넘어온 img_path (리스트 / JSON문자열 / 단일문자열 / null 모두 처리)
+    const imgPathRaw = {{ product.img_path|tojson|safe }};
+    let existingImages = [];
+
+    if (Array.isArray(imgPathRaw)) {
+        existingImages = imgPathRaw.filter(Boolean);
+    } else if (typeof imgPathRaw === "string" && imgPathRaw.trim() !== "") {
+        const trimmed = imgPathRaw.trim();
+        if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+            try {
+                const parsed = JSON.parse(trimmed);
+                if (Array.isArray(parsed)) {
+                    existingImages = parsed.filter(Boolean);
+                } else {
+                    existingImages = [imgPathRaw];
+                }
+            } catch (e) {
+                existingImages = [imgPathRaw];
+            }
+        } else {
+            existingImages = [imgPathRaw];
+        }
+    } else {
+        existingImages = [];
+    }
+
+    function syncExistingInput() {
+        if (existingInput) {
+            existingInput.value = JSON.stringify(existingImages);
+        }
+    }
+
+    function renderPreviews() {
+        previewStrip.innerHTML = "";
+
+        // 1) 기존 이미지 썸네일
+        existingImages.forEach((url, index) => {
+            if (!url) return;
+            const wrapper = document.createElement("div");
+            wrapper.className = "photo-preview-item existing";
+
+            const img = document.createElement("img");
+            img.src = url;
+            img.className = "preview-image";
+
+            img.addEventListener("click", () => {
+                previewImg.src = url;
+                previewImg.hidden = false;
+                if (hint) hint.style.display = "none";
+            });
+
+            const removeBtn = document.createElement("div");
+            removeBtn.className = "remove-btn";
+            removeBtn.textContent = "×";
+
+            removeBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                existingImages.splice(index, 1);
+                renderPreviews();
+            });
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(removeBtn);
+            previewStrip.appendChild(wrapper);
+        });
+
+        // 2) 새로 추가한 파일 썸네일
+        newFiles.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const wrapper = document.createElement("div");
+                wrapper.className = "photo-preview-item";
+
+                const img = document.createElement("img");
+                img.src = e.target.result;
+                img.className = "preview-image";
+
+                img.addEventListener("click", () => {
+                    previewImg.src = e.target.result;
+                    previewImg.hidden = false;
+                    if (hint) hint.style.display = "none";
+                });
+
+                const removeBtn = document.createElement("div");
+                removeBtn.className = "remove-btn";
+                removeBtn.textContent = "×";
+
+                removeBtn.addEventListener("click", (ev) => {
+                    ev.stopPropagation();
+                    newFiles.splice(index, 1);
+
+                    // fileInput.files도 다시 세팅
+                    const dt = new DataTransfer();
+                    newFiles.forEach(f => dt.items.add(f));
+                    fileInput.files = dt.files;
+
+                    renderPreviews();
+                });
+
+                wrapper.appendChild(img);
+                wrapper.appendChild(removeBtn);
+                previewStrip.appendChild(wrapper);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // 3) 메인 큰 프리뷰 한 장
+        if (existingImages.length > 0) {
+            previewImg.src = existingImages[0];
+            previewImg.hidden = false;
+            if (hint) hint.style.display = "none";
+        } else if (newFiles.length > 0) {
+            if (currentObjectURL) {
+                URL.revokeObjectURL(currentObjectURL);
+            }
+            const url = URL.createObjectURL(newFiles[0]);
+            currentObjectURL = url;
+            previewImg.src = url;
+            previewImg.hidden = false;
+            if (hint) hint.style.display = "none";
+        } else {
+            // 아무것도 없을 때
+            previewImg.hidden = true;
+            previewImg.removeAttribute("src");
+            if (hint) hint.style.display = "";
+        }
+
+        // 🔹 hidden input 값 동기화 (삭제/추가 후 항상)
+        syncExistingInput();
+    }
+
+    // 초기 렌더(기존 이미지 있을 경우)
+    renderPreviews();
+
+    // 🔹 새 파일 선택 시
+    fileInput.addEventListener("change", () => {
+        const newlySelected = Array.from(fileInput.files || []);
+        const allowedExt = ["jpg", "jpeg", "png", "gif"];
+
+        for (const f of newlySelected) {
+            const ext = f.name.split(".").pop().toLowerCase();
+            if (!allowedExt.includes(ext)) {
+                alert("허용된 파일만 업로드 가능합니다 (jpg, jpeg, png, gif)");
                 fileInput.value = "";
                 return;
             }
-            const url = URL.createObjectURL(f);
-            previewImg.src = url;
-            previewImg.hidden = false;
-        });
+            if (!f.type.startsWith("image/")) {
+                alert("이미지 파일만 선택할 수 있습니다.");
+                fileInput.value = "";
+                return;
+            }
+        }
+
+        if (newFiles.length + newlySelected.length > maxFiles) {
+            alert(`새로 추가하는 파일은 최대 ${maxFiles}장까지만 가능합니다.\n(현재 새 파일: ${newFiles.length}장)`);
+            fileInput.value = "";
+            return;
+        }
+
+        newFiles = newFiles.concat(newlySelected);
+
+        const dt = new DataTransfer();
+        newFiles.forEach(f => dt.items.add(f));
+        fileInput.files = dt.files;
+
+        renderPreviews();
     });
-    document.addEventListener("DOMContentLoaded", function () {
-        const tagInput = document.getElementById("tag");
-        if (!tagInput) return;
-        tagInput.addEventListener("keydown", function (e) {
-            if (e.key === "Enter") {
-                e.preventDefault();   // 폼 submit 막기
-                // 여기서 굳이 뭐 안 해도 됨. 그냥 줄바꿈 대신 무시.
-            }
-        });
-        tagInput.addEventListener("focus", function () {
-            if (tagInput.value.trim() === "") {
-                tagInput.value = "#";
-                tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
-            }
-        });
-        tagInput.addEventListener("input", function () {
-            let v = tagInput.value;
-            if (!v.endsWith(" ")) return;
-            let tokens = v.trim().split(/\s+/).filter(Boolean);
-            tokens = tokens.map(t => t.startsWith("#") ? t : "#" + t);
-            tagInput.value = tokens.join(" ") + " ";
+});
+
+// ⬇ 기존 tagInput 관련 코드 그대로 유지
+document.addEventListener("DOMContentLoaded", function () {
+    const tagInput = document.getElementById("tag");
+    if (!tagInput) return;
+    tagInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+        }
+    });
+    tagInput.addEventListener("focus", function () {
+        if (tagInput.value.trim() === "") {
+            tagInput.value = "#";
             tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
-        });
+        }
     });
+    tagInput.addEventListener("input", function () {
+        let v = tagInput.value;
+        if (!v.endsWith(" ")) return;
+        let tokens = v.trim().split(/\s+/).filter(Boolean);
+        tokens = tokens.map(t => t.startsWith("#") ? t : "#" + t);
+        tagInput.value = tokens.join(" ") + " ";
+        tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
+    });
+});
 </script>
 {% endblock %}

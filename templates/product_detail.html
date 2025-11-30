@@ -10,26 +10,30 @@
     <div class="title">상품 상세 내용</div>
     <section class="detail">
         <!-- 왼쪽: 상품 이미지 -->
-       <div class="product-gallery">
-    {# product.images가 있으면 그걸 쓰고, 없으면 img_path 한 장이라도 리스트로 #}
-    {% set image_list = product.images if product.images else [] %}
+        <div class="product-gallery">
+            {% set image_list = product.images if product.images else [] %}
 
-    {% if image_list and image_list|length > 0 %}
-    <div class="gallery-container">
-        <div class="gallery-track" id="galleryTrack">
-        {% for img in image_list %}
-            <div class="gallery-slide">
-                <img src="{{ img if img.startswith('http') else url_for('static', filename='images/' ~ img) }}">
+            {% if image_list and image_list|length > 0 %}
+            <div class="gallery-container {% if product.quantity == 0 %}soldout-gallery{% endif %}">
+                <div class="gallery-track" id="galleryTrack">
+                {% for img in image_list %}
+                    <div class="gallery-slide">
+                        <img src="{{ img if img.startswith('http') else url_for('static', filename='images/' ~ img) }}">
+                    </div>
+                {% endfor %}
+                </div>
+                <button class="gallery-btn prev" id="galleryPrev">❮</button>
+                <button class="gallery-btn next" id="galleryNext">❯</button>
+
+                {% if product.quantity == 0 %}
+                <div class="soldout-badge">품절</div>
+                {% endif %}
             </div>
-        {% endfor %}
+            {% else %}
+            <div class="thumb-lg placeholder" aria-label="이미지 없음"></div>
+            {% endif %}
         </div>
-        <button class="gallery-btn prev" id="galleryPrev">❮</button>
-        <button class="gallery-btn next" id="galleryNext">❯</button>
-    </div>
-    {% else %}
-    <div class="thumb-lg placeholder" aria-label="이미지 없음"></div>
-    {% endif %}
-</div>
+
 
 
         <!-- 오른쪽: 상품 정보 -->
