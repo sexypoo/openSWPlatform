@@ -635,7 +635,7 @@ body {
     padding: 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     transition: 0.2s;
-    /*max-width: 280px;*/
+    max-width: 270px; /*위시리스트와 동일한 카드 폭으로 제한 -> 디자인 통일성 개선*/
 }
 
 .mypage-review-grid a:link,
