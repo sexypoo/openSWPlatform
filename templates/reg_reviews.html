@@ -1,0 +1,260 @@
+{%extends "layout.html"%}
+{% block title %}리뷰 작성 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/review_style.css') }}">
+{% endblock %}
+
+{% if review %}
+  {% set form_action = url_for('reviews.update_review', review_id=review_id) %}
+{% else %}
+  {% set form_action = url_for('reviews.reg_review_submit_post') %}
+{% endif %}
+
+{%block content %}
+<main class="review-reg-page">
+    <h1 class="page-title">리뷰 작성</h1>
+
+    <form method="post" enctype="multipart/form-data" action="{{form_action}}">
+    {{ form.hidden_tag() }} <!--CSRF 토큰 자동으로 넣어주고, Hidden field 항목들 가져옴-->
+    <input type="hidden" name="item_id" value="{{ item_id or '' }}">
+    <div class="section">
+        <h2 class="section-title">상품 정보</h2>
+        <div class="product-info">
+            <div class="product-field">
+                <label class="input-label" for="name">상품명</label>
+                <input type="text" class="text-input" id="pname" name="name"  value="{{ item.name if item else review.name }}" placeholder="상품명을 입력해주세요">
+            </div>
+            <div class="product-field">
+                <label class="input-label" for="seller" value="{{ item.seller if item else review.seller }}">판매자</label>
+                <input type="text" class="text-input" id="seller" name="seller"
+                value="{{ item.seller if item and item.seller else (review.seller if review and review.seller else '') }}"
+                placeholder="판매자 아이디를 입력하세요">
+            </div>
+            <div class="product-field">
+                <label class="input-label" for="p_details">상세 정보</label>
+                <input type="text" class="text-input" id="p_details" name="p_details" value="{{ item.details if item else review.product_details }}"
+                placeholder="상세정보(옵션)를 입력해주세요">
+            </div>
+        </div>
+    </div>
+
+        <!-- 별점 평가 -->
+        <div class="section rating-section">
+            <h2 class="section-title">별점 평가</h2>
+            <div class="stars" id="starRating">
+                <span class="star filled" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+            </div>
+            <input type="hidden" id="rating" name="rating" value="{{ form.rating.data or (review.rating if review else 1) }}">
+        </div>
+
+        <!-- 리뷰 내용 -->
+        <div class="section">
+            <h2 class="section-title">리뷰 내용</h2>
+            <div class="review-fields">
+                <div class="field-group">
+                    <label class="field-label" for="title">제목</label>
+                    <input type="text" class="text-input" id="title" name="title" placeholder="리뷰 제목을 입력하세요" value="{{ form.title.data or (review.title if review else '') }}">
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label" for="r_details">내용</label>
+                    <textarea class="textarea-input large" id="r_details" name="r_details"
+                        placeholder="상품에 대한 솔직한 리뷰를 작성해주세요.">{{ form.r_details.data or (review.review_details if review else '') }}</textarea>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 사진 첨부 -->
+        <div class="section">
+            <h2 class="section-title">사진 첨부</h2>
+            <!-- 사진 업로드 버튼 + 미리보기 가로 나열 -->
+            <div class="photo-upload-section">
+                <!-- 사진 불러오기 버튼 (정사각형, 카운트 포함) -->
+                <button type="button" class="photo-upload-btn" onclick="document.getElementById('fileInput').click()">
+                    <span class="upload-btn-text">사진 불러오기</span>
+                    <span class="upload-count" id="uploadCount">0/3</span>
+                </button>
+                <input accept="image/*" id="fileInput" name="file" type="file" style="display: none;" multiple>
+                <!-- 사진 미리보기 컨테이너 -->
+                <div id="photoPreview" class="photo-preview-container">
+                    {% if review and review.images %}
+                        {% for img in review.images %}
+                            <div class="photo-preview-item existing" data-name="{{ img }}">
+                                <img src="{{ img }}" class="preview-image">
+                                <button type="button" class="delete-photo-btn">×</button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- 리뷰 등록 버튼 -->
+        <div class="section button-section">
+            <button type="submit" class="back-button">리뷰 등록</button>
+        </div>
+    </form>
+</main>
+{% endblock %}
+
+{% block script %}
+<script>
+    // =======================
+    // 1. 별점 기능
+    // =======================
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('rating');
+    let currentRating = parseInt(ratingInput.value) || 1;
+
+    updateStars();
+
+    stars.forEach(star => {
+        star.addEventListener('click', function () {
+            currentRating = parseInt(this.getAttribute('data-value'));
+            ratingInput.value = currentRating;
+            updateStars();
+        });
+
+        star.addEventListener('mouseenter', function () {
+            const value = parseInt(this.getAttribute('data-value'));
+            stars.forEach((s, index) => {
+                if (index < value) {
+                    s.classList.add('filled');
+                } else {
+                    s.classList.remove('filled');
+                }
+            });
+        });
+    });
+
+    document.getElementById('starRating').addEventListener('mouseleave', updateStars);
+
+    function updateStars() {
+        stars.forEach((star, index) => {
+            if (index < currentRating) {
+                star.classList.add('filled');
+            } else {
+                star.classList.remove('filled');
+            }
+        });
+    }
+
+    // =======================
+    // 2. 사진 업로드 / 삭제
+    // =======================
+    let selectedFiles = [];              // 새로 선택한 파일들
+    const maxFiles = 3;
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+    const existingImages = {{ (review.images if review and review.images else []) | tojson }};
+    let existing = Array.isArray(existingImages) ? [...existingImages] : [];
+
+    const fileInput        = document.getElementById('fileInput');
+    const previewContainer = document.getElementById('photoPreview');
+    const uploadCountEl    = document.getElementById('uploadCount');
+
+    // 🔹 기존에 서버에서 렌더된 이미지들 (Jinja가 만든 div.existing)에 X 버튼 동작 연결
+    function attachDeleteHandlersForExisting() {
+        const items = previewContainer.querySelectorAll('.photo-preview-item.existing');
+
+        items.forEach(item => {
+            const btn = item.querySelector('.delete-photo-btn');
+            if (!btn) return;
+
+            btn.addEventListener('click', function () {
+                const name = item.dataset.name;   // data-name 에 들어있는 이미지 URL
+                // existing 배열에서 제거
+                existing = existing.filter(img => img !== name);
+                // 화면에서도 제거
+                item.remove();
+                updateCount();
+            });
+        });
+    }
+
+    fileInput.addEventListener('change', function (e) {
+        const files = Array.from(e.target.files);
+
+        // 기존 + 새 파일 합쳐서 3장을 넘으면 안 됨
+        if (selectedFiles.length + existing.length + files.length > maxFiles) {
+            alert(`최대 ${maxFiles}장까지만 업로드 가능합니다.`);
+            return;
+        }
+
+        files.forEach(file => {
+            const fileName = file.name;
+            const fileExt  = fileName.split('.').pop().toLowerCase();
+
+            if (!allowedExtensions.includes(fileExt)) {
+                alert(`'${fileName}'은(는) 업로드할 수 없는 파일 형식입니다.\n(jpg, jpeg, png, gif만 가능)`);
+                return;
+            }
+
+            if (selectedFiles.length + existing.length < maxFiles) {
+                selectedFiles.push(file);
+                displayPreview(file);
+            }
+        });
+
+        updateCount();
+    });
+
+    function displayPreview(file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'photo-preview-item';   // 새 파일은 existing 클래스 없음
+
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'preview-image';
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'delete-photo-btn';
+            deleteBtn.textContent = '×';
+
+            // 🔹 새로 추가한 파일 삭제 로직
+            deleteBtn.addEventListener('click', function () {
+                const index = selectedFiles.indexOf(file);
+                if (index > -1) {
+                    selectedFiles.splice(index, 1);
+                }
+                wrapper.remove();
+                updateCount();
+            });
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(deleteBtn);
+            previewContainer.appendChild(wrapper);
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    function updateCount() {
+        if (!uploadCountEl) return;
+        uploadCountEl.textContent = `${selectedFiles.length + existing.length}/${maxFiles}`;
+    }
+
+    // 🔹 폼 submit 시, 남아 있는 "기존 이미지들" 리스트를 hidden input 으로 보냄
+    document.querySelector('form').addEventListener('submit', function () {
+        const input = document.createElement('input');
+        input.type  = 'hidden';
+        input.name  = 'existing_images';
+        input.value = JSON.stringify(existing);
+        this.appendChild(input);
+        // selectedFiles 는 fileInput 으로 그대로 전송됨
+    });
+
+    // 페이지 처음 로드될 때 기존 이미지 X 버튼 활성화 + 카운트 세팅
+    attachDeleteHandlersForExisting();
+    updateCount();
+</script>
+{% endblock %}

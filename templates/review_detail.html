@@ -1,0 +1,169 @@
+{%extends "layout.html"%}
+{% block title %}리뷰 세부조회 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/review_style.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="review-detail-page">
+    <!-- 제목 -->
+    <h2 class="review-detail-title">리뷰 상세보기</h2>
+
+    <div class="review-detail-container">
+        <!-- 왼쪽 영역: 이미지 갤러리 -->
+        <div class="review-gallery">
+            {% if review.images and review.images|length > 0 %}
+            <div class="gallery-container">
+                <div class="gallery-track" id="galleryTrack">
+                    {% for img in review.images %}
+                    <div class="gallery-slide">
+                        <img src="{{ img }}">
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- 좌우 버튼 -->
+                <button class="gallery-btn prev" id="galleryPrev">❮</button>
+                <button class="gallery-btn next" id="galleryNext">❯</button>
+            </div>
+
+            {% else %}
+            <div class="main-image placeholder" aria-label="이미지 없음"></div>
+            {% endif %}
+
+        </div>
+
+        <!-- 오른쪽 영역: 리뷰 정보 -->
+        <div class="review-detail-info">
+            <!-- 별점과 수정/삭제 버튼 -->
+            <div class="review-rating-actions">
+                <div class="rating-group">
+                    <div class="review-stars-large">
+                        {% set rating = review.rating or 0 %}
+                        {{ '★' * rating }}{{ '☆' * (5 - rating) }}
+                    </div>
+                    <div class="review-score">{{ rating }} / 5 </div>
+                </div>
+                <div class="action-buttons">
+                    <a href="{{ url_for('reviews.update_review', review_id=review.id) }}" class="btn btn-edit">수정</a>
+                    <span class="action-divider">|</span>
+                    <a href="{{ url_for('reviews.delete_review', review_id=review.id) }}" class="btn btn-delete">삭제</a>
+                </div>
+            </div>
+
+            <!-- 리뷰 제목 -->
+            <h3 class="review-main-title">{{ review.title or '제목 없음'}}</h3>
+
+
+            <!-- 작성자 아이디 및 작성 날짜 -->
+            <div class="review-author-date">
+                <span class="review-author">{{ review.purchaser or '알수없음' }}</span>
+                <span class="review-date">{{ review.created_at_str or '' }}</span>
+            </div>
+
+            <!-- 구분선 -->
+            <div class="divider-line"></div>
+
+            <!-- 상품 정보 -->
+            {% if review.item_id %}
+            <a href="{{ url_for('products.view_product', product_id=review.item_id, slug=review.name) }}">
+                <div class="product-info-box">
+                    <div class="product-name">{{ review.name or '상품명 없음' }}</div>
+                    <div class="product-detail">{{ review.product_details or '상세 설명 없음' }}</div>
+                </div>
+            </a>
+            {% else %}
+            <div class="product-info-box">
+                <div class="product-name">{{ review.name or '상품명 없음' }}</div>
+                <div class="product-detail">{{ review.product_details or '상세 설명 없음' }}</div>
+            </div>
+            {% endif %}
+
+
+            <!-- 리뷰 내용 -->
+            <div class="review-content-section">
+                <div class="content-text">
+                    {{ review.review_details or '내용 없음' }}
+                </div>
+            </div>
+
+            <!-- 목록으로 버튼 (리뷰 전체 조회 화면으로 이동) -->
+            <button class="back-button" onclick="location.href='{{ url_for('reviews.view_reviews') }}'">목록으로</button>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block script %}
+<script>
+    // 썸네일 배경색 저장
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainImage = document.getElementById('mainImage');
+    const thumbnailBackgrounds = [];
+
+    // 각 썸네일의 배경 스타일 저장
+    thumbnails.forEach(thumb => {
+        thumbnailBackgrounds.push(thumb.style.background);
+    });
+
+    function changeImage(index) {
+        // 모든 썸네일에서 active 클래스 제거
+        thumbnails.forEach(thumb => thumb.classList.remove('active'));
+
+        // 클릭된 썸네일에 active 클래스 추가
+        thumbnails[index].classList.add('active');
+
+        // 메인 이미지 배경 변경
+        mainImage.style.background = thumbnailBackgrounds[index];
+
+        console.log('이미지 ' + (index + 1) + ' 선택됨');
+    }
+
+    const track = document.getElementById("galleryTrack");
+    const prevBtn = document.getElementById("galleryPrev");
+    const nextBtn = document.getElementById("galleryNext");
+
+    const slides = document.querySelectorAll(".gallery-slide");
+    const totalSlides = slides.length;
+
+    let index = 0;
+    let autoSlideInterval;
+
+    function updateSlide() {
+        track.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    function nextSlide() {
+        index = (index + 1) % totalSlides;
+        updateSlide();
+    }
+
+    function prevSlide() {
+        index = (index - 1 + totalSlides) % totalSlides;
+        updateSlide();
+    }
+
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(nextSlide, 3000);
+    }
+
+    function stopAutoSlide() {
+        clearInterval(autoSlideInterval);
+    }
+
+    prevBtn.addEventListener("click", () => {
+        stopAutoSlide();
+        prevSlide();
+        startAutoSlide();
+    });
+
+    nextBtn.addEventListener("click", () => {
+        stopAutoSlide();
+        nextSlide();
+        startAutoSlide();
+    });
+
+    if (totalSlides > 1) startAutoSlide();
+</script>
+{% endblock %}
