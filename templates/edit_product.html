@@ -7,8 +7,7 @@
 
 {%block content %}
 <div class="reg-items-page">
-    <div class="title">Item Edit</div>
-    <hr/>
+    <div class="title">상품 수정</div>
     <form method="POST" enctype="multipart/form-data"
           action="{{ url_for('products.edit_product', product_id=product_id, slug=slug) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
