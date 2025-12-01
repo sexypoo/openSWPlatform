@@ -1,5 +1,8 @@
 import os
 import uuid
+
+import json  # 🔹 추가
+
 from flask import current_app
 from werkzeug.utils import secure_filename
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session, current_app
@@ -240,13 +243,27 @@ def update_review(review_id):
         DB = current_app.config["DB"]
         STORAGE = DB.storage
 
-        files = request.files.getlist("file")
+        # 🔹 1) 프론트에서 넘어온 "삭제 후 남아 있는 기존 이미지들" 우선 사용
+        existing_images_field = request.form.get("existing_images", "").strip()
+        if existing_images_field:
+            try:
+                loaded = json.loads(existing_images_field)
+                if isinstance(loaded, list):
+                    existing_images = loaded
+                elif isinstance(loaded, str):
+                    existing_images = [loaded]
+                else:
+                    existing_images = []
+            except Exception:
+                existing_images = []
+        else:
+            # hidden 값이 없으면, DB의 기존 값으로 fallback
+            existing_images = review.get("images") or []
 
-        # Load existing images list (default empty list)
-        existing_images = review.get("images") or []
+        # 🔹 2) 새로 업로드된 파일들 처리
+        files = request.files.getlist("file")
         new_images = []
 
-        # Process newly uploaded files (multiple)
         for image_file in files:
             if not image_file or not image_file.filename:
                 continue
@@ -260,16 +277,19 @@ def update_review(review_id):
 
             new_images.append(url)
 
-        # Merge existing + new images
+        # 🔹 3) 최종 이미지 = (남아 있는 기존) + (새로 업로드된)
         merged = existing_images + new_images
 
-        # Keep only last 3 images (remove from front)
+        # 최대 3장까지만 유지
         if len(merged) > 3:
             merged = merged[-3:]
 
         update_fields["images"] = merged
 
         DB.update_review(review_id, update_fields)
+
+        flash("리뷰가 수정되었습니다.")
+        return redirect(url_for("reviews.view_review", review_id=review_id))
 
         flash("리뷰가 수정되었습니다.")
         return redirect(url_for("reviews.view_review", review_id=review_id))

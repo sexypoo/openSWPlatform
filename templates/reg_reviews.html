@@ -104,17 +104,19 @@
 
 {% block script %}
 <script>
-    // 별점 기능
-    const stars = document.querySelectorAll('.star'); // 별 5개 각각
-    const ratingInput = document.getElementById('rating'); // 서버로 보낼 hidden input
-    let currentRating = parseInt(ratingInput.value) || 1; // 현재 선택된 별점 값
+    // =======================
+    // 1. 별점 기능
+    // =======================
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('rating');
+    let currentRating = parseInt(ratingInput.value) || 1;
 
-    updateStars(); // hidden input에 맞춰 별 색 칠하는 함수
+    updateStars();
 
     stars.forEach(star => {
         star.addEventListener('click', function () {
             currentRating = parseInt(this.getAttribute('data-value'));
-            ratingInput.value = currentRating; // 서버에 보낼 값 현재 선택된 별 개수로 갱신
+            ratingInput.value = currentRating;
             updateStars();
         });
 
@@ -132,7 +134,7 @@
 
     document.getElementById('starRating').addEventListener('mouseleave', updateStars);
 
-    function updateStars() { // hidden input에 맞춰 별 색 칠하는 함수
+    function updateStars() {
         stars.forEach((star, index) => {
             if (index < currentRating) {
                 star.classList.add('filled');
@@ -142,30 +144,55 @@
         });
     }
 
-    // 파일 업로드 처리 (최대 3장)
-    let selectedFiles = [];
+    // =======================
+    // 2. 사진 업로드 / 삭제
+    // =======================
+    let selectedFiles = [];              // 새로 선택한 파일들
     const maxFiles = 3;
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
     const existingImages = {{ (review.images if review and review.images else []) | tojson }};
     let existing = Array.isArray(existingImages) ? [...existingImages] : [];
 
-    document.getElementById('fileInput').addEventListener('change', function (e) {
+    const fileInput        = document.getElementById('fileInput');
+    const previewContainer = document.getElementById('photoPreview');
+    const uploadCountEl    = document.getElementById('uploadCount');
+
+    // 🔹 기존에 서버에서 렌더된 이미지들 (Jinja가 만든 div.existing)에 X 버튼 동작 연결
+    function attachDeleteHandlersForExisting() {
+        const items = previewContainer.querySelectorAll('.photo-preview-item.existing');
+
+        items.forEach(item => {
+            const btn = item.querySelector('.delete-photo-btn');
+            if (!btn) return;
+
+            btn.addEventListener('click', function () {
+                const name = item.dataset.name;   // data-name 에 들어있는 이미지 URL
+                // existing 배열에서 제거
+                existing = existing.filter(img => img !== name);
+                // 화면에서도 제거
+                item.remove();
+                updateCount();
+            });
+        });
+    }
+
+    fileInput.addEventListener('change', function (e) {
         const files = Array.from(e.target.files);
 
-        // 기존 파일 + 새 파일이 3장 이하인지 확인
-        if (selectedFiles.length + files.length > maxFiles) {
+        // 기존 + 새 파일 합쳐서 3장을 넘으면 안 됨
+        if (selectedFiles.length + existing.length + files.length > maxFiles) {
             alert(`최대 ${maxFiles}장까지만 업로드 가능합니다.`);
             return;
         }
 
         files.forEach(file => {
             const fileName = file.name;
-            const fileExt = fileName.split('.').pop().toLowerCase(); // 파일명에서 확장자 추출 및 소문자 변환
+            const fileExt  = fileName.split('.').pop().toLowerCase();
 
             if (!allowedExtensions.includes(fileExt)) {
                 alert(`'${fileName}'은(는) 업로드할 수 없는 파일 형식입니다.\n(jpg, jpeg, png, gif만 가능)`);
-                return; // 이 파일은 건너뜀
+                return;
             }
 
             if (selectedFiles.length + existing.length < maxFiles) {
@@ -174,18 +201,15 @@
             }
         });
 
-        // 카운트 업데이트
         updateCount();
-
     });
 
     function displayPreview(file) {
         const reader = new FileReader();
-        const previewContainer = document.getElementById('photoPreview');
 
         reader.onload = function (e) {
             const wrapper = document.createElement('div');
-            wrapper.className = 'photo-preview-item';
+            wrapper.className = 'photo-preview-item';   // 새 파일은 existing 클래스 없음
 
             const img = document.createElement('img');
             img.src = e.target.result;
@@ -195,17 +219,16 @@
             deleteBtn.type = 'button';
             deleteBtn.className = 'delete-photo-btn';
             deleteBtn.textContent = '×';
-            deleteBtn.onclick = function () {
-                if (wrapper.classList.contains('existing')) {
-                    const name = wrapper.dataset.name;
-                    existing = existing.filter(img => img !== name);
-                } else {
-                    const index = selectedFiles.indexOf(file);
-                    if (index > -1) selectedFiles.splice(index, 1);
+
+            // 🔹 새로 추가한 파일 삭제 로직
+            deleteBtn.addEventListener('click', function () {
+                const index = selectedFiles.indexOf(file);
+                if (index > -1) {
+                    selectedFiles.splice(index, 1);
                 }
                 wrapper.remove();
                 updateCount();
-            };
+            });
 
             wrapper.appendChild(img);
             wrapper.appendChild(deleteBtn);
@@ -216,18 +239,22 @@
     }
 
     function updateCount() {
-        const countElement = document.getElementById('uploadCount');
-        countElement.textContent = `${selectedFiles.length + existing.length}/3`;
+        if (!uploadCountEl) return;
+        uploadCountEl.textContent = `${selectedFiles.length + existing.length}/${maxFiles}`;
     }
 
-    document.querySelector('form').addEventListener('submit', function(){
+    // 🔹 폼 submit 시, 남아 있는 "기존 이미지들" 리스트를 hidden input 으로 보냄
+    document.querySelector('form').addEventListener('submit', function () {
         const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'existing_images';
+        input.type  = 'hidden';
+        input.name  = 'existing_images';
         input.value = JSON.stringify(existing);
         this.appendChild(input);
+        // selectedFiles 는 fileInput 으로 그대로 전송됨
     });
 
+    // 페이지 처음 로드될 때 기존 이미지 X 버튼 활성화 + 카운트 세팅
+    attachDeleteHandlersForExisting();
     updateCount();
 </script>
 {% endblock %}

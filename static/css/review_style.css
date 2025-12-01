@@ -283,6 +283,7 @@
 /* 리뷰 이미지 */
 .review-image {
     width: 100%;
+
     aspect-ratio: 1 / 1;
     background-color: #eaeaea;
     border-radius: 8px;
@@ -293,7 +294,7 @@
 .review-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
     border-radius: 8px;
 }
@@ -720,6 +721,8 @@ a {
     padding-top: 100%;
     position: relative;
     background-color: #e5e5e5;
+    aspect-ratio: 1 / 1;
+    place-items: center;
     border-radius: 12px;
     overflow: hidden;
 }
@@ -728,15 +731,39 @@ a {
     background-color: #e5e5e5;
 }
 
+/* ========== 리뷰 상세보기 전용 스코프: 이미지 갤러리 (수정 버전) ========== */
+
 .review-detail-page .gallery-container {
     position: relative;
     width: 100%;
     max-width: 500px;
-    height: 350px;
+
+    /* 🔹 정사각형 비율 유지 */
+    aspect-ratio: 1 / 1;
+    height: auto;
+
     margin: 0 auto;
     overflow: hidden;
     border-radius: 12px;
 }
+.review-detail-page .gallery-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s ease;
+}
+
+.review-detail-page .gallery-slide {
+    min-width: 100%;
+    height: 100%;
+}
+
+.review-detail-page .gallery-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   /* 정사각형 안에서 꽉 차게 */
+}
+
 
 .review-detail-page .gallery-track {
     display: flex;
