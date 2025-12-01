@@ -380,7 +380,7 @@ body {
     grid-template-columns: repeat(4, 1fr);
     gap: 40px;
     justify-items: center;
-    align-items: start;
+    align-items: stretch;/*start;*/
     margin-top: 10px;/**/
 }
 
@@ -392,7 +392,31 @@ body {
     padding: 16px;
     width: 230px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 360px;  /* 카드 높이 추가 */
+    justify-content: space-between; /* 내부 균등 배치 */
 }
+
+/*카드 내부 텍스트 길이에 따라서 모양이 바뀌는 문제 해결 코드 */
+.product-card h3,
+.review-card h3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;       /* 두 줄 제한 */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    word-break: break-word;       /* 단어 길어도 줄바꿈 안정적 */
+    line-height: 1.3;             /* 예쁜 줄 높이 */
+}
+
+.product-card p:nth-of-type(1),
+.review-card p:nth-of-type(1) {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
+}
+
+
 .product-card:hover, .review-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 5px 12px rgba(0,0,0,0.1);
@@ -425,6 +449,7 @@ body {
     border-radius: 8px;
     margin-bottom: 10px;
 }
+
 
 /* 🔹 더보기 버튼 */
 .more-icon {
