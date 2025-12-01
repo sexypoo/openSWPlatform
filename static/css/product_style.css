@@ -9,6 +9,14 @@
   --btn-text: #ffffff;
 }
 
+* {
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
 /* ===== From wishlist.html ===== */
 
 .wishlist-page {
