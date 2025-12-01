@@ -1,0 +1,823 @@
+@import url('https://fonts.googleapis.com/css2?family=Doto:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+/* ------------------------------------------------ */
+/* --------------- 리뷰 등록 페이지 ------------------ */
+
+.page-title{
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 60px;
+}
+
+/* 구획 */
+.section {
+    margin: 40px 0;
+}
+
+/* 구획 제목 */
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+
+/* 상품 정보 섹션 */
+.product-info {
+    background: #f8f8f8;
+    padding: 30px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.product-field {
+    width: 100%;
+}
+
+.input-label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.text-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.text-input::placeholder {
+    color: #999;
+}
+
+.text-input:focus,
+.textarea-input:focus {
+    outline: none;
+    border-color: #2e6b56; /* 이화그린 포인트 */
+    box-shadow: 0 0 4px rgba(46, 107, 86, 0.3);
+}
+
+/* 별점 평가 */
+.rating-section {
+    margin-bottom: 40px;
+}
+
+.stars {
+    display: flex;
+    gap: 10px;
+    font-size: 36px;
+}
+
+.star {
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star.filled {
+    color: #333;
+}
+
+/* 리뷰 내용 */
+.review-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.field-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.textarea-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.textarea-input.large {
+    min-height: 150px;
+}
+
+/* 섹션 헤더 (제목 + 안내문구) */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+/* 사진 제한 안내 텍스트 */
+.photo-limit-text {
+    font-size: 13px;
+    color: #999;
+}
+
+/* 사진 업로드 섹션 */
+.photo-upload-section {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+/* 사진 불러오기 버튼 (정사각형) */
+.photo-upload-btn {
+    width: 150px;
+    height: 150px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    flex-shrink: 0;
+}
+
+.photo-upload-btn:hover {
+    border-color: #2e6b56;
+    box-shadow: 0 0 4px rgba(46, 107, 86, 0.3);
+}
+
+/* 버튼 내 텍스트 */
+.upload-btn-text {
+    font-size: 14px;
+    color: #333;
+}
+
+/* 업로드 카운트 */
+.upload-count {
+    font-size: 13px;
+    color: #999;
+}
+
+/* 사진 미리보기 컨테이너 */
+.photo-preview-container {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* 각 사진 아이템 */
+.photo-preview-item {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+/* 미리보기 이미지 */
+.preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 삭제 버튼 */
+.delete-photo-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 25px;
+    height: 25px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.delete-photo-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* 버튼 섹션 (오른쪽 정렬) */
+.button-section {
+    display: flex;
+    justify-content: center;
+}
+
+
+
+/* ------------------------------------------------ */
+/* --------------- 리뷰 전체 조회 페이지 -----------------*/
+
+/* 제목 */
+.review-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* 리뷰 총 개수 */
+.review-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+/* 리뷰 카드 그리드 */
+.review-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    justify-items: center;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+}
+
+/* 카드 스타일 */
+.review-card {
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+}
+
+/* 리뷰 이미지 */
+.review-image {
+    width: 100%;
+
+    aspect-ratio: 1 / 1;
+    background-color: #eaeaea;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* review-image 안에 들어가는 실제 이미지 */
+.review-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 8px;
+}
+
+/* 리뷰제목 */
+.review-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* 리뷰 별점 */
+.review-stars {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* 리뷰 작성 날짜 & 리뷰 아이디 */
+.review-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 13px;
+    color: #777;
+}
+
+/* 페이지네이션 */
+.pagination-section {
+    margin-top: 80px;
+    text-align: center;
+}
+
+.pagination {
+    display: inline-flex;
+    justify-content: center;
+    gap: 14px;
+}
+
+.page-num {
+    text-decoration: none;
+    color: #999;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.page-num:hover {
+    color: #2e6b56;
+}
+
+.page-num.active {
+    color: #fff;
+    background: #2e6b56;
+}
+
+/* ------------------------------------------------ */
+/* --------------- 리뷰 상세보기 -----------------*/
+
+/* 페이지 전체 래퍼 */
+.review-detail-page {
+    max-width: 1200px;
+    margin: 60px auto 120px;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+
+/* 제목 */
+.review-detail-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 60px;
+}
+
+.review-detail-container {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    column-gap: 60px;
+    align-items: flex-start;
+}
+
+/* 오른쪽 영역 - 리뷰 정보 */
+.review-detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* 별점과 수정/삭제 버튼을 한 줄에 배치 */
+.review-rating-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rating-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 별점 */
+.review-stars-large {
+    font-size: 18px;
+    color: #333;
+    letter-spacing: 2px;
+}
+
+/* 별점 -> 숫자값 */
+.review-score {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 수정/삭제 버튼 */
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 리뷰 제목 */
+.review-main-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    line-height: 1.4;
+}
+
+/* 작성자와 작성 날짜를 한 줄에 배치 */
+.review-author-date {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 작성자 */
+.review-author {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 작성 날짜 */
+.review-date {
+    font-size: 14px;
+    color: #666;
+}
+
+.btn-edit, .btn-delete {
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-edit:hover, .btn-delete:hover {
+    color: #2e6b56;
+    text-decoration: none;
+}
+
+/* 수정, 삭제 구분선 */
+.action-divider {
+    font-size: 14px;
+    color: #333;
+}
+
+/* 구분선 */
+.divider-line {
+    width: 100%;
+    height: 1px;
+    background-color: #ddd;
+    margin: 10px 0 20px 0;
+}
+
+/* 상품 정보 */
+.product-info-box {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 상품 이름 */
+.product-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 상품 상세 정보 */
+.product-detail {
+    font-size: 14px;
+    color: #666;
+}
+
+.review-content-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 리뷰 내용 본문 */
+.content-text {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.8;
+    min-height: 120px;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 18px;
+}
+
+/* 리뷰 전체 조회 화면으로 돌아가는 버튼 */
+.back-button {
+    align-self: center;
+    padding: 12px 40px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.back-button:hover {
+    background-color: #555;
+}
+
+@media (max-width: 768px) {
+    .review-detail-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+/* ------------------------------------------------ */
+/* --------------- 마이페이지 - 회원정보 조회 및 수정 -----------------*/
+
+.profile-card {
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+    left: -40px;
+}
+
+/* 제목 */
+.profile-card h2 {
+    font-size: 22px;
+    margin-bottom: 40px;
+    text-align: center;
+    color: #333;
+}
+
+.profile-content {
+    width: 100%;
+}
+
+.info-item {
+    margin-bottom: 24px;
+}
+
+/* 정보 항목 제목 */
+.info-item label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* 항목 정보 값 표시 */
+.info-display {
+    font-size: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 정보 수정 - 입력창 */
+.info-item input[type="text"],
+.info-item input[type="email"],
+.info-item input[type="tel"],
+.info-item input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+/* 입력창 선택했을 때 */
+.info-item input:focus {
+    outline: none;
+    border-color: #2e6b56;
+}
+
+/* 읽기 전용 필드 */
+.readonly-field {
+    font-size: 15px;
+    padding: 12px 16px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    color: #6c757d;
+}
+
+/* 비밀번호 입력 + 확인 */
+.password-check-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.password-check-row input {
+    flex: 1;
+}
+
+/* 확인 버튼 */
+.check-btn {
+    padding: 12px 20px;
+    background-color: #b7b7b7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s;
+}
+
+.check-btn:hover {
+    background-color: #9a9a9a;
+}
+
+/* 기본 버튼 */
+.primary-btn {
+    width: 50%;
+    max-width: 200px;
+    margin: 30px auto 0;
+    display: block;
+    padding: 12px;
+    background-color: #b7b7b7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.primary-btn:hover {
+    background-color: #9a9a9a;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.button-group button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* 저장 버튼 */
+.save-btn {
+    background-color: #b7b7b7;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #9a9a9a;
+}
+
+/* 취소 버튼 */
+.cancel-btn {
+    background-color: #e0e0e0;
+    color: #666;
+}
+
+.cancel-btn:hover {
+    background-color: #d0d0d0;
+}
+
+/* ------------------------------------------------ */
+/* --------------- 공통: 링크 -----------------*/
+
+a {
+    text-decoration: none;
+}
+
+/* ========== 리뷰 상세보기 전용 스코프: 이미지 갤러리 ========== */
+
+.review-detail-page .review-gallery {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 이미지 없을 때 박스 */
+.review-detail-page .main-image {
+    width: 100%;
+    padding-top: 100%;
+    position: relative;
+    background-color: #e5e5e5;
+    aspect-ratio: 1 / 1;
+    place-items: center;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.review-detail-page .main-image.placeholder {
+    background-color: #e5e5e5;
+}
+
+/* ========== 리뷰 상세보기 전용 스코프: 이미지 갤러리 (수정 버전) ========== */
+
+.review-detail-page .gallery-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+
+    /* 🔹 정사각형 비율 유지 */
+    aspect-ratio: 1 / 1;
+    height: auto;
+
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+}
+.review-detail-page .gallery-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s ease;
+}
+
+.review-detail-page .gallery-slide {
+    min-width: 100%;
+    height: 100%;
+}
+
+.review-detail-page .gallery-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   /* 정사각형 안에서 꽉 차게 */
+}
+
+
+.review-detail-page .gallery-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s ease;
+}
+
+.review-detail-page .gallery-slide {
+    min-width: 100%;
+    height: 100%;
+}
+
+.review-detail-page .gallery-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.review-detail-page .gallery-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.7);
+    border: none;
+    font-size: 24px;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.review-detail-page .gallery-btn.prev { left: 10px; }
+.review-detail-page .gallery-btn.next { right: 10px; }
+
+.review-detail-page .gallery-btn:hover {
+    background: white;
+}
+
+/* 리뷰 전체조회 페이지 전체 레이아웃 */
+.review-page {
+    max-width: 1200px;     /* 가운데 폭 맞춤 */
+    margin: 60px auto;     /* 위아래 60px, 좌우 자동 중앙 */
+    padding: 0 40px;       /* 좌우 내부 여백 */
+    box-sizing: border-box;
+}
+/* 리뷰 작성 페이지 전체 레이아웃 */
+.review-reg-page {
+    max-width: 1200px;      /* 내용 최대 너비 */
+    margin: 60px auto 120px;/* 위 60, 아래 120, 좌우 가운데 정렬 */
+    padding: 0 40px;        /* 좌우 여백 */
+    box-sizing: border-box;
+}
+.review-date {
+    margin-left: 10px;
+    color: #888;
+    font-size: 0.9rem;
+}
