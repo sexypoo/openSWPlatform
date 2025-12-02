@@ -60,9 +60,11 @@
             </div>
             {% endif %}
             <div class="actions">
+                {% if not is_owner %}
                 <div class="wish-heart" id="heart">
                      <i class="fa-regular fa-heart"></i>
                 </div>
+                {% endif %}
                 <a href="{{ url_for('reviews.reg_review_get', item_id=product.id) }}">
                     <button class="btn btn-review" type="button">리뷰 작성</button>
                 </a>

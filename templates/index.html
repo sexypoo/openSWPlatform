@@ -20,7 +20,7 @@
     </div>
     <div class="card-container">
         {% if latest_products %}
-        {% for p in latest_products %}
+        {% for p in latest_products|reverse %}
 
         {# 안전 가드: 값이 없으면 기본값으로 대체 #}
         {% set name = p.name | default(p.id) %}
@@ -60,7 +60,7 @@
     </div>
     <div class="card-container">
         {% if latest_reviews %}
-        {% for r in latest_reviews %}
+        {% for r in latest_reviews|reverse %}
 
         {# 안전 가드: 값이 없으면 기본값으로 대체 #}
         {% set name = r.title | default(r.id) %}

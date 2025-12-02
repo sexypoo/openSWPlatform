@@ -18,11 +18,7 @@
                     <small>사진</small>
                     <img alt="" class="preview" id="previewImg" hidden>
                     <div class="hint">클릭하여 파일을 선택하세요</div>
-                    {{ form.files(
-                        id="file",
-                        multiple=True,
-                        accept="image/*"
-                    ) }}
+                    <input type="file" id="file" name="file" accept="image/*" style="display: none" multiple>
                 </label>
 
                 <input type="hidden" id="existing_images_input" name="existing_images">
