@@ -28,6 +28,13 @@ def like(id):
     uid = session.get('id')
     if not uid:
         return jsonify({'msg':'로그인이 필요합니다.'})
+
+    product = DB.get_product(id)
+    if not product:
+        return jsonify({'success': False, 'msg':'상품이 존재하지 않습니다.'})
+
+    if product.get("seller") == uid:
+        return jsonify({'success': False, 'msg': '본인이 올린 상품은 위시리스트에 추가할 수 없습니다.'})
     
     DB.update_heart(session['id'], 'Y', id)
     return jsonify({'msg': '위시 등록 완료!'})
@@ -51,6 +58,10 @@ def my_hearts():
 
     if not uid:
         return jsonify({'hearts':[]})
-    
+
+    product = DB.get_product(id)
+    if product and product.get("seller") == uid:
+        return jsonify({'hearts':[]})
+
     heart_ids = DB.get_my_heart_ids(uid)
     return jsonify({'hearts':heart_ids})
