@@ -35,37 +35,24 @@ def reg_item_submit_post():
                 flash(f"[{field}] {e}")
         return redirect(request.referrer or url_for('products.view_products'))
 
-    img_filename = None
+    files = request.files.getlist("file")
+    img_urls = []
 
-    # 이미지 파일 처리 (여러 장 파일을 받을 때와 단일 파일을 받을 때를 모두 처리)
-    filenames = []
-    files = form.files.data
+    for image_file in files:
+        if not image_file or not image_file.filename:
+            continue
 
-    if files:  # 여러 파일 처리
-        for f in files:
-            if f and f.filename:
-                original = secure_filename(f.filename)
-                name, ext = os.path.splitext(original)
-                unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
-                
-                save_path = f"products/{unique_name}"
-                STORAGE.child(save_path).put(f)
+        original = secure_filename(image_file.filename)
+        name, ext = os.path.splitext(original)
+        unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
 
-                url = STORAGE.child(save_path).get_url(None)
-                filenames.append(url)
-        img_filename = json.dumps(filenames)  # ["img1_uuid.jpg","img2_uuid.jpg"]
-    else:  # 단일 파일 처리
-        image_file = form.file.data
-        if image_file and image_file.filename:
-            original = secure_filename(image_file.filename)
-            name, ext = os.path.splitext(original)
-            unique_name = f"{name}_{uuid.uuid4().hex[:8]}{ext}"
+        save_path = f"products/{unique_name}"
+        STORAGE.child(save_path).put(image_file)
+        url = STORAGE.child(save_path).get_url(None)
 
-            save_path = f"products/{unique_name}"
-            STORAGE.child(save_path).put(image_file)
+        img_urls.append(url)
 
-            url = STORAGE.child(save_path).get_url(None)
-            img_filename = url
+    img_urls.append(url)
 
     # 폼 데이터
     data = form.data.copy()
@@ -244,7 +231,7 @@ def edit_product(product_id, slug):
                 flash(f"[{field}] {error}")
         return render_template("edit_product.html", product=product, product_id=product_id, slug=slug, form=form)
 
-        # 이미지 처리 ---------------------------
+     # 이미지 처리 ---------------------------
     existing_images_field = request.form.get("existing_images", "").strip()
 
     if existing_images_field:
@@ -279,7 +266,7 @@ def edit_product(product_id, slug):
 
     # 새로 업로드된 이미지 처리 (기존 코드 그대로)
     new_images = []
-    files = request.files.getlist("files")
+    files = request.files.getlist("file")
 
     for f in files:
         if not f or not f.filename:
