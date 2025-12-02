@@ -90,70 +90,20 @@ document.addEventListener("DOMContentLoaded", function () {
   const hint         = document.querySelector(".upload-card .hint");
   const previewImg   = document.getElementById("previewImg");
   const previewStrip = document.getElementById("photoPreview");
-  let currentURL     = null;
-  const maxFiles     = 5;
 
-  // 지금까지 선택한 파일들을 누적 저장할 배열
-  let allFiles = [];
+  const maxFiles = 5;
+  let newFiles = [];                // 새로 선택한 파일들만 관리
+  let currentObjectURL = null;      // 큰 프리뷰에 쓰는 Object URL
 
-  fileInput.addEventListener("change", () => {
-    const newlySelected = Array.from(fileInput.files || []);
-    const allowedExt = ["jpg", "jpeg", "png", "gif"];
-    for (const f of newlySelected) {
-      const ext = f.name.split(".").pop().toLowerCase();
-      if (!allowedExt.includes(ext)) {
-        alert("허용된 파일만 업로드 가능합니다 (jpg, jpeg, png, gif)");
-        fileInput.value = "";
-        return;
-      }
-    }
-
-    // 새로 선택한 것도 이미지인지 체크
-    if (newlySelected.some(f => !f.type.startsWith("image/"))) {
-      alert("이미지 파일만 선택할 수 있습니다.");
-      fileInput.value = "";
-      return;
-    }
-
-    // 누적 갯수 체크
-    if (allFiles.length + newlySelected.length > maxFiles) {
-      alert(`최대 ${maxFiles}장까지만 업로드 가능합니다.\n(현재 ${allFiles.length}장 선택되어 있음)`);
-      fileInput.value = "";
-      return;
-    }
-
-    // ✅ 지금까지의 파일들에 새로 선택한 파일들 누적
-    allFiles = allFiles.concat(newlySelected);
-
-    // ✅ 실제 input.files에도 누적된 목록을 다시 넣어주기 (서버로 전송용)
-    const dataTransfer = new DataTransfer();
-    allFiles.forEach(f => dataTransfer.items.add(f));
-    fileInput.files = dataTransfer.files;
-
-    // ❌ 아무것도 없으면 초기화
-    if (!allFiles.length) {
-      if (currentURL) { URL.revokeObjectURL(currentURL); currentURL = null; }
-      previewImg.hidden = true;
-      previewImg.removeAttribute("src");
-      hint.style.display = "";
-      previewStrip.innerHTML = "";
-      return;
-    }
-
-    // ✅ 메인 큰 박스: 첫 번째 이미지
-    if (currentURL) { URL.revokeObjectURL(currentURL); }
-    const mainUrl = URL.createObjectURL(allFiles[0]);
-    currentURL = mainUrl;
-    previewImg.src = mainUrl;
-    previewImg.hidden = false;
-    hint.style.display = "none";
-
-    // ✅ 아래 썸네일 strip 다시 그림 (지금까지 선택한 전체 allFiles 기준)
+  // 썸네일 + 큰 미리보기 다시 그리는 함수
+  function renderPreviews() {
+    // 썸네일 strip 초기화
     previewStrip.innerHTML = "";
 
-    allFiles.forEach((file) => {
+    // 새 파일 썸네일들
+    newFiles.forEach((file, index) => {
       const reader = new FileReader();
-      reader.onload = function (e) {
+      reader.onload = (e) => {
         const wrapper = document.createElement("div");
         wrapper.className = "photo-preview-item";
 
@@ -161,17 +111,108 @@ document.addEventListener("DOMContentLoaded", function () {
         img.src = e.target.result;
         img.className = "preview-image";
 
-        // 썸네일 클릭 시 큰 박스로 띄우기
+        // 썸네일 클릭 시 큰 프리뷰에 띄우기
         img.addEventListener("click", () => {
           previewImg.src = e.target.result;
+          previewImg.hidden = false;
+          if (hint) hint.style.display = "none";
+        });
+
+        // X 버튼 (삭제)
+        const removeBtn = document.createElement("div");
+        removeBtn.className = "remove-btn";
+        removeBtn.textContent = "×";
+
+        removeBtn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+
+          // newFiles 배열에서 제거
+          newFiles.splice(index, 1);
+
+          // fileInput.files도 동기화
+          const dt = new DataTransfer();
+          newFiles.forEach(f => dt.items.add(f));
+          fileInput.files = dt.files;
+
+          // 필수 항목 체크 로직이 fileInput의 input/change 이벤트를 보고 있으니,
+          // 수동으로 input 이벤트 한 번 날려주기
+          const evt = new Event("input", { bubbles: true });
+          fileInput.dispatchEvent(evt);
+
+          // 다시 렌더
+          renderPreviews();
         });
 
         wrapper.appendChild(img);
+        wrapper.appendChild(removeBtn);
         previewStrip.appendChild(wrapper);
       };
       reader.readAsDataURL(file);
     });
+
+    // 큰 프리뷰 이미지 세팅
+    if (newFiles.length > 0) {
+      if (currentObjectURL) {
+        URL.revokeObjectURL(currentObjectURL);
+      }
+      const url = URL.createObjectURL(newFiles[0]);
+      currentObjectURL = url;
+      previewImg.src = url;
+      previewImg.hidden = false;
+      if (hint) hint.style.display = "none";
+    } else {
+      // 하나도 없을 때 초기 상태
+      if (currentObjectURL) {
+        URL.revokeObjectURL(currentObjectURL);
+        currentObjectURL = null;
+      }
+      previewImg.hidden = true;
+      previewImg.removeAttribute("src");
+      if (hint) hint.style.display = "";
+    }
+  }
+
+  // 파일 선택 시
+  fileInput.addEventListener("change", () => {
+    const newlySelected = Array.from(fileInput.files || []);
+    const allowedExt = ["jpg", "jpeg", "png", "gif"];
+
+    // 확장자/타입 검사
+    for (const f of newlySelected) {
+      const ext = f.name.split(".").pop().toLowerCase();
+      if (!allowedExt.includes(ext)) {
+        alert("허용된 파일만 업로드 가능합니다 (jpg, jpeg, png, gif)");
+        fileInput.value = "";
+        return;
+      }
+      if (!f.type.startsWith("image/")) {
+        alert("이미지 파일만 선택할 수 있습니다.");
+        fileInput.value = "";
+        return;
+      }
+    }
+
+    // 최대 장수 검사
+    if (newFiles.length + newlySelected.length > maxFiles) {
+      alert(`최대 ${maxFiles}장까지만 업로드 가능합니다.\n(현재 ${newFiles.length}장 선택되어 있음)`);
+      fileInput.value = "";
+      return;
+    }
+
+    // 누적
+    newFiles = newFiles.concat(newlySelected);
+
+    // 실제 input.files에 반영
+    const dt = new DataTransfer();
+    newFiles.forEach(f => dt.items.add(f));
+    fileInput.files = dt.files;
+
+    // 썸네일 + 큰 프리뷰 다시 그림
+    renderPreviews();
   });
+
+  // 초기 렌더 (처음엔 아무것도 없으므로 초기 상태만 세팅)
+  renderPreviews();
 });
 
 //필수 항목을 모두 채워야 제출 가능하게 만들기 + with red dot
@@ -236,6 +277,7 @@ document.addEventListener("DOMContentLoaded", function() {              // DOM�
 
   checkRequired();                                                      // 페이지 로드 직후 초기 상태 한 번 점검
 });
+
 document.addEventListener("DOMContentLoaded", function (){
   const tagInput = document.getElementById("tag");
   if (!tagInput) return;
@@ -260,8 +302,5 @@ document.addEventListener("DOMContentLoaded", function (){
     tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
   });
 });
-
-
-
 </script>
 {% endblock %}
