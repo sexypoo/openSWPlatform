@@ -1,0 +1,267 @@
+{%extends "layout.html"%}
+{% block title %}상품 등록 | EWHA MARKET{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/product_style.css') }}">
+{% endblock %}
+
+
+{%block content %}
+<div class="reg-items-page">
+
+  <div class="title">상품 등록</div>
+  <form method="POST" enctype="multipart/form-data" action="{{ url_for('products.reg_item_submit_post') }}">
+    {{ form.hidden_tag() }} <!--CSRF 토큰 자동으로 넣어주고, Hidden field 항목들 가져옴-->
+    
+    <div class="grid">
+    <!-- left: upload area -->
+      <div>
+        <label class="upload-card req-dot">
+        <small>사진</small>
+        <img alt="" class="preview" hidden="" id="previewImg"/>
+        <div class="hint">클릭하여 파일을 선택하세요</div>
+        <input type="file" id="file" name="file" accept="image/*" style="display: none" multiple required>
+      </label>
+      <div id="photoPreview" class="photo-preview-container"></div>
+
+    </div>
+    <!-- right: form -->
+  <div>
+    <div class="field">
+      <label class="req-dot" for="name">상품명</label>
+      <input id="pname" name="name" placeholder="상품명" required="" type="text"/>
+    </div>
+    <div class="field">
+      <label class="req-dot" for="category">카테고리</label>
+      <select id="cate" name="category" required="">
+        <option disabled="" selected="" value="">카테고리</option>
+        <option value="clothes">의류</option>
+        <option value="book">서적</option>
+        <option value="fresh_produce">농수산물</option>
+        <option value="eletronics">전자기기</option>
+        <option value="service">일거리</option>
+        <option value="etc">잡화</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="req-dot" for="details">설명</label>
+      <textarea id="details" name="details" placeholder="브랜드, 모델명, 구매 시기, 하자 유무 등 상품 설명을 최대한 자세하게 적어주세요." required=""></textarea>
+    </div>
+    <div class="field">
+      <label class="req-dot" for="quantity">수량</label>
+      <div class="quantity-row">
+        <input type="number" name="quantity" id="quantity" min="1" placeholder="수량을 입력하세요" required>
+      </div>
+    </div>
+    <div class="field">
+      <label for="tag">태그</label>
+      <input id="tag" name="tag" placeholder="#태그" type="text"/>
+    </div>
+    <div class="field">
+      <label class="req-dot">가격</label>
+      <div class="price-row">
+        <input id="price" inputmode="numeric" name="price" placeholder="가격" required="" type="text"/>
+        <input aria-label="통화 단위" disabled="" type="text" value="(원)"/>
+      </div>
+    </div>
+    <div class="field">
+    <label class="req-dot" id="label-method">거래 방법</label>
+    <div class="check-grid">
+      <label><input name="method" type="checkbox" value="대면 직거래 가능"/>대면 직거래 가능</label>
+      <label><input name="method" type="checkbox" value="비대면 직거래 가능"/>비대면 직거래 가능</label>
+      <label><input name="method" type="checkbox" value="택배 거래 가능"/>택배 거래 가능</label>
+      <label><input name="method" type="checkbox" value="거래 방법 개인 문의 요함"/>거래 방법 개인 문의 요함</label>
+    </div>
+    </div>
+    <div class="submit-wrap">
+      <button class="btn" disabled="" type="submit">상품 등록</button><!--처음엔 비활성화-->
+    </div>
+  </div>
+  </div>
+  </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const fileInput    = document.getElementById("file");
+  const hint         = document.querySelector(".upload-card .hint");
+  const previewImg   = document.getElementById("previewImg");
+  const previewStrip = document.getElementById("photoPreview");
+  let currentURL     = null;
+  const maxFiles     = 5;
+
+  // 지금까지 선택한 파일들을 누적 저장할 배열
+  let allFiles = [];
+
+  fileInput.addEventListener("change", () => {
+    const newlySelected = Array.from(fileInput.files || []);
+    const allowedExt = ["jpg", "jpeg", "png", "gif"];
+    for (const f of newlySelected) {
+      const ext = f.name.split(".").pop().toLowerCase();
+      if (!allowedExt.includes(ext)) {
+        alert("허용된 파일만 업로드 가능합니다 (jpg, jpeg, png, gif)");
+        fileInput.value = "";
+        return;
+      }
+    }
+
+    // 새로 선택한 것도 이미지인지 체크
+    if (newlySelected.some(f => !f.type.startsWith("image/"))) {
+      alert("이미지 파일만 선택할 수 있습니다.");
+      fileInput.value = "";
+      return;
+    }
+
+    // 누적 갯수 체크
+    if (allFiles.length + newlySelected.length > maxFiles) {
+      alert(`최대 ${maxFiles}장까지만 업로드 가능합니다.\n(현재 ${allFiles.length}장 선택되어 있음)`);
+      fileInput.value = "";
+      return;
+    }
+
+    // ✅ 지금까지의 파일들에 새로 선택한 파일들 누적
+    allFiles = allFiles.concat(newlySelected);
+
+    // ✅ 실제 input.files에도 누적된 목록을 다시 넣어주기 (서버로 전송용)
+    const dataTransfer = new DataTransfer();
+    allFiles.forEach(f => dataTransfer.items.add(f));
+    fileInput.files = dataTransfer.files;
+
+    // ❌ 아무것도 없으면 초기화
+    if (!allFiles.length) {
+      if (currentURL) { URL.revokeObjectURL(currentURL); currentURL = null; }
+      previewImg.hidden = true;
+      previewImg.removeAttribute("src");
+      hint.style.display = "";
+      previewStrip.innerHTML = "";
+      return;
+    }
+
+    // ✅ 메인 큰 박스: 첫 번째 이미지
+    if (currentURL) { URL.revokeObjectURL(currentURL); }
+    const mainUrl = URL.createObjectURL(allFiles[0]);
+    currentURL = mainUrl;
+    previewImg.src = mainUrl;
+    previewImg.hidden = false;
+    hint.style.display = "none";
+
+    // ✅ 아래 썸네일 strip 다시 그림 (지금까지 선택한 전체 allFiles 기준)
+    previewStrip.innerHTML = "";
+
+    allFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "photo-preview-item";
+
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.className = "preview-image";
+
+        // 썸네일 클릭 시 큰 박스로 띄우기
+        img.addEventListener("click", () => {
+          previewImg.src = e.target.result;
+        });
+
+        wrapper.appendChild(img);
+        previewStrip.appendChild(wrapper);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+});
+
+//필수 항목을 모두 채워야 제출 가능하게 만들기 + with red dot
+document.addEventListener("DOMContentLoaded", function() {              // DOM이 모두 그려진 뒤에 스크립트 실행
+  const form = document.querySelector("form");                          // 입력 from 전체 form에 넣기
+  const requiredFields = form.querySelectorAll(                         // required가 붙은 항목들 전부 가져오기 
+    "input[required], textarea[required], select[required]"
+  );
+  const fileInput = document.getElementById("file");                    // 사진 파일 가져오기
+  const uploadLabel = fileInput.closest(".upload-card");                // 사진파일, 부모 카드: uploadedLabe1 가져오기
+  const checkboxes = form.querySelectorAll(                             // 체크박스 4개 가져오기
+    "input[type='checkbox'][name='method']"
+  );
+  const submitButton = form.querySelector(".btn");                      // submitButton: '상품 등록' 버튼 가져오기 나중에 조건이 다 맞으면 disabled = false로 바꿔서 활성화
+  const methodLabel = document.getElementById("label-method");          // methodLabel: '거래 방법' label이 checkbox와 직접적으로 연결되어있지 않기 때문에 따로 불러와야함. 
+
+  function showDot(el, visible) {                                       // 레드닷 표시할지 설정하는 함수
+    if (!el) return;                                                    // 대상이 없으면 종료
+    el.style.setProperty("--show-dot", visible ? "visible" : "hidden"); // setProperty 해당 CSS의 visible 변수를 script의 visible 값에 따라 설정. 
+  }
+
+  function checkRequired() {                                            // 모든 필수 조건 충족하는지 검사
+    let allFilled = true;                                               // allFilled = true로 가정하고 시작
+
+    // 1) 텍스트/textarea/select 필수 필드 검사
+    requiredFields.forEach(field => {                                   // 각 필수 필드를 돌며
+      const label = field.closest(".field")?.querySelector(".req-dot"); // 같은 .field 안의 req-dot 레이블 찾기
+      if (field.value.trim() === "") {                                  // field.value.trim()값이 비었으면
+        showDot(label, true);                                           // 켜기
+        allFilled = false;                                              // 하나라도 비었으니 전체 완료=false
+      } else {
+        showDot(label, false);                                          // 끄기
+      }
+    });
+
+    // 2) 파일(사진/동영상) 업로드 검사
+    if (fileInput.files.length === 0) {                                 // 선택된 파일이 없으면
+      showDot(uploadLabel, true);                                       // 켜기
+      allFilled = false;
+    } else {
+      showDot(uploadLabel, false);                                      // 끄기
+    }
+
+    // 3) 체크박스 그룹(거래방법) 최소 1개 검사
+    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);   // 하나라도 체크되어 있으면 true
+    if (!anyChecked) {                                                  // 아무 것도 안 고르면
+      showDot(methodLabel, true);                                       // 켜기
+      allFilled = false;
+    } else {
+      showDot(methodLabel, false);                                      // 끄기
+    }
+
+    // 4) 모든 조건 만족 여부로 제출 버튼 상태 결정
+    submitButton.disabled = !allFilled;                                 // 모두 채워짐 allFilled=true -> disabled=false  즉, 활성화
+  }
+
+  // 입력 변화에 반응: 타이핑/선택/체크 변경 시마다 재검사
+  [...requiredFields, fileInput, ...checkboxes].forEach(el => {         // 스프레드로 하나의 배열처럼 묶기
+    el.addEventListener("input", checkRequired);                        // 타이핑/체크 토글 등 즉시 반응
+    el.addEventListener("change", checkRequired);                       // 셀렉트/파일 변경 등 값 확정 시 반응
+  });
+
+  checkRequired();                                                      // 페이지 로드 직후 초기 상태 한 번 점검
+});
+document.addEventListener("DOMContentLoaded", function (){
+  const tagInput = document.getElementById("tag");
+  if (!tagInput) return;
+  tagInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();   // 폼 submit 막기
+      // 여기서 굳이 뭐 안 해도 됨. 그냥 줄바꿈 대신 무시.
+    }
+  });
+  tagInput.addEventListener("focus", function (){
+    if (tagInput.value.trim() === "") {
+      tagInput.value = "#";
+      tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
+    }
+  });
+  tagInput.addEventListener("input", function () {
+    let v = tagInput.value;
+    if (!v.endsWith(" ")) return;
+    let tokens = v.trim().split(/\s+/).filter(Boolean);
+    tokens = tokens.map(t => t.startsWith("#") ? t : "#" + t);
+    tagInput.value = tokens.join(" ") + " ";
+    tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
+  });
+});
+
+
+
+</script>
+{% endblock %}
