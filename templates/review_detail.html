@@ -45,11 +45,13 @@
                     </div>
                     <div class="review-score">{{ rating }} / 5 </div>
                 </div>
+                {% if is_owner %}
                 <div class="action-buttons">
                     <a href="{{ url_for('reviews.update_review', review_id=review.id) }}" class="btn btn-edit">수정</a>
                     <span class="action-divider">|</span>
                     <a href="{{ url_for('reviews.delete_review', review_id=review.id) }}" class="btn btn-delete">삭제</a>
                 </div>
+                {% endif %}
             </div>
 
             <!-- 리뷰 제목 -->
