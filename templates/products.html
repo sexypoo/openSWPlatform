@@ -42,9 +42,11 @@
       <a href="{{ url_for('products.view_product', product_id=p.id, slug=p.name) }}">
         <div class="thumb {% if p.quantity == 0 %}soldout-thumb{% endif %}" aria-label="상품 이미지" {% if p.img_path %}
           style="background-image:url('{{p.img_path}}');" {% endif %}>
+          {% if not p.is_owner %}
           <span class="heart wish-heart" data-id="{{ p.id }}">
             <i class="fa-regular fa-heart"></i>
           </span>
+          {% endif %}
         </div>
         {% if p.quantity == 0 %}
         <div class="soldout-badge">품절</div>
@@ -102,7 +104,8 @@
       return meta ? meta.getAttribute('content') : '';
     }
 
-    let wishlist = [];   // 이제 localStorage 대신 서버에서 받아오기
+    let wishlist = []; // 이제 localStorage 대신 서버에서 받아오기
+    let loggedIn = false;
 
     function updateHeartVisual(heart) {
       const id = heart.dataset.id;   // 문자열로 다루자
@@ -125,7 +128,8 @@
     fetch('{{ url_for("wish.my_hearts") }}')
       .then(res => res.json())
       .then(data => {
-        wishlist = (data.hearts || []).map(String);  // 문자열 배열로 맞추기
+        wishlist = (data.hearts || []).map(String);// 문자열 배열로 맞추기
+        loggedIn = !!data.logged_in
 
         document.querySelectorAll('.products-page .heart').forEach(heart => {
           updateHeartVisual(heart);
@@ -141,6 +145,11 @@
 
         e.preventDefault();
         e.stopPropagation();
+
+        if (!loggedIn) {
+          alert("로그인 후 이용 가능한 서비스 입니다.")
+          return;
+        }
 
         const id = heart.dataset.id;
 

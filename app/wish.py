@@ -57,11 +57,7 @@ def my_hearts():
     uid = session.get('id')
 
     if not uid:
-        return jsonify({'hearts':[]})
-
-    product = DB.get_product(id)
-    if product and product.get("seller") == uid:
-        return jsonify({'hearts':[]})
+        return jsonify({'hearts':[], 'logged_in':False})
 
     heart_ids = DB.get_my_heart_ids(uid)
-    return jsonify({'hearts':heart_ids})
+    return jsonify({'hearts':heart_ids, 'logged_in':True})
