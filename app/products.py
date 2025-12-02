@@ -52,7 +52,7 @@ def reg_item_submit_post():
 
         img_urls.append(url)
 
-    img_urls.append(url)
+    img_filename = json.dumps(img_urls) if img_urls else None
 
     # 폼 데이터
     data = form.data.copy()
