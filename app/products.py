@@ -79,6 +79,8 @@ def reg_item_submit_post():
 def view_products():
     DB = current_app.config["DB"]
 
+    current_id = session.get("id")
+
     category = request.args.get("category", "").strip()
 
     # 전체 상품 받아오기 + 정렬
@@ -119,6 +121,8 @@ def view_products():
             images = [img_raw] if img_raw else []
 
         p["img_path"] = images[0] if images else None
+
+        p["is_owner"] = (p.get("seller") == current_id)
 
 
     from math import ceil
