@@ -1,7 +1,7 @@
 import os
 import uuid
 
-import json  # 🔹 추가
+import json
 
 from flask import current_app
 from werkzeug.utils import secure_filename
@@ -243,7 +243,7 @@ def update_review(review_id):
         DB = current_app.config["DB"]
         STORAGE = DB.storage
 
-        # 🔹 1) 프론트에서 넘어온 "삭제 후 남아 있는 기존 이미지들" 우선 사용
+        # 프론트에서 넘어온 "삭제 후 남아 있는 기존 이미지들" 우선 사용
         existing_images_field = request.form.get("existing_images", "").strip()
         if existing_images_field:
             try:
@@ -260,7 +260,7 @@ def update_review(review_id):
             # hidden 값이 없으면, DB의 기존 값으로 fallback
             existing_images = review.get("images") or []
 
-        # 🔹 2) 새로 업로드된 파일들 처리
+        # 새로 업로드된 파일들 처리
         files = request.files.getlist("file")
         new_images = []
 
@@ -277,7 +277,7 @@ def update_review(review_id):
 
             new_images.append(url)
 
-        # 🔹 3) 최종 이미지 = (남아 있는 기존) + (새로 업로드된)
+        # 최종 이미지 = (남아 있는 기존) + (새로 업로드된)
         merged = existing_images + new_images
 
         # 최대 3장까지만 유지
