@@ -103,56 +103,60 @@
 {% block script %}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    /* -----------------------------------------------------------
+       공통 변수
+    ----------------------------------------------------------- */
     const fileInput    = document.getElementById("file");
     const previewImg   = document.getElementById("previewImg");
     const hint         = document.querySelector(".upload-card .hint");
     const previewStrip = document.getElementById("photoPreview");
     const existingInput = document.getElementById("existing_images_input");
-
     const maxFiles = 5;
+
     let newFiles = [];
+    let existingImages = [];
     let currentObjectURL = null;
 
-    // 🔹 서버에서 넘어온 img_path (리스트 / JSON문자열 / 단일문자열 / null 모두 처리)
-    const imgPathRaw = {{ product.img_path|tojson|safe }};
-    let existingImages = [];
-
-    if (Array.isArray(imgPathRaw)) {
-        existingImages = imgPathRaw.filter(Boolean);
-    } else if (typeof imgPathRaw === "string" && imgPathRaw.trim() !== "") {
-        const trimmed = imgPathRaw.trim();
+    /* -----------------------------------------------------------
+       기존 이미지 로드 (서버에서 넘어온 product.img_path)
+    ----------------------------------------------------------- */
+    const raw = {{ product.img_path|tojson|safe }};
+    if (Array.isArray(raw)) {
+        existingImages = raw.filter(Boolean);
+    } else if (typeof raw === "string" && raw.trim() !== "") {
+        const trimmed = raw.trim();
         if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
             try {
                 const parsed = JSON.parse(trimmed);
-                if (Array.isArray(parsed)) {
-                    existingImages = parsed.filter(Boolean);
-                } else {
-                    existingImages = [imgPathRaw];
-                }
-            } catch (e) {
-                existingImages = [imgPathRaw];
+                if (Array.isArray(parsed)) existingImages = parsed.filter(Boolean);
+            } catch (_) {
+                existingImages = [raw];
             }
         } else {
-            existingImages = [imgPathRaw];
+            existingImages = [raw];
         }
-    } else {
-        existingImages = [];
     }
 
+    // 다른 스크립트에서도 보이도록 전역 등록
+    window._existingImages = existingImages;
+
+    /* -----------------------------------------------------------
+       existing_images hidden input 동기화
+    ----------------------------------------------------------- */
     function syncExistingInput() {
-        if (existingInput) {
-            existingInput.value = JSON.stringify(existingImages);
-        }
+        existingInput.value = JSON.stringify(existingImages);
     }
 
+    /* -----------------------------------------------------------
+       프리뷰 렌더 함수
+    ----------------------------------------------------------- */
     function renderPreviews() {
         previewStrip.innerHTML = "";
 
-        // 1) 기존 이미지 썸네일
+        /* --- 기존 이미지 썸네일 --- */
         existingImages.forEach((url, index) => {
-            if (!url) return;
-            const wrapper = document.createElement("div");
-            wrapper.className = "photo-preview-item existing";
+            const wrap = document.createElement("div");
+            wrap.className = "photo-preview-item existing";
 
             const img = document.createElement("img");
             img.src = url;
@@ -161,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
             img.addEventListener("click", () => {
                 previewImg.src = url;
                 previewImg.hidden = false;
-                if (hint) hint.style.display = "none";
+                hint.style.display = "none";
             });
 
             const removeBtn = document.createElement("div");
@@ -170,227 +174,200 @@ document.addEventListener("DOMContentLoaded", function () {
 
             removeBtn.addEventListener("click", (e) => {
                 e.stopPropagation();
-                existingImages.splice(index, 1);
+                existingImages.splice(index, 1);  // 삭제
+                window._existingImages = existingImages;
+                syncExistingInput();
                 renderPreviews();
+                triggerRequiredCheck();
             });
 
-            wrapper.appendChild(img);
-            wrapper.appendChild(removeBtn);
-            previewStrip.appendChild(wrapper);
+            wrap.appendChild(img);
+            wrap.appendChild(removeBtn);
+            previewStrip.appendChild(wrap);
         });
 
-        // 2) 새로 추가한 파일 썸네일
+        /* --- 새 파일 이미지 썸네일 --- */
         newFiles.forEach((file, index) => {
             const reader = new FileReader();
-            reader.onload = (e) => {
-                const wrapper = document.createElement("div");
-                wrapper.className = "photo-preview-item";
+            reader.onload = (ev) => {
+                const wrap = document.createElement("div");
+                wrap.className = "photo-preview-item";
 
                 const img = document.createElement("img");
-                img.src = e.target.result;
+                img.src = ev.target.result;
                 img.className = "preview-image";
 
                 img.addEventListener("click", () => {
-                    previewImg.src = e.target.result;
+                    previewImg.src = ev.target.result;
                     previewImg.hidden = false;
-                    if (hint) hint.style.display = "none";
+                    hint.style.display = "none";
                 });
 
                 const removeBtn = document.createElement("div");
                 removeBtn.className = "remove-btn";
                 removeBtn.textContent = "×";
 
-                removeBtn.addEventListener("click", (ev) => {
-                    ev.stopPropagation();
+                removeBtn.addEventListener("click", (ev2) => {
+                    ev2.stopPropagation();
                     newFiles.splice(index, 1);
 
-                    // fileInput.files도 다시 세팅
                     const dt = new DataTransfer();
                     newFiles.forEach(f => dt.items.add(f));
                     fileInput.files = dt.files;
 
                     renderPreviews();
+                    triggerRequiredCheck();
                 });
 
-                wrapper.appendChild(img);
-                wrapper.appendChild(removeBtn);
-                previewStrip.appendChild(wrapper);
+                wrap.appendChild(img);
+                wrap.appendChild(removeBtn);
+                previewStrip.appendChild(wrap);
             };
             reader.readAsDataURL(file);
         });
 
-        // 3) 메인 큰 프리뷰 한 장
+        /* --- 큰 프리뷰 업데이트 --- */
         if (existingImages.length > 0) {
             previewImg.src = existingImages[0];
             previewImg.hidden = false;
-            if (hint) hint.style.display = "none";
+            hint.style.display = "none";
         } else if (newFiles.length > 0) {
-            if (currentObjectURL) {
-                URL.revokeObjectURL(currentObjectURL);
-            }
+            if (currentObjectURL) URL.revokeObjectURL(currentObjectURL);
             const url = URL.createObjectURL(newFiles[0]);
             currentObjectURL = url;
             previewImg.src = url;
             previewImg.hidden = false;
-            if (hint) hint.style.display = "none";
+            hint.style.display = "none";
         } else {
-            // 아무것도 없을 때
             previewImg.hidden = true;
             previewImg.removeAttribute("src");
-            if (hint) hint.style.display = "";
+            hint.style.display = "";
         }
 
-        // 🔹 hidden input 값 동기화 (삭제/추가 후 항상)
         syncExistingInput();
     }
 
-    // 초기 렌더(기존 이미지 있을 경우)
-    renderPreviews();
-
-    // 🔹 새 파일 선택 시
+    /* -----------------------------------------------------------
+       파일 선택 이벤트
+    ----------------------------------------------------------- */
     fileInput.addEventListener("change", () => {
-        const newlySelected = Array.from(fileInput.files || []);
+        const selected = Array.from(fileInput.files || []);
         const allowedExt = ["jpg", "jpeg", "png", "gif"];
 
-        for (const f of newlySelected) {
+        // 확장자, 타입 검사
+        for (const f of selected) {
             const ext = f.name.split(".").pop().toLowerCase();
-            if (!allowedExt.includes(ext)) {
-                alert("허용된 파일만 업로드 가능합니다 (jpg, jpeg, png, gif)");
-                fileInput.value = "";
-                return;
-            }
-            if (!f.type.startsWith("image/")) {
-                alert("이미지 파일만 선택할 수 있습니다.");
+            if (!allowedExt.includes(ext) || !f.type.startsWith("image/")) {
+                alert("이미지 파일(jpg, jpeg, png, gif)만 업로드 가능합니다.");
                 fileInput.value = "";
                 return;
             }
         }
 
-        if (newFiles.length + newlySelected.length > maxFiles) {
-            alert(`새로 추가하는 파일은 최대 ${maxFiles}장까지만 가능합니다.\n(현재 새 파일: ${newFiles.length}장)`);
+        // 5장 제한 검사
+        if (newFiles.length + selected.length > maxFiles) {
+            alert(`최대 ${maxFiles}장까지 업로드 가능합니다.`);
             fileInput.value = "";
             return;
         }
 
-        newFiles = newFiles.concat(newlySelected);
+        newFiles = newFiles.concat(selected);
 
+        // input.files 동기화
         const dt = new DataTransfer();
         newFiles.forEach(f => dt.items.add(f));
         fileInput.files = dt.files;
 
         renderPreviews();
+        triggerRequiredCheck();
     });
-});
 
-// ⬇ 기존 tagInput 관련 코드 그대로 유지
-document.addEventListener("DOMContentLoaded", function () {
+    /* -----------------------------------------------------------
+       태그 입력 처리
+    ----------------------------------------------------------- */
     const tagInput = document.getElementById("tag");
-    if (!tagInput) return;
-    tagInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
+    if (tagInput) {
+        tagInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") e.preventDefault();
+        });
+        tagInput.addEventListener("focus", () => {
+            if (tagInput.value.trim() === "") tagInput.value = "#";
+        });
+        tagInput.addEventListener("input", () => {
+            const v = tagInput.value;
+            if (v.endsWith(" ")) {
+                let tokens = v.trim().split(/\s+/).filter(Boolean)
+                    .map(t => t.startsWith("#") ? t : "#" + t);
+                tagInput.value = tokens.join(" ") + " ";
+            }
+        });
+    }
+
+    /* -----------------------------------------------------------
+       필수 항목 체크
+    ----------------------------------------------------------- */
+    const form = document.querySelector("form");
+    const requiredFields = form.querySelectorAll("input[required], textarea[required], select[required]");
+    const checkboxes = form.querySelectorAll("input[type='checkbox'][name='method']");
+    const submitButton = form.querySelector(".btn");
+    const uploadLabel = fileInput.closest(".upload-card");
+    const methodLabel = document.getElementById("label-method");
+
+    function showDot(el, visible) {
+        if (el) el.style.setProperty("--show-dot", visible ? "visible" : "hidden");
+    }
+
+    function checkRequired() {
+        let allFilled = true;
+
+        // 텍스트/textarea/select 검사
+        requiredFields.forEach(field => {
+            const label = field.closest(".field")?.querySelector(".req-dot");
+            if (field.value.trim() === "") {
+                showDot(label, true);
+                allFilled = false;
+            } else showDot(label, false);
+        });
+
+        // 이미지 검사 (기존 + 새 파일 중 1장 이상)
+        const hasAnyImage =
+            (window._existingImages && window._existingImages.length > 0) ||
+            fileInput.files.length > 0;
+
+        if (!hasAnyImage) {
+            showDot(uploadLabel, true);
+            allFilled = false;
+        } else {
+            showDot(uploadLabel, false);
         }
-    });
-    tagInput.addEventListener("focus", function () {
-        if (tagInput.value.trim() === "") {
-            tagInput.value = "#";
-            tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
+
+        // 체크박스 검사
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        if (!anyChecked) {
+            showDot(methodLabel, true);
+            allFilled = false;
+        } else {
+            showDot(methodLabel, false);
         }
+
+        submitButton.disabled = !allFilled;
+    }
+
+    function triggerRequiredCheck() {
+        const event = new Event("input", { bubbles: true });
+        fileInput.dispatchEvent(event);
+    }
+
+    // 모든 요소 변화 감지
+    [...requiredFields, ...checkboxes].forEach(el => {
+        el.addEventListener("input", checkRequired);
+        el.addEventListener("change", checkRequired);
     });
-    tagInput.addEventListener("input", function () {
-        let v = tagInput.value;
-        if (!v.endsWith(" ")) return;
-        let tokens = v.trim().split(/\s+/).filter(Boolean);
-        tokens = tokens.map(t => t.startsWith("#") ? t : "#" + t);
-        tagInput.value = tokens.join(" ") + " ";
-        tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
-    });
-});
-//필수 항목을 모두 채워야 제출 가능하게 만들기 + with red dot
-document.addEventListener("DOMContentLoaded", function() {              // DOM이 모두 그려진 뒤에 스크립트 실행
-  const form = document.querySelector("form");                          // 입력 from 전체 form에 넣기
-  const requiredFields = form.querySelectorAll(                         // required가 붙은 항목들 전부 가져오기 
-    "input[required], textarea[required], select[required]"
-  );
-  const fileInput = document.getElementById("file");                    // 사진 파일 가져오기
-  const uploadLabel = fileInput.closest(".upload-card");                // 사진파일, 부모 카드: uploadedLabe1 가져오기
-  const checkboxes = form.querySelectorAll(                             // 체크박스 4개 가져오기
-    "input[type='checkbox'][name='method']"
-  );
-  const submitButton = form.querySelector(".btn");                      // submitButton: '상품 등록' 버튼 가져오기 나중에 조건이 다 맞으면 disabled = false로 바꿔서 활성화
-  const methodLabel = document.getElementById("label-method");          // methodLabel: '거래 방법' label이 checkbox와 직접적으로 연결되어있지 않기 때문에 따로 불러와야함. 
+    fileInput.addEventListener("input", checkRequired);
 
-  function showDot(el, visible) {                                       // 레드닷 표시할지 설정하는 함수
-    if (!el) return;                                                    // 대상이 없으면 종료
-    el.style.setProperty("--show-dot", visible ? "visible" : "hidden"); // setProperty 해당 CSS의 visible 변수를 script의 visible 값에 따라 설정. 
-  }
-
-  function checkRequired() {                                            // 모든 필수 조건 충족하는지 검사
-    let allFilled = true;                                               // allFilled = true로 가정하고 시작
-
-    // 1) 텍스트/textarea/select 필수 필드 검사
-    requiredFields.forEach(field => {                                   // 각 필수 필드를 돌며
-      const label = field.closest(".field")?.querySelector(".req-dot"); // 같은 .field 안의 req-dot 레이블 찾기
-      if (field.value.trim() === "") {                                  // field.value.trim()값이 비었으면
-        showDot(label, true);                                           // 켜기
-        allFilled = false;                                              // 하나라도 비었으니 전체 완료=false
-      } else {
-        showDot(label, false);                                          // 끄기
-      }
-    });
-
-    // 2) 파일(사진/동영상) 업로드 검사
-    if (fileInput.files.length === 0) {                                 // 선택된 파일이 없으면
-      showDot(uploadLabel, true);                                       // 켜기
-      allFilled = false;
-    } else {
-      showDot(uploadLabel, false);                                      // 끄기
-    }
-
-    // 3) 체크박스 그룹(거래방법) 최소 1개 검사
-    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);   // 하나라도 체크되어 있으면 true
-    if (!anyChecked) {                                                  // 아무 것도 안 고르면
-      showDot(methodLabel, true);                                       // 켜기
-      allFilled = false;
-    } else {
-      showDot(methodLabel, false);                                      // 끄기
-    }
-
-    // 4) 모든 조건 만족 여부로 제출 버튼 상태 결정
-    submitButton.disabled = !allFilled;                                 // 모두 채워짐 allFilled=true -> disabled=false  즉, 활성화
-  }
-
-  // 입력 변화에 반응: 타이핑/선택/체크 변경 시마다 재검사
-  [...requiredFields, fileInput, ...checkboxes].forEach(el => {         // 스프레드로 하나의 배열처럼 묶기
-    el.addEventListener("input", checkRequired);                        // 타이핑/체크 토글 등 즉시 반응
-    el.addEventListener("change", checkRequired);                       // 셀렉트/파일 변경 등 값 확정 시 반응
-  });
-
-  checkRequired();                                                      // 페이지 로드 직후 초기 상태 한 번 점검
-});
-document.addEventListener("DOMContentLoaded", function (){
-  const tagInput = document.getElementById("tag");
-  if (!tagInput) return;
-  tagInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      e.preventDefault();   // 폼 submit 막기
-      // 여기서 굳이 뭐 안 해도 됨. 그냥 줄바꿈 대신 무시.
-    }
-  });
-  tagInput.addEventListener("focus", function (){
-    if (tagInput.value.trim() === "") {
-      tagInput.value = "#";
-      tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
-    }
-  });
-  tagInput.addEventListener("input", function () {
-    let v = tagInput.value;
-    if (!v.endsWith(" ")) return;
-    let tokens = v.trim().split(/\s+/).filter(Boolean);
-    tokens = tokens.map(t => t.startsWith("#") ? t : "#" + t);
-    tagInput.value = tokens.join(" ") + " ";
-    tagInput.setSelectionRange(tagInput.value.length, tagInput.value.length);
-  });
+    // 초기 로딩
+    renderPreviews();
+    checkRequired();
 });
 </script>
 {% endblock %}
