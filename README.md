@@ -67,7 +67,7 @@ $ python app.py
 |-----------------|-----------------|-----------------|
 | 박고은    |  <img src="https://avatars.githubusercontent.com/u/60212998?v=4" alt="박고은" width="100"> | <ul><li>프로젝트 계획 및 관리</li><li>팀 리딩 및 커뮤니케이션</li><li>리뷰 CURD 개발</li><li>마이페이지 기능 개발</li><li>기타 BE 개발</li></ul>     |
 | 이민경   |  <img src="https://avatars.githubusercontent.com/u/162548821?v=4" alt="이민경" width="100">| <ul><li>상품 CRUD 개발</li><li>로그인/회원가입 개발</li><li>기타 BE 개발</li></ul> |
-| 김은규   |  <img src="https://avatars.githubusercontent.com/u/228705566?v=4" alt="김은규" width="100">    |<ul><li>홈 페이지 개발</li><li>상품 등록 페이지 개발</li><li>상품 전체 조회 페이지 개발</li><li>상품 상세 조회 페이지 개발</li><li>기타 FE 개발</li></ul>  |
+| 김은규   |  <img src="https://avatars.githubusercontent.com/u/228705566?v=4" alt="김은규" width="100">    |<ul><li>상품 등록 페이지 개발</li><li>상품 전체 조회 페이지 개발</li><li>상품 상세 조회 페이지 개발</li><li>기타 FE 개발</li></ul>  |
 | 오서현    |  <img src="https://avatars.githubusercontent.com/u/229738206?v=4" alt="오서현" width="100">    | <ul><li>리뷰 등록 페이지 개발</li><li>리뷰 전체 조회 페이지 개발</li><li>리뷰 상세 조회 페이지 개발</li><li>기타 FE 개발</li></ul>    |
 | 채서윤    |  <img src="https://avatars.githubusercontent.com/u/231133650?v=4" alt="채서윤" width="100">    | <ul><li>회원가입 페이지 개발</li><li>로그인 페이지 개발</li><li>마이페이지 개발</li><li>메인페이지 개발</li><li>기타 FE 개발</li></ul>    |
 
