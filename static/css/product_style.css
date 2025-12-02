@@ -1008,33 +1008,22 @@ a {
   position: relative;
 }
 
-/* 이미지 회색 톤 + 어둡게 */
 .product-gallery .soldout-gallery .gallery-slide img {
-  filter: grayscale(100%) brightness(45%);
+  filter: grayscale(100%) brightness(40%);
 }
-
-/* 살짝 어두운 반투명 오버레이 한 겹 */
-.product-gallery .soldout-gallery::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.25);
-  pointer-events: none;
-}
-
-/* 상세페이지 품절 배지 (목록과 느낌 통일) */
-.product-gallery .soldout-badge {
+.products-page .soldout-badge {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.7);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 10px;
+  font-weight: 700;
   font-size: 14px;
-  font-weight: 600;
-  z-index: 2;
+  z-index: 5; 
+  pointer-events: none;
 }
 
 
