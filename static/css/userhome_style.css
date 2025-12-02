@@ -652,21 +652,27 @@ body {
 
 /* 이미지 영역 */
 .mypage-review-image {
-    width: 100%;
-    aspect-ratio: 1/1;
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: #eaeaea;
-    margin-bottom: 14px;
-    height: 280px;
-    min-height: 280px; /*리뷰 사진 수정 시 내 리뷰 카드 모양 깨짐 때문에 추가*/
+  width: 238px;
+  height: 238px;
+  aspect-ratio: 1/1;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #eaeaea;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+  /* 이미지 크기 고정 */
 }
 
 .mypage-review-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block; /*리뷰 사진 수정 시 내 리뷰 카드 모양 깨짐 때문에 추가*/
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mypage-review-title {
+  font-size: 15px;
+  font-weight: 600;
 }
 
 /* 별점 */
