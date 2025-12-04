@@ -122,7 +122,7 @@ $ python app.py
 openSWPlatform/
 ├── LICENSE
 ├── README.md
-├── app
+├── backend
 │   ├── ProductForm.py
 │   ├── ReviewForm.py
 │   ├── __init__.py # 블루프린트 설정
