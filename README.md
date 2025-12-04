@@ -2,6 +2,21 @@
 <br/>
 <br/>
 
+## 💡 기술 블로그 바로가기 💡
+
+<a href="https://2025osp-group5.tistory.com/2">[개념] UI는 어떻게 서버 데이터와 연결될까? FE-BE 연결 구조를 중심으로</a>
+
+<a href="https://2025osp-group5.tistory.com/3">[디버깅] 다중 이미지 업로드와 슬라이드 디버깅</a>
+
+<a href="https://2025osp-group5.tistory.com/4">[가이드] GitHub Desktop 설치와 사용법 (Feat. PyCharm)</a>
+
+<a href="https://2025osp-group5.tistory.com/5">[해설] CSS Grid와 Jinja2로 깔끔한 '리뷰 목록' UI 개발하기</a>
+
+<a href="https://2025osp-group5.tistory.com/6">[해설] 간단하지만 위험한 백엔드는 그만! 백엔드 시큐어 코딩 적용기</a>
+
+<br/>
+<br/>
+
 # 0. Getting Started (시작하기)
 ### Firebase 설정
 `authenticatin/firebase_auth.json` 추가
