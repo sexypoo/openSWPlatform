@@ -1,6 +1,6 @@
 
 <br/>
-https://openswplatform.onrender.com/products 
+https://openswplatform.onrender.com
 <br/>
 
 ## 💡 기술 블로그 바로가기 💡
